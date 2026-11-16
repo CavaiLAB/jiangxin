@@ -100,7 +100,7 @@ flowchart TB
 | [平台级裁定](docs/decisions/2026-11-17-platform.md) | 产品负责人定了什么，改写了已接受的合并蓝图的哪几条 |
 | [术语与名称对照](docs/glossary.md) | 新旧名字各指什么 |
 
-这些文档连同三个框架仓库的文档可以聚成一个站点来看，在本机跑起来的办法见 [website/README.md](website/README.md)。站点还没有部署。
+这些文档连同三个框架仓库的文档聚成了一个站点。站点部署在内网，合并到 `main` 后自动更新；在本机跑起来的办法见 [website/README.md](website/README.md)。
 
 ## 参与
 

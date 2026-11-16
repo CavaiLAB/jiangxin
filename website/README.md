@@ -72,16 +72,42 @@ pnpm sync:update
 
 - 顶部导航在 `docs/_nav.json`，侧栏在 `docs/_meta.json`。
 - `docs/` 顶层新增页面或目录，要在 `docs/_meta.json` 里登记，没登记的同步时会报错。`decisions/` 下新增的文件自动出现在侧栏里。
-- 新增一个框架仓库：在 `sources.json` 里加一项，在 `docs/_nav.json` 里加一个导航项。
+- 新增一个框架仓库：在 `sources.json` 里加一项，在 `docs/_nav.json` 里加一个导航项；CI 还要给它配一把只读钥匙，在 `scripts/setup-ci-keys.sh` 和工作流里各加一行。
 
 ## 取仓库用的地址
 
 缺省跟着本仓库的 `origin` 走：本仓库是用 SSH 克隆的，取另外三个也用 SSH。要换，设环境变量 `SOURCES_GIT_BASE`，例如 `https://github.com/CavaiLAB/`。
 
+## 部署
+
+站点部署在内网的 K3s 上。合并到 `main` 后，CI 把构建产物发布到本仓库的 `docs-site` 分支；集群里的 git-sync 每 60 秒拉一次这个分支，由 nginx 提供。从合并到站点更新大约两三分钟。
+
+- 部署清单、入口地址和集群一侧的初始化脚本在部署仓库的 `env-ds/jiangxin-docs-site/`，不在本仓库。
+- `docs-site` 分支是发布产物，只有一个提交，每次发布强推。不要在上面提交东西。
+- 站点上的 `/build-info.json` 记录它取自 `main` 的哪个提交、三个框架仓库各钉在哪个提交。
+- 要部署在子路径下，构建时用 `DOCS_BASE` 指定，例如 `DOCS_BASE=/jiangxin/ pnpm build`。现在的部署用的是根路径。
+
+CI 不可用时可以手动发布。检出要是干净的，并且就是 `main` 的头提交：
+
+```bash
+pnpm site:publish
+```
+
+## CI
+
+`.github/workflows/docs-site.yml`：每个 PR 上跑类型检查、脚本自测和构建，死链与失效的锚点会让它失败；`main` 上再加发布。
+
+构建要读 `kun`、`qian`、`sanyuan-agent` 三个私有仓库。每个仓库有一把只读 deploy key，私钥存成本仓库的 Actions 密钥：`SOURCES_KEY_KUN`、`SOURCES_KEY_QIAN`、`SOURCES_KEY_SANYUAN_AGENT`。配置和更换都用这个脚本：
+
+```bash
+bash website/scripts/setup-ci-keys.sh
+```
+
+用 `gh` 登记的 deploy key 跟登记时用的令牌绑在一起。撤销 `gh` 的授权，GitHub 会把这些 key 一并删掉，CI 随之取不到框架仓库。
+
 ## 还没做的
 
-- 部署。站点还没有部署到任何地方。部署在子路径下时用 `DOCS_BASE` 指定，例如 `DOCS_BASE=/jiangxin/ pnpm build`。
-- CI。还没有在 CI 里构建。构建要读三个私有仓库，得先配一个有读权限的凭据。
+- PR 预览。现在 PR 上只构建和检查，不发布预览。
 - 原仓库 `idadawn/qian` 那个文档站里的组件页、API 参考与示例没有并进来，怎么并待定。
 
 ## 改这里的脚本
@@ -102,3 +128,5 @@ pnpm typecheck
 | `site-map.ts` | 仓库里的文件对应站点里的哪个页面，链接怎么改写 |
 | `remark-repo-links.ts` | 构建时把 `docs/` 里指向别的仓库文档的地址改成站内的 |
 | `sources.ts` | 读写 `sources.json` |
+| `publish.sh` | 把构建产物发布到 `docs-site` 分支；`publish.test.sh` 是它的自测，用一个临时的假远端跑 |
+| `setup-ci-keys.sh` | 给 CI 配读三个框架仓库用的只读钥匙 |

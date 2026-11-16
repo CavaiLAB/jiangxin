@@ -25,6 +25,7 @@
 `website/` 是用 Rspress 搭的文档站，把本仓库与三个框架仓库的文档聚到一起。用法与约束见 [website/README.md](website/README.md)。
 
 - `docs/index.md` 与 `docs/frameworks/` 是生成物，不进 git，不要手改。首页改根目录的 `README.md`，框架的文档去各框架仓库改。
-- 改了 `README.md` 或 `docs/` 下的文档，在 `website/` 下跑 `pnpm build`：死链和失效的锚点会让构建失败。
+- 改了 `README.md` 或 `docs/` 下的文档，在 `website/` 下跑 `pnpm build`：死链和失效的锚点会让构建失败。PR 上 CI 跑的是同样的检查。
+- 合并到 `main` 后 CI 把站点发布到 `docs-site` 分支。那个分支是发布产物，不要在上面提交。
 - `docs/` 顶层新增页面，在 `docs/_meta.json` 里登记。
 - 改了 `website/scripts/`，跑 `pnpm test` 与 `pnpm typecheck`。
