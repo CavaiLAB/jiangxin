@@ -1,0 +1,19 @@
+{
+  "frameworks": [
+    {
+      "repo": "kun",
+      "label": "Kun",
+      "commit": "babeaeeb3ba42248f404e30c8f8f2bb7985039d0"
+    },
+    {
+      "repo": "qian",
+      "label": "Qian",
+      "commit": "b7f032d19e06d282867f8c7268cb22537f04121f"
+    },
+    {
+      "repo": "sanyuan-agent",
+      "label": "SanYuanAgent",
+      "commit": "8186f8f67e805727312bc00f3306afa72674f69c"
+    }
+  ]
+}

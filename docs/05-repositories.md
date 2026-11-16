@@ -10,12 +10,12 @@
 
 | 仓库 | 放什么 | 主语言 |
 |---|---|---|
-| [jiangxin](https://github.com/CavaiLAB/jiangxin) | 平台主页、理念、总体架构、路线、协作约定 | 文档 |
+| [jiangxin](https://github.com/CavaiLAB/jiangxin) | 平台主页、理念、总体架构、路线、协作约定；把各仓库的文档聚到一起的文档站 | 文档 |
 | [kun](https://github.com/CavaiLAB/kun) | 企业级后端框架 | C# |
 | [qian](https://github.com/CavaiLAB/qian) | 前端框架 | TypeScript |
 | [sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | 智能体引擎 | Python |
 
-四个仓库现在是私有的，组织成员可读；目前只有文档。
+四个仓库现在是私有的，组织成员可读；目前只有文档，`jiangxin` 另有文档站的工具。
 
 ## 2 现有代码去哪
 
@@ -48,7 +48,7 @@
 | `tests/`、`tools/`、`scripts/`、工作流 | 测试、工具、脚本、CI | 随 `kun`，与合并蓝图一致 |
 | `docs/` | 决策清单、决策记录、需求与规格 | 现有的随 `kun`，与合并蓝图一致；跨框架的新决策提议记在 `jiangxin` |
 | `deploy/` | 开发期工具的部署清单 | 随 `kun`，与合并蓝图一致 |
-| `website/` | 文档站，用 Rspress 搭的 | 继续用 Rspress（已定）；放在哪个仓库待定，见第 4 节 |
+| `website/` | 文档站，用 Rspress 搭的：组件页、API 参考、示例、设计文档 | 继续用 Rspress（已定）。平台的文档站已经搭在 `jiangxin`；这里的内容怎么并过去待定，见第 4 节 |
 | `pm/` | 任务文件与看板 | 待定，见第 4 节 |
 
 ### 2.4 拆：iClaw 里的 Agent 引擎
@@ -92,7 +92,7 @@ flowchart LR
 | TypeScript 运行时、前端插件开发包、外壳工具包 | 和前端在同一个工作区 | 提议随 `qian` |
 | 命令行与声明式表面的校验库 | 同上 | 提议留在 `kun`：两者不依赖任何前端包，蓝图把命令行算在 Kun 的定位里 |
 | 平台组件自带的界面、参考应用的界面 | 同上 | 待定，没有提议。跟组件走，`kun` 就要留一套前端工具链并钉前端包的版本；跟前端走，一个组件的表面就分在两个仓库里 |
-| 文档站 | 随后端仓库，Kun 的文档改为同仓来源 | 继续用 Rspress（已定）。放在哪个仓库、怎么从各仓库取来源，待定，倾向放 `jiangxin`，按钉住的版本从各仓库取来源 |
+| 文档站 | 随后端仓库，Kun 的文档改为同仓来源 | 继续用 Rspress，站点搭在 `jiangxin`（已定）。现在聚合四个仓库的框架级文档，各框架仓库的按钉住的提交取来源（做法是提议）。原文档站里的组件页、API 参考与示例迁不迁进来、怎么并，待定 |
 | 决策记录 | 原 Qian 的保留编号，原 Kun 的移入子目录，新的接着编 | 现有的不变。提议跨框架的新决策记在 `jiangxin`，各框架自己的记在各自仓库 |
 | 任务文件与看板 | 整体搬进后端仓库 | 待定，倾向任务跟代码走，各仓库各有任务目录，`jiangxin` 放汇总看板。见[协作约定](07-governance.md) |
 | 前端包的作用域 | `@idadawn/qian-<原名>` | GitHub Packages 要求包的作用域与所有者同名。提议 `@cavailab/qian-<原名>`，名字的其余部分不变 |

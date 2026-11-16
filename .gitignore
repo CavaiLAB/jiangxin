@@ -1,0 +1,10 @@
+# 文档站的生成物：首页取自 README.md，frameworks/ 取自各框架仓库钉住的版本。见 website/README.md
+/docs/index.md
+/docs/frameworks/
+
+# 文档站的依赖、缓存与构建产物
+node_modules/
+/website/.cache/
+/website/doc_build/
+
+.DS_Store
