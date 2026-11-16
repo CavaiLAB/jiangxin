@@ -1,0 +1,15 @@
+[
+  { "type": "file", "name": "index", "label": "总览" },
+  { "type": "section-header", "label": "平台" },
+  "01-vision",
+  "02-architecture",
+  "03-plugin-model",
+  "04-agent-collaboration",
+  "05-repositories",
+  "06-roadmap",
+  "07-governance",
+  "08-industrial-forms",
+  "glossary",
+  { "type": "dir-section-header", "name": "decisions", "label": "决策记录" },
+  { "type": "dir-section-header", "name": "frameworks", "label": "三个框架" }
+]

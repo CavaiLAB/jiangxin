@@ -1,6 +1,6 @@
 # AGENTS.md：给编码代理的入口说明
 
-这个仓库是**匠心智能体平台**的主页与总览：理念、总体架构、插件模型、Agent 协同、仓库归属、路线、协作约定、三种形态、平台级裁定。目前只有文档，没有代码。
+这个仓库是**匠心智能体平台**的主页与总览：理念、总体架构、插件模型、Agent 协同、仓库归属、路线、协作约定、三种形态、平台级裁定。目前只有文档和文档站的工具（`website/`），没有产品代码。
 
 ## 先读什么
 
@@ -19,3 +19,12 @@
 - 代码还在原仓库：后端在 `idadawn/kun` 与 `idadawn/qian`，前端在 `idadawn/qian`，Agent 引擎在 iClaw 仓库。要改代码去原仓库，按那边的 `AGENTS.md` 办。原仓库的 `AGENTS.md` 里，合并后的仓库与总名还是修订之前的写法，这两项以本仓库的[平台级裁定](docs/decisions/2026-11-17-platform.md)为准。
 - 改了一处口径，把引用它的其他文档一起改掉：三个框架仓库的 README 都引用这里的名称与分工。
 - 改动走分支和 PR，不直接推 `main`。建仓期间的初始文档除外，见[协作约定](docs/07-governance.md)第 2 节。
+
+## 文档站
+
+`website/` 是用 Rspress 搭的文档站，把本仓库与三个框架仓库的文档聚到一起。用法与约束见 [website/README.md](website/README.md)。
+
+- `docs/index.md` 与 `docs/frameworks/` 是生成物，不进 git，不要手改。首页改根目录的 `README.md`，框架的文档去各框架仓库改。
+- 改了 `README.md` 或 `docs/` 下的文档，在 `website/` 下跑 `pnpm build`：死链和失效的锚点会让构建失败。
+- `docs/` 顶层新增页面，在 `docs/_meta.json` 里登记。
+- 改了 `website/scripts/`，跑 `pnpm test` 与 `pnpm typecheck`。
