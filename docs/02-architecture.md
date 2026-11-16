@@ -161,5 +161,6 @@ SanYuanAgent 要提供给工站、产线、工厂三级使用（已定）。三�
 | 模型服务 | Higress 与 GPUStack |
 | 运行与交付 | Kubernetes（K3s）、Argo CD、Kustomize、Harbor |
 | 可观测 | OpenTelemetry |
+| 文档站 | Rspress（继续使用，已定） |
 
 选型跟着来源仓库走，迁入过程中不借机更换。
