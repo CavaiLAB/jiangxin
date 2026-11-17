@@ -15,7 +15,7 @@
 | [qian](https://github.com/CavaiLAB/qian) | 前端框架 | TypeScript |
 | [sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | 智能体引擎 | Python |
 
-四个仓库已于 2026-11-17 改为公开。SanYuanAgent 的核心已于同日带历史迁入 `sanyuan-agent`；前端的框架库也已带历史导入 `qian`，名字还没有改；`kun` 目前只有文档，`jiangxin` 只有文档和文档站的工具。
+四个仓库已于 2026-11-17 改为公开。SanYuanAgent 的核心已于同日带历史迁入 `sanyuan-agent`；前端的框架库也已带历史导入 `qian`，名字还没有改；两个原仓库 `idadawn/kun` 与 `idadawn/qian` 也已带历史导入 `kun` 的过渡目录，还没有整理和归并；`jiangxin` 只有文档和文档站的工具。
 
 ## 2 现有代码去哪
 
@@ -84,7 +84,7 @@ flowchart LR
 
 | 事项 | 蓝图的写法 | 现在的情况与提议 |
 |---|---|---|
-| 合并后的仓库 | `idadawn/kun`，把原 Qian 整棵树带历史导入它的一个子目录 | Kun 的家是 `CavaiLAB/kun`，迁移现在开始（已定，P20）。提议两个原仓库都带历史导入，导入后归档为只读；怎么分批见 `kun` 仓库的迁移计划 |
+| 合并后的仓库 | `idadawn/kun`，把原 Qian 整棵树带历史导入它的一个子目录 | Kun 的家是 `CavaiLAB/kun`，迁移现在开始（已定，P20）。两个原仓库已于 2026-11-17 带历史导入；提议原仓库冻结、做完最后一次同步之后归档为只读；怎么分批见 `kun` 仓库的迁移计划 |
 | 前端 | 留在后端仓库的前端工作区里，最后一批更名 | 前端有自己的仓库，现在开始迁入、在迁移中更名（已定，P21），不再等后端的最后一批 |
 | TypeScript 运行时、前端插件开发包、外壳工具包 | 和前端在同一个工作区 | 提议随 `qian` |
 | 命令行与声明式表面的校验库 | 同上 | 提议留在 `kun`：两者不依赖任何前端包，蓝图把命令行算在 Kun 的定位里 |
@@ -110,7 +110,7 @@ flowchart LR
 
 ## 6 旧仓库与旧地址
 
-- `idadawn/kun`、`idadawn/qian`：迁入完成之前照常开发；迁完之后归档为只读，说明文档指向新仓库。
+- `idadawn/kun`、`idadawn/qian`：已带历史导入 `kun`。归档之前怎么收口、什么时候冻结，以 `kun` 仓库的迁移计划为准；归档为只读之后，说明文档指向新仓库。
 - iClaw 仓库：只删去引擎目录并指向新仓库，其余部分的去向待定，见 2.4 节。
 - 旧文档和任务文件里的 PR 编号：迁入时改写成带仓库名的完整形式，例如 `idadawn/qian#123`，避免和新仓库的编号混淆。
 - `CavaiLAB/kun` 这个地址：2026-10 Kun 仓库迁到 `idadawn/kun` 之后，这个地址一直跳转过去。新的 `CavaiLAB/kun` 建立之后跳转失效。还在用旧地址取 Kun 源码的地方，要改成 `idadawn/kun`。
