@@ -27,7 +27,7 @@ test('不进站点的文件没有站点路径', () => {
   assert.equal(sitePathOf({ repo: 'jiangxin', path: 'AGENTS.md' }, frameworks), null);
   assert.equal(sitePathOf({ repo: 'kun', path: 'src/Kun.Core/Foo.cs' }, frameworks), null);
   assert.equal(sitePathOf({ repo: 'kun', path: 'docs/' }, frameworks), null);
-  assert.equal(sitePathOf({ repo: 'iclaw', path: 'README.md' }, frameworks), null);
+  assert.equal(sitePathOf({ repo: 'not-a-framework', path: 'README.md' }, frameworks), null);
 });
 
 test('认出指向本组织仓库主干上文件的 GitHub 地址', () => {
