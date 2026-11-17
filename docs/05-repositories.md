@@ -15,7 +15,7 @@
 | [qian](https://github.com/CavaiLAB/qian) | 前端框架 | TypeScript |
 | [sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | 智能体引擎 | Python |
 
-四个仓库已于 2026-11-17 改为公开。目前只有文档，`jiangxin` 另有文档站的工具；代码从 SanYuanAgent 的核心开始迁入。
+四个仓库已于 2026-11-17 改为公开。SanYuanAgent 的核心已于同日带历史迁入 `sanyuan-agent`；其余仓库目前只有文档，`jiangxin` 另有文档站的工具。
 
 ## 2 现有代码去哪
 
