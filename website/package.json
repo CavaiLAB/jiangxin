@@ -1,0 +1,34 @@
+{
+  "name": "jiangxin-website",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.9.1",
+  "scripts": {
+    "sync": "node scripts/sync.ts",
+    "sync:update": "node scripts/sync.ts --update",
+    "dev": "node scripts/sync.ts && rspress dev",
+    "build": "node scripts/sync.ts && rspress build",
+    "preview": "rspress preview",
+    "site:publish": "pnpm build && bash scripts/publish.sh doc_build",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node --test scripts/site-map.test.ts scripts/diagrams.test.ts && bash scripts/publish.test.sh"
+  },
+  "dependencies": {
+    "@mdx-js/react": "3.1.1",
+    "@rspress/core": "2.0.23",
+    "pele": "1.13.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.1",
+    "mdast-util-from-markdown": "2.1.0",
+    "mdast-util-gfm": "3.1.0",
+    "micromark-extension-gfm": "3.0.0",
+    "typescript": "6.0.3"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}

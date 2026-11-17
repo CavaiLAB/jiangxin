@@ -1,0 +1,7 @@
+[
+  { "text": "总览", "link": "/", "activeMatch": "^/(index(\\.html)?)?$" },
+  { "text": "平台", "link": "/01-vision", "activeMatch": "^/(\\d\\d-|glossary|decisions/)" },
+  { "text": "Kun", "link": "/frameworks/kun/", "activeMatch": "^/frameworks/kun/" },
+  { "text": "Qian", "link": "/frameworks/qian/", "activeMatch": "^/frameworks/qian/" },
+  { "text": "SanYuanAgent", "link": "/frameworks/sanyuan-agent/", "activeMatch": "^/frameworks/sanyuan-agent/" }
+]
