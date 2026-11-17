@@ -57,7 +57,7 @@
 | 框架 | 版本 | 发布位置 |
 |---|---|---|
 | Kun | 一条日历版本线（已定） | 内核档发 nuget.org；平台档在正式对外发布之前只发 GitHub Packages，之后全族上 nuget.org（已定） |
-| Qian | 首发 10 个包统一 0.2.0（已定，2026-11-17）。之后 8 个层包同一个版本号，TypeScript 运行时与前端插件开发包各自定版本；10 个包要不要锁成同一版本，待定 | GitHub Packages（`https://npm.pkg.github.com`，作用域 `@cavailab`），包公开（已定，2026-11-17）；从这个包源装公开包也要带令牌。新名字的包还没有发布，出处与发布步骤见 qian 仓库的[迁移与更名](https://github.com/CavaiLAB/qian/blob/main/docs/migration.md)第 1、11 节 |
+| Qian | 首发 10 个包统一 0.2.0（已定，2026-11-17）。之后 8 个层包同一个版本号，TypeScript 运行时与前端插件开发包各自定版本；10 个包要不要锁成同一版本，待定 | GitHub Packages（`https://npm.pkg.github.com`，作用域 `@cavailab`；已定，2026-11-17），0.2.0 已于 2026-11-17 发布。可见性定为公开（已定，2026-11-17），但发布出来的 10 个包现在是私有的，要在各包的设置页逐个改为公开，改了不能回退；改好之前，装包要有读这些包的权限。从这个包源装包，公开的也要带令牌。出处与发布步骤见 qian 仓库的[迁移与更名](https://github.com/CavaiLAB/qian/blob/main/docs/migration.md)第 1、11 节 |
 | SanYuanAgent | 待定 | 待定 |
 
 哪个版本的 Kun 配哪个版本的 Qian 与 SanYuanAgent，由 `jiangxin` 维护一张版本矩阵。提议。
