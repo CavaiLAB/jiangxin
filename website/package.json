@@ -12,14 +12,14 @@
     "preview": "rspress preview",
     "site:publish": "pnpm build && bash scripts/publish.sh doc_build",
     "typecheck": "tsc -p tsconfig.json",
-    "test": "node --test scripts/site-map.test.ts && bash scripts/publish.test.sh"
+    "test": "node --test scripts/site-map.test.ts scripts/diagrams.test.ts && bash scripts/publish.test.sh"
   },
   "dependencies": {
     "@mdx-js/react": "3.1.1",
     "@rspress/core": "2.0.23",
+    "pele": "1.13.0",
     "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "rspress-plugin-mermaid": "1.0.3"
+    "react-dom": "19.3.0"
   },
   "devDependencies": {
     "@types/node": "24.19.1",

@@ -68,6 +68,22 @@ pnpm sync:update
 - 本仓库的 `docs/index.md` 与 `docs/frameworks/` 这两个名字留给生成物。框架仓库的 `docs/` 下也不要有 `index.md`，它会和 README 在站点里撞成同一页。
 - 本仓库 `docs/` 里的文档要指向根目录的 `README.md` 时，写完整的 GitHub 地址。
 
+## 图
+
+图用 Mermaid 语法写在 `` ```mermaid `` 代码块里。同一份源码有两处渲染：
+
+| 在哪里看 | 谁渲染 |
+|---|---|
+| GitHub 上 | GitHub 自己 |
+| 站点上 | 构建时用 [Pele](https://github.com/obsidianmd/pele) 渲染成静态 SVG，页面不带图表脚本 |
+
+两边排出来的样子不一样。写图的时候以意思清楚为准，不必为了某一边的排法去调节点的顺序。
+
+- 颜色与字体跟着站点的主题走，亮色暗色自动切换。对应关系在 `styles/diagrams.css`。
+- 图按正文一栏的宽度排版，横排的图太宽时会改成竖排。窗口窄的时候图先缩小，缩到原大小的四分之三为止，再窄就横向滚动。这几个数在 `scripts/diagrams.ts` 的开头。
+- 图画不出来会让 `pnpm build` 失败，报出是哪个文件的第几行。Pele 对齐的是 Mermaid 12.1 的语法，GitHub 上能显示的写法它不一定都认。
+- 改了图，跑一次 `pnpm dev` 或 `pnpm build`，看看站点上的样子。
+
 ## 导航与侧栏
 
 - 顶部导航在 `docs/_nav.json`，侧栏在 `docs/_meta.json`。
@@ -127,6 +143,10 @@ pnpm typecheck
 | `sync.ts` | 同步：取回各框架仓库钉住的版本，生成首页与 `docs/frameworks/` |
 | `site-map.ts` | 仓库里的文件对应站点里的哪个页面，链接怎么改写 |
 | `remark-repo-links.ts` | 构建时把 `docs/` 里指向别的仓库文档的地址改成站内的 |
+| `diagrams.ts` | 把 Mermaid 语法的图渲染成静态 SVG；排版宽度这几个参数在这里 |
+| `remark-diagrams.ts` | 构建时把 `` ```mermaid `` 代码块换成渲染好的图 |
 | `sources.ts` | 读写 `sources.json` |
 | `publish.sh` | 把构建产物发布到 `docs-site` 分支；`publish.test.sh` 是它的自测，用一个临时的假远端跑 |
 | `setup-ci-keys.sh` | 给 CI 配读三个框架仓库用的只读钥匙 |
+
+图表的样式在 `styles/diagrams.css`。

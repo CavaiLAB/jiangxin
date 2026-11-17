@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from '@rspress/core';
-import mermaid from 'rspress-plugin-mermaid';
+import { remarkDiagrams } from './scripts/remark-diagrams.ts';
 import { remarkRepoLinks } from './scripts/remark-repo-links.ts';
 import { HOME_REPO, ORG } from './scripts/site-map.ts';
 import { readSources } from './scripts/sources.ts';
@@ -29,9 +29,14 @@ export default defineConfig({
   markdown: {
     // 死链与失效的锚点在构建时报错
     link: { checkDeadLinks: true, checkAnchors: true },
-    remarkPlugins: [[remarkRepoLinks, { docsDir, frameworks }]],
+    remarkPlugins: [
+      [remarkRepoLinks, { docsDir, frameworks }],
+      // ```mermaid 代码块在构建时渲染成静态 SVG，页面不带图表脚本
+      [remarkDiagrams, { docsDir }],
+    ],
   },
-  plugins: [mermaid({ mermaidConfig: { securityLevel: 'strict' } })],
+  // 图表的颜色与字体接到站点的主题上
+  globalStyles: path.join(here, 'styles', 'diagrams.css'),
   // 不用持久的构建缓存：缓存命中的页面不会重新编译，指向它的失效锚点就查不出来。
   // 站点很小，每次全量构建只要一两秒。
   builderConfig: { performance: { buildCache: false } },
