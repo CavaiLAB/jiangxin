@@ -19,7 +19,7 @@
 
 ## 2 现有代码去哪
 
-下面各表的「现在的位置」指来源仓库里的位置。`idadawn/kun` 与 `idadawn/qian` 已于 2026-11-17 归档为只读，内容已迁入 `kun`：原 Kun 已提到仓库根（它的文档暂留在过渡目录 `_import/kun/docs/`），原 Qian 在过渡目录 `_import/qian/` 下。
+下面各表的「现在的位置」指来源仓库里的位置。`idadawn/kun` 与 `idadawn/qian` 已于 2026-11-17 归档为只读，内容已迁入 `kun`：原 Kun 已提到仓库根，它的文档与决策记录也已整理进 `docs/`；原 Qian 在过渡目录 `_import/qian/` 下。
 
 ### 2.1 并：两个后端并成 Kun
 
