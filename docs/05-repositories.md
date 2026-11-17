@@ -15,7 +15,7 @@
 | [qian](https://github.com/CavaiLAB/qian) | 前端框架 | TypeScript |
 | [sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | 智能体引擎 | Python |
 
-四个仓库已于 2026-11-17 改为公开。SanYuanAgent 的核心已于同日带历史迁入 `sanyuan-agent`；前端的框架库也已带历史导入 `qian` 并由 yue 更名为 qian，新名字的包还没有发布；两个原仓库 `idadawn/kun` 与 `idadawn/qian` 也已带历史导入 `kun` 的过渡目录，还没有整理和归并；`jiangxin` 只有文档和文档站的工具。
+四个仓库已于 2026-11-17 改为公开。SanYuanAgent 的核心已于同日带历史迁入 `sanyuan-agent`；前端的框架库也已带历史导入 `qian`，由 yue 更名为 qian，并以新名字发布了 0.2.0；两个原仓库 `idadawn/kun` 与 `idadawn/qian` 也已带历史导入 `kun` 的过渡目录，还没有整理和归并；`jiangxin` 只有文档和文档站的工具。
 
 ## 2 现有代码去哪
 
@@ -98,7 +98,7 @@ flowchart LR
 | 文档站 | 随后端仓库，Kun 的文档改为同仓来源 | 继续用 Rspress，站点搭在 `jiangxin`，部署在内网（已定）。现在聚合四个仓库的框架级文档，各框架仓库的按钉住的提交取来源（做法是提议）。原文档站先留在后端仓库（已定，前端只迁框架库）；它的组件页、API 参考与示例迁不迁进来、怎么并，待定 |
 | 决策记录 | 原 Qian 的保留编号，原 Kun 的移入子目录，新的接着编 | 现有的不变。提议跨框架的新决策记在 `jiangxin`，各框架自己的记在各自仓库 |
 | 任务文件与看板 | 整体搬进后端仓库 | 待定，倾向任务跟代码走，各仓库各有任务目录，`jiangxin` 放汇总看板。见[协作约定](07-governance.md) |
-| 前端包的作用域 | `@idadawn/qian-<原名>` | GitHub Packages 要求包的作用域与所有者同名。更名时已用 `@cavailab/qian-<原名>`，名字的其余部分不变；新名字的包还没有发布 |
+| 前端包的作用域 | `@idadawn/qian-<原名>` | GitHub Packages 要求包的作用域与所有者同名。更名时已用 `@cavailab/qian-<原名>`，名字的其余部分不变；0.2.0 已用新名字发布 |
 | 平台档 NuGet 包的私有包源 | 在原所有者名下 | 跟所有者走，改到 CavaiLAB 名下 |
 | 指向 `idadawn/qian` 的地址与历史 PR 编号 | 地址改指 `idadawn/kun`；原 Qian 的历史编号改写成带仓库名的形式 | 地址改指新仓库；原 Kun 自己的历史编号也要改写成带仓库名的形式 |
 | 平台的名字 | 平台发行版不单独起名，总名另议 | 定名「匠心智能体平台」（已定） |
