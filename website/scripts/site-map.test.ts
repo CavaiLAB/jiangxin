@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { parseRepoFileUrl, rewriteLinks, rewriteUrl, sitePathOf } from './site-map.ts';
+import { missingFromMeta, parseRepoFileUrl, rewriteLinks, rewriteUrl, sitePathOf } from './site-map.ts';
 import type { RepoFile, RewriteContext } from './site-map.ts';
 
 const frameworks = ['kun', 'qian', 'sanyuan-agent'];
@@ -181,4 +181,27 @@ test('只改链接地址，其余原样', () => {
 test('没有要改的链接时原文不变', () => {
   const source = '见 [总览](https://github.com/CavaiLAB/jiangxin) 与 [本页](#现状)。\n';
   assert.equal(rewriteLinks(source, () => null), source);
+});
+
+// ---------- 侧栏 ----------
+
+test('_meta.json 里漏列的条目', () => {
+  const meta = [
+    { type: 'file', name: 'index', label: '总览' },
+    { type: 'section-header', label: '平台' },
+    '01-vision',
+    'glossary.md',
+    { type: 'dir-section-header', name: 'decisions', label: '决策记录' },
+  ];
+  assert.deepEqual(missingFromMeta(meta, ['index', '01-vision', 'glossary', 'decisions']), []);
+  assert.deepEqual(missingFromMeta(meta, ['index', '01-vision', '02-architecture', 'decisions', 'frameworks']), ['02-architecture', 'frameworks']);
+  // 框架仓库的写法：一串文件名
+  assert.deepEqual(missingFromMeta(['architecture', 'migration'], ['architecture', 'migration']), []);
+  assert.deepEqual(missingFromMeta(['architecture', 'migration'], ['architecture', 'sdk', 'migration']), ['sdk']);
+  assert.deepEqual(missingFromMeta([], ['sdk']), ['sdk']);
+});
+
+test('_meta.json 不是数组时报错', () => {
+  assert.throws(() => missingFromMeta({ items: [] }, ['sdk']), /要是一个数组/);
+  assert.throws(() => missingFromMeta(null, []), /要是一个数组/);
 });

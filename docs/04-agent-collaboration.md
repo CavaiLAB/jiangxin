@@ -65,6 +65,8 @@
 
 工站、产线、工厂三级智能体之间的往来也算协同：工厂一级把任务分派给产线与工站的智能体，再按执行结果调整。这一类往来的审核是否与人和人的 Agent 之间同样对待，见第 9 节的待定；三种形态见[三种形态](08-industrial-forms.md)。
 
+设备上的智能体经同一个信箱收发。连接由设备发起；断网时发给它的消息在平台一侧等着，联网后再取。见 SanYuanAgent 的[接入平台：与 Kun 的交互](https://github.com/CavaiLAB/sanyuan-agent/blob/main/docs/platform.md)。
+
 ## 4 人审
 
 ### 4.1 消息的状态

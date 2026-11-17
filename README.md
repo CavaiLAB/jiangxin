@@ -38,9 +38,9 @@
 
 | 框架 | 角色 | 技术栈 | 仓库 | 来源 | 代码现在在哪 |
 |---|---|---|---|---|---|
-| **Kun** | 企业级后端框架：租户、身份、权限、数据、事件、审计、网关、组件运行时与能力目录 | .NET 10 | [CavaiLAB/kun](https://github.com/CavaiLAB/kun) | 原 Kun 框架与原 Qian 平台的后端归并而成 | `idadawn/kun` 与 `idadawn/qian` |
+| **Kun** | 企业级后端框架：租户、身份、权限、数据、事件、审计、网关、组件运行时与能力目录；模型服务也由它提供 | .NET 10 | [CavaiLAB/kun](https://github.com/CavaiLAB/kun) | 原 Kun 框架与原 Qian 平台的后端归并而成 | `idadawn/kun` 与 `idadawn/qian` |
 | **Qian** | 前端框架：设计令牌、组件库、应用外壳、微前端、由 Schema 驱动的界面 | TypeScript、React | [CavaiLAB/qian](https://github.com/CavaiLAB/qian) | 现名 yue，在后端归并的最后一批更名 | `idadawn/qian` 的前端工作区 |
-| **SanYuanAgent** | 智能体引擎：推理循环、工具、技能、记忆、沙箱、模型路由 | Python 3.12 | [CavaiLAB/sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | iClaw 的 Python Agent 引擎，原名 NeuroAgent | iClaw 仓库 |
+| **SanYuanAgent** | 智能体引擎，一个独立运行的 SDK：推理循环、工具、技能、记忆、沙箱、模型路由。云上、桌面和机器人这类边缘设备都要用到它 | Python 3.12 | [CavaiLAB/sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | iClaw 的 Python Agent 引擎，原名 NeuroAgent | iClaw 仓库 |
 
 三个框架各用一种主语言、各占一个仓库，彼此只经[契约](docs/02-architecture.md#7-契约)和发布出来的包往来，不做跨仓库的源码引用。
 
@@ -54,7 +54,7 @@ flowchart TB
   Q["Qian 前端<br/>应用外壳、组件库、审核收件箱"]
   K["Kun 后端<br/>网关、租户、身份、权限、数据、事件、审计<br/>组件运行时、能力目录、Agent 协同（规划）"]
   S["SanYuanAgent 智能体引擎<br/>推理循环、工具、技能、记忆、沙箱"]
-  M["模型服务网关"]
+  M["模型服务<br/>由 Kun 提供；设备上可以另有本机小模型"]
   E["物与外部系统<br/>业务系统、数据源、设备、文档"]
 
   P --> Q
@@ -65,6 +65,8 @@ flowchart TB
   K -->|"连接器"| E
   S -->|"MCP、工具"| E
 ```
+
+SanYuanAgent 是独立运行的 SDK（已定）。提议：不接平台也能运行；装在设备上时只向外连到平台；设备上有本机模型时，断网后本机的活照干。见[总体架构](docs/02-architecture.md)第 5 节。
 
 ## 四条主线
 
