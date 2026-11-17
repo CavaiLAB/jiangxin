@@ -114,7 +114,7 @@ pnpm site:publish
 
 `.github/workflows/docs-site.yml`：每个 PR 上跑类型检查、脚本自测和构建，死链与失效的锚点会让它失败；`main` 上再加发布。
 
-构建要读 `kun`、`qian`、`sanyuan-agent` 三个私有仓库。每个仓库有一把只读 deploy key，私钥存成本仓库的 Actions 密钥：`SOURCES_KEY_KUN`、`SOURCES_KEY_QIAN`、`SOURCES_KEY_SANYUAN_AGENT`。配置和更换都用这个脚本：
+构建要读 `kun`、`qian`、`sanyuan-agent` 三个仓库。它们建仓时是私有的，所以每个仓库配了一把只读 deploy key；仓库 2026-11-17 改为公开之后，构建照旧走这些 key。私钥存成本仓库的 Actions 密钥：`SOURCES_KEY_KUN`、`SOURCES_KEY_QIAN`、`SOURCES_KEY_SANYUAN_AGENT`。配置和更换都用这个脚本：
 
 ```bash
 bash website/scripts/setup-ci-keys.sh
