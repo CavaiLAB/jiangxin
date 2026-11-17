@@ -84,7 +84,7 @@ SanYuanAgent 是这三种形态的大脑，要能提供给工站、产线、工�
 | 专业应用（排程、质检等）的统一入口 | Kun 的组件与能力目录：应用作为组件装进来，它的能力登记之后供智能体按权限调用；应用本身仍可以独立运行 |
 | 工单与设备数据的接入 | Kun 的连接器与事件 |
 | 身份、权限、审计、人审 | Kun |
-| 模型 | 平台的模型服务由 Kun 提供（已定）。设备上的小模型由设备一侧提供；SanYuanAgent 按策略在两者之间选 |
+| 模型 | 平台的模型服务由 Kun 提供（已定）。提议：设备上的小模型由设备一侧提供，SanYuanAgent 按策略在两者之间选 |
 | 各级的人机界面：工单与意图的输入、过程展示、审核 | Qian |
 | 具身大脑、工控小脑、本体与电气；数字孪生、调度优化；物理 AI 研发底座 | 平台之外的专业系统，经工具、MCP 或连接器与平台往来。实时控制不经过智能体 |
 
@@ -96,11 +96,11 @@ SanYuanAgent 是这三种形态的大脑，要能提供给工站、产线、工�
 
 | 层级 | 运行环境 | 带来的要求 |
 |---|---|---|
-| 工站 | 贴近设备，资源受限，可能断网 | 装上就能用（已定）：只装最小的一份就能运行；模型用平台的还是本机的由策略定，断网时退到本机小模型；与感知、控制一侧经工具或 MCP 对接 |
+| 工站 | 贴近设备，资源受限，可能断网 | 装上就能用（已定）。提议：只装最小的一份就能运行；模型用平台的还是本机的由策略定，有本机小模型时断网退到它；与感知、控制一侧经工具或 MCP 对接 |
 | 产线 | 产线一级的服务器 | 把排程、质检等专业应用当工具调用；与孪生、调度对接 |
 | 工厂 | 集群 | 多智能体的分派与协同；与平台的身份、权限、审计、人审对接 |
 
-引擎的核心现在可以脱离服务层单独安装运行，这是往工站一级放的基础。离「装上就能用」还差什么、设备上的引擎怎么接平台、怎么用模型，见 SanYuanAgent 的[独立运行的 SDK](https://github.com/CavaiLAB/sanyuan-agent/blob/main/docs/sdk.md)、[接入平台：与 Kun 的交互](https://github.com/CavaiLAB/sanyuan-agent/blob/main/docs/platform.md)、[与模型服务的交互](https://github.com/CavaiLAB/sanyuan-agent/blob/main/docs/models.md)。
+引擎的核心现在可以脱离服务层单独安装，这是往工站一级放的基础。离「装上就能用」还差什么、设备上的引擎怎么接平台、怎么用模型，见 SanYuanAgent 的[独立运行的 SDK](https://github.com/CavaiLAB/sanyuan-agent/blob/main/docs/sdk.md)、[接入平台：与 Kun 的交互](https://github.com/CavaiLAB/sanyuan-agent/blob/main/docs/platform.md)、[与模型服务的交互](https://github.com/CavaiLAB/sanyuan-agent/blob/main/docs/models.md)。
 
 ## 8 待定
 
