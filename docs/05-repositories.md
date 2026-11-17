@@ -15,9 +15,11 @@
 | [qian](https://github.com/CavaiLAB/qian) | 前端框架 | TypeScript |
 | [sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | 智能体引擎 | Python |
 
-四个仓库已于 2026-11-17 改为公开。SanYuanAgent 的核心已于同日带历史迁入 `sanyuan-agent`；前端的框架库也已带历史导入 `qian`，由 yue 更名为 qian，并以新名字发布了 0.2.0；两个原仓库 `idadawn/kun` 与 `idadawn/qian` 也已带历史导入 `kun` 的过渡目录，还没有整理和归并；`jiangxin` 只有文档和文档站的工具。
+四个仓库已于 2026-11-17 改为公开。SanYuanAgent 的核心已于同日带历史迁入 `sanyuan-agent`；前端的框架库也已带历史导入 `qian`，由 yue 更名为 qian，并以新名字发布了 0.2.0；两个原仓库 `idadawn/kun` 与 `idadawn/qian` 也已带历史导入 `kun` 的过渡目录，同日归档为只读，还没有整理和归并；`jiangxin` 只有文档和文档站的工具。
 
 ## 2 现有代码去哪
+
+下面各表的「现在的位置」指来源仓库里的位置。`idadawn/kun` 与 `idadawn/qian` 已于 2026-11-17 归档为只读，内容原样在 `kun` 的过渡目录 `_import/kun/`、`_import/qian/` 下。
 
 ### 2.1 并：两个后端并成 Kun
 
@@ -84,13 +86,13 @@ flowchart LR
 
 ## 4 对已接受的合并蓝图的修订
 
-后端的归并有一份合并蓝图：`idadawn/qian` 主干上的 `docs/adr/ADR-023-kun-qian-merge-blueprint.md`，2026-11-17 接受，裁定记在同一仓库的 `pm/tasks/S1-DEC-036.md`（D1–D14）。它按「全部并进一个仓库」来写目标布局：.NET 包、前端工作区、文档站、任务看板、契约、部署清单都在同一个仓库里，合并后的仓库写的是 `idadawn/kun`。
+后端的归并有一份合并蓝图：原 Qian 的 `docs/adr/ADR-023-kun-qian-merge-blueprint.md`，2026-11-17 接受，裁定记在原 Qian 的 `pm/tasks/S1-DEC-036.md`（D1–D14）。两份文件现在在 `kun` 的过渡目录 `_import/qian/` 下，与已归档的 `idadawn/qian` 里的同名文件相同。它按「全部并进一个仓库」来写目标布局：.NET 包、前端工作区、文档站、任务看板、契约、部署清单都在同一个仓库里，合并后的仓库写的是 `idadawn/kun`。
 
-分成四个仓库、迁入 CavaiLAB、不再使用 Yi，是产品负责人同一天的裁定，它们改写了这份已接受的蓝图。修订项已登记为 `idadawn/qian` 的决策任务 S1-DEC-038（随 idadawn/qian#329、idadawn/qian#334 入库）。其中合并后的仓库与前端的去处已定（[平台级裁定](decisions/2026-11-17-platform.md) P20、P21），其余待产品负责人逐项确认。确认并回写之前，`idadawn/qian` 的 `AGENTS.md` 与蓝图里仍是原来的写法。
+分成四个仓库、迁入 CavaiLAB、不再使用 Yi，是产品负责人同一天的裁定，它们改写了这份已接受的蓝图。修订项已登记为决策任务 S1-DEC-038（随 idadawn/qian#329、idadawn/qian#334 入库；原仓库归档后，在 `kun` 的 `_import/qian/pm/tasks/` 下接着改）。其中合并后的仓库与前端的去处已定（[平台级裁定](decisions/2026-11-17-platform.md) P20、P21），其余待产品负责人逐项确认。确认并回写之前，蓝图里没有确认的各项仍是原来的写法。
 
 | 事项 | 蓝图的写法 | 现在的情况与提议 |
 |---|---|---|
-| 合并后的仓库 | `idadawn/kun`，把原 Qian 整棵树带历史导入它的一个子目录 | Kun 的家是 `CavaiLAB/kun`，迁移现在开始（已定，P20）。两个原仓库已于 2026-11-17 带历史导入。按 `kun` 仓库的迁移计划，原仓库冻结之后只再合入写明去处的说明，随即归档为只读，然后做最后一次同步；怎么分批也见那份计划 |
+| 合并后的仓库 | `idadawn/kun`，把原 Qian 整棵树带历史导入它的一个子目录 | Kun 的家是 `CavaiLAB/kun`，迁移现在开始（已定，P20）。两个原仓库已于 2026-11-17 带历史导入，同日冻结、归档为只读，最后一次同步也已合入 `kun`；之后怎么分批整理与归并，见 `kun` 仓库的迁移计划 |
 | 前端 | 留在后端仓库的前端工作区里，最后一批更名 | 前端有自己的仓库，现在开始迁入、在迁移中更名（已定，P21），不再等后端的最后一批。范围只迁框架库（已定，产品负责人 2026-11-17 选定）；框架库已于同日迁入 `qian` 并更名 |
 | TypeScript 运行时、前端插件开发包、外壳工具包 | 和前端在同一个工作区 | 运行时与插件开发包算框架库，已随 `qian`；外壳工具包是应用外壳对接平台的专有接线，留在后端 |
 | 命令行与声明式表面的校验库 | 同上 | 留在后端，随 `kun`：两者不依赖任何前端包，蓝图把命令行算在 Kun 的定位里 |
@@ -116,7 +118,7 @@ flowchart LR
 
 ## 6 旧仓库与旧地址
 
-- `idadawn/kun`、`idadawn/qian`：已带历史导入 `kun`。归档之前怎么收口、什么时候冻结，以 `kun` 仓库的迁移计划为准；归档为只读之后，说明文档指向新仓库。
+- `idadawn/kun`、`idadawn/qian`：已于 2026-11-17 归档为只读，说明文档指向新仓库；归档时的内容已由最后一次同步带进 `kun` 的过渡目录。按提交或版本标签取 Kun 源码的下游，可以继续用 `idadawn/kun`。
 - iClaw 仓库：只删去引擎目录并指向新仓库，其余部分的去向待定，见 2.4 节。
 - 旧文档和任务文件里的 PR 编号：迁入时改写成带仓库名的完整形式，例如 `idadawn/qian#123`，避免和新仓库的编号混淆。
 - `CavaiLAB/kun` 这个地址：2026-10 Kun 仓库迁到 `idadawn/kun` 之后，这个地址一直跳转过去。新的 `CavaiLAB/kun` 建立之后跳转失效。还在用旧地址取 Kun 源码的地方，要改成 `idadawn/kun`。
