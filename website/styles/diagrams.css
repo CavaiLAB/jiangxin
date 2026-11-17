@@ -1,0 +1,29 @@
+/*
+ * 图表：scripts/remark-diagrams.ts 在构建时把 Mermaid 代码块渲染成的静态 SVG。
+ * 渲染器只输出 CSS 变量，颜色与字体在这里接到站点的主题上，亮色暗色自动跟随。
+ */
+.diagram {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+
+  --pele-bg: var(--rp-c-bg);
+  --pele-fg: var(--rp-c-text-1);
+  --pele-muted: var(--rp-c-text-2);
+  --pele-line: color-mix(in srgb, var(--rp-c-text-1) 50%, var(--rp-c-bg));
+  --pele-border: color-mix(in srgb, var(--rp-c-brand) 45%, var(--rp-c-bg));
+  --pele-surface: color-mix(in srgb, var(--rp-c-brand) 7%, var(--rp-c-bg));
+  --pele-surface-alt: var(--rp-c-bg-soft);
+  --pele-accent: var(--rp-c-brand);
+  --pele-font: var(--rp-font-family-base);
+  --pele-radius: 6px;
+}
+
+/*
+ * 正文一栏比图窄的时候先缩小（SVG 自带 max-width: 100%）。
+ * 缩到 --diagram-min-width 就不再缩，改成横向滚动，免得字小到看不清。这个宽度由构建时按每张图的大小给出。
+ */
+.diagram > svg {
+  display: block;
+  margin: 0 auto;
+  min-width: var(--diagram-min-width);
+}
