@@ -15,11 +15,11 @@
 | [qian](https://github.com/CavaiLAB/qian) | 前端框架 | TypeScript |
 | [sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | 智能体引擎 | Python |
 
-四个仓库已于 2026-11-17 改为公开。SanYuanAgent 的核心已于同日带历史迁入 `sanyuan-agent`；前端的框架库也已带历史导入 `qian`，由 yue 更名为 qian，并以新名字发布了 0.2.0；两个原仓库 `idadawn/kun` 与 `idadawn/qian` 也已带历史导入 `kun` 的过渡目录，同日归档为只读，还没有整理和归并；`jiangxin` 只有文档和文档站的工具。
+四个仓库已于 2026-11-17 改为公开。SanYuanAgent 的核心已于同日带历史迁入 `sanyuan-agent`；前端的框架库也已带历史导入 `qian`，由 yue 更名为 qian，并以新名字发布了 0.2.0；两个原仓库 `idadawn/kun` 与 `idadawn/qian` 也已带历史迁入 `kun`，同日归档为只读；原 Kun 已提到仓库根，原 Qian 还在过渡目录，归并还没有做；`jiangxin` 只有文档和文档站的工具。
 
 ## 2 现有代码去哪
 
-下面各表的「现在的位置」指来源仓库里的位置。`idadawn/kun` 与 `idadawn/qian` 已于 2026-11-17 归档为只读，内容原样在 `kun` 的过渡目录 `_import/kun/`、`_import/qian/` 下。
+下面各表的「现在的位置」指来源仓库里的位置。`idadawn/kun` 与 `idadawn/qian` 已于 2026-11-17 归档为只读，内容已迁入 `kun`：原 Kun 已提到仓库根（它的文档暂留在过渡目录 `_import/kun/docs/`），原 Qian 在过渡目录 `_import/qian/` 下。
 
 ### 2.1 并：两个后端并成 Kun
 
@@ -118,7 +118,7 @@ flowchart LR
 
 ## 6 旧仓库与旧地址
 
-- `idadawn/kun`、`idadawn/qian`：已于 2026-11-17 归档为只读，说明文档指向新仓库；归档时的内容已由最后一次同步带进 `kun` 的过渡目录。按提交或版本标签取 Kun 源码的下游，可以继续用 `idadawn/kun`。
+- `idadawn/kun`、`idadawn/qian`：已于 2026-11-17 归档为只读，说明文档指向新仓库；归档时的内容已由最后一次同步带进 `kun`。按提交或版本标签取 Kun 源码的下游，可以继续用 `idadawn/kun`。
 - iClaw 仓库：只删去引擎目录并指向新仓库，其余部分的去向待定，见 2.4 节。
 - 旧文档和任务文件里的 PR 编号：迁入时改写成带仓库名的完整形式，例如 `idadawn/qian#123`，避免和新仓库的编号混淆。
 - `CavaiLAB/kun` 这个地址：2026-10 Kun 仓库迁到 `idadawn/kun` 之后，这个地址一直跳转过去。新的 `CavaiLAB/kun` 建立之后跳转失效。还在用旧地址取 Kun 源码的地方，要改成 `idadawn/kun`。
