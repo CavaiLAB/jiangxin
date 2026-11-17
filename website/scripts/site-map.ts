@@ -124,6 +124,23 @@ export function rewriteUrl(url: string, from: RepoFile, ctx: RewriteContext, kin
   return `https://github.com/${ORG}/${target.repo}/blob/${ctx.refOf(target.repo)}/${encodeURI(target.path)}${hash}`;
 }
 
+/**
+ * 一个目录的 _meta.json 漏列了哪些条目。漏列的页面不会出现在侧栏里。
+ *
+ * meta 是 _meta.json 的内容：每一项是文件名（可以带扩展名），或者是带 name 的对象；没有 name 的项（分节标题这类）不算。
+ * entries 是这个目录下该出现在侧栏里的页面名（不带扩展名）与子目录名。
+ */
+export function missingFromMeta(meta: unknown, entries: readonly string[]): string[] {
+  if (!Array.isArray(meta)) throw new Error('_meta.json 要是一个数组');
+  const listed = new Set(
+    meta
+      .map((item: unknown) => (typeof item === 'string' ? item : (item as { name?: unknown } | null)?.name))
+      .filter((name): name is string => typeof name === 'string')
+      .map((name) => name.replace(PAGE, '')),
+  );
+  return entries.filter((name) => !listed.has(name));
+}
+
 interface MarkdownNode {
   type: string;
   url?: string;

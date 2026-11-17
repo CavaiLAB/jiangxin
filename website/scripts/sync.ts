@@ -13,7 +13,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { HOME_REPO, ORG, rewriteLinks, rewriteUrl, sitePathOf } from './site-map.ts';
+import { HOME_REPO, missingFromMeta, ORG, rewriteLinks, rewriteUrl, sitePathOf } from './site-map.ts';
 import type { RepoFile, RewriteContext } from './site-map.ts';
 import { readSources, writeSources } from './sources.ts';
 import type { Framework } from './sources.ts';
@@ -207,23 +207,50 @@ function footer(output: Output, commit: string | undefined): string {
   return `---\n\n*本页取自 [${ORG}/${repo} 的 ${file}](${url})，版本 \`${commit.slice(0, 7)}\`。要改内容，去那个仓库改。*\n\n${comment}`;
 }
 
-/** docs/ 顶层的每个页面与目录都要列在 docs/_meta.json 里，没列的不会出现在侧栏。 */
-function assertSidebarComplete(): void {
-  const meta = JSON.parse(fs.readFileSync(path.join(docsDir, '_meta.json'), 'utf8')) as unknown[];
-  const listed = new Set(
-    meta
-      .map((item) => (typeof item === 'string' ? item : (item as { name?: unknown }).name))
-      .filter((name): name is string => typeof name === 'string')
-      .map((name) => name.replace(PAGE, '')),
-  );
-  const missing = fs
-    .readdirSync(docsDir, { withFileTypes: true })
+/** 一个目录下该出现在侧栏里的条目：页面（不带扩展名）与子目录。以 _ 或 . 开头的和 public 不算。 */
+function sidebarEntries(dir: string): string[] {
+  return fs
+    .readdirSync(dir, { withFileTypes: true })
     .filter((entry) => !/^[_.]/.test(entry.name) && entry.name !== 'public')
     .filter((entry) => entry.isDirectory() || PAGE.test(entry.name))
-    .map((entry) => entry.name.replace(PAGE, ''))
-    .filter((name) => !listed.has(name));
+    .map((entry) => entry.name.replace(PAGE, ''));
+}
+
+/** 读一份 _meta.json，算出它漏列了哪些条目。shown 是报错时怎么称呼这个文件。 */
+function missingInSidebar(file: string, shown: string, entries: string[]): string[] {
+  try {
+    return missingFromMeta(JSON.parse(fs.readFileSync(file, 'utf8')), entries);
+  } catch (error) {
+    throw new SyncError(`${shown} 读不了：${(error as Error).message}`);
+  }
+}
+
+/** docs/ 顶层的每个页面与目录都要列在 docs/_meta.json 里，没列的不会出现在侧栏。 */
+function assertSidebarComplete(): void {
+  const missing = missingInSidebar(path.join(docsDir, '_meta.json'), 'docs/_meta.json', sidebarEntries(docsDir));
   if (missing.length > 0) {
     throw new SyncError(`docs/_meta.json 里没有列出：${missing.join('、')}。没列出的页面不会出现在侧栏里`);
+  }
+}
+
+/**
+ * 框架仓库可以在自己的 docs/ 下放一份 _meta.json，定它的文档在侧栏里的顺序；不放就按文件名排。
+ * 放了就要列全。README 对应的首页是这一组的标题，不用列。
+ */
+function assertFrameworkSidebarsComplete(frameworks: Framework[]): void {
+  for (const fw of frameworks) {
+    const dir = path.join(frameworksDir, fw.repo);
+    const file = path.join(dir, '_meta.json');
+    if (!fs.existsSync(file)) continue;
+    const shown = `${fw.repo} 仓库的 docs/_meta.json`;
+    const missing = missingInSidebar(
+      file,
+      shown,
+      sidebarEntries(dir).filter((name) => name !== 'index'),
+    );
+    if (missing.length > 0) {
+      throw new SyncError(`${shown} 里没有列出：${missing.join('、')}。没列出的页面不会出现在侧栏里，去那个仓库补上`);
+    }
   }
 }
 
@@ -255,6 +282,7 @@ function main(): void {
   if (update) writeSources(sourcesFile, frameworks);
   generate(frameworks, trees);
   assertSidebarComplete();
+  assertFrameworkSidebarsComplete(frameworks);
   console.log(`已生成 docs/index.md 与 docs/frameworks/（${frameworks.map((fw) => `${fw.repo}@${fw.commit.slice(0, 7)}`).join('、')}）`);
 }
 

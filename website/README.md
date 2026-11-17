@@ -88,6 +88,7 @@ pnpm sync:update
 
 - 顶部导航在 `docs/_nav.json`，侧栏在 `docs/_meta.json`。
 - `docs/` 顶层新增页面或目录，要在 `docs/_meta.json` 里登记，没登记的同步时会报错。`decisions/` 下新增的文件自动出现在侧栏里。
+- 框架仓库可以在自己的 `docs/` 下放一份 `_meta.json`，按顺序列出文档的文件名（不带扩展名），定它们在侧栏里的顺序。README 对应的首页是这一组的标题，不用列。放了就要列全，漏列的同步时会报错；不放就按文件名排。
 - 新增一个框架仓库：在 `sources.json` 里加一项，在 `docs/_nav.json` 里加一个导航项；CI 还要给它配一把只读钥匙，在 `scripts/setup-ci-keys.sh` 和工作流里各加一行。
 
 ## 取仓库用的地址

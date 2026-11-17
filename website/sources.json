@@ -3,7 +3,7 @@
     {
       "repo": "kun",
       "label": "Kun",
-      "commit": "babeaeeb3ba42248f404e30c8f8f2bb7985039d0"
+      "commit": "e1d53cd222462964bda913a5a67b65ebf04a1495"
     },
     {
       "repo": "qian",
@@ -13,7 +13,7 @@
     {
       "repo": "sanyuan-agent",
       "label": "SanYuanAgent",
-      "commit": "8186f8f67e805727312bc00f3306afa72674f69c"
+      "commit": "4c8599408ffca7c0078b7fae1f15a329cfec65cd"
     }
   ]
 }
