@@ -39,7 +39,7 @@
 | 框架 | 角色 | 技术栈 | 仓库 | 来源 | 代码现在在哪 |
 |---|---|---|---|---|---|
 | **Kun** | 企业级后端框架：租户、身份、权限、数据、事件、审计、网关、组件运行时与能力目录；模型服务也由它提供 | .NET 10 | [CavaiLAB/kun](https://github.com/CavaiLAB/kun) | 原 Kun 框架与原 Qian 平台的后端归并而成 | `idadawn/kun` 与 `idadawn/qian` |
-| **Qian** | 前端框架：设计令牌、组件库、应用外壳、微前端、由 Schema 驱动的界面 | TypeScript、React | [CavaiLAB/qian](https://github.com/CavaiLAB/qian) | 现名 yue，在后端归并的最后一批更名 | `idadawn/qian` 的前端工作区 |
+| **Qian** | 前端框架：设计令牌、组件库、应用外壳、微前端、由 Schema 驱动的界面 | TypeScript、React | [CavaiLAB/qian](https://github.com/CavaiLAB/qian) | 现名 yue，迁入时更名（2026-11-17 定现在开始） | `idadawn/qian` 的前端工作区 |
 | **SanYuanAgent** | 智能体引擎，一个独立运行的 SDK：推理循环、工具、技能、记忆、沙箱、模型路由。云上、桌面和机器人这类边缘设备都要用到它 | Python 3.12 | [CavaiLAB/sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | iClaw 的 Python Agent 引擎，原名 NeuroAgent | iClaw 仓库 |
 
 三个框架各用一种主语言、各占一个仓库，彼此只经[契约](docs/02-architecture.md#7-契约)和发布出来的包往来，不做跨仓库的源码引用。
@@ -81,8 +81,8 @@ SanYuanAgent 是独立运行的 SDK（已定）。提议：不接平台也能运
 |---|---|---|
 | 0 立项 | 建仓库、主页与框架级文档 | 进行中 |
 | 1 治理就位 | 权限与评审规则、任务管理方式、CI 基线；确认对已接受的合并蓝图的修订 | 未开始。修订项已登记，待产品负责人确认 |
-| 2 SanYuanAgent 迁入 | Agent 引擎改名、独立成库 | 未开始 |
-| 3 Kun 归并与 Qian 更名 | 原 Kun 与原 Qian 的后端按合并蓝图归并，包名并为 `Kun.*`；前端在最后一批更名为 Qian（迁入自己仓库的时点待定，提议同一批） | 未开始。合并蓝图已于 2026-11-17 接受 |
+| 2 SanYuanAgent 迁入 | Agent 引擎改名、独立成库 | 2026-11-17 开始，核心先迁；服务层与媒体适配层随后 |
+| 3 Kun 归并与 Qian 更名 | 原 Kun 与原 Qian 的后端按合并蓝图归并，包名并为 `Kun.*`；前端迁入自己的仓库并更名为 Qian | 2026-11-17 定现在开始，后端与前端同时进行。合并蓝图已于同日接受 |
 | 4 协同与生命体 | 个人 Agent、Agent 协同、自然语言构建闭环；三种形态的落地 | 未开始 |
 
 阶段 2 与阶段 3 互不依赖，可以并行。各阶段的进入与完成条件见[路线与迁移](docs/06-roadmap.md)。
