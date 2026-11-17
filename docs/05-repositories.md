@@ -57,9 +57,9 @@
 | `website/` | 文档站，用 Rspress 搭的：组件页、API 参考、示例、设计文档 | 先留在后端，随 `kun`（已定，前端只迁框架库）。继续用 Rspress（已定）。它的组件页怎么取 `qian` 仓库的文档源，由前端计划排成后续任务；内容要不要并进 `jiangxin` 的站点，待定，见第 4 节 |
 | `pm/` | 任务文件与看板 | 待定，见第 4 节 |
 
-### 2.4 拆：iClaw 里的 Agent 引擎
+### 2.4 拆：私有产品里的 Agent 引擎
 
-Python Agent 引擎迁入 `sanyuan-agent`，改名 SanYuanAgent（已定）。那个仓库的其余部分去向待定，不在这次迁入的范围里。
+Python Agent 引擎迁入 `sanyuan-agent`，改名 SanYuanAgent（已定）。那个私有仓库的其余部分去向待定，不在这次迁入的范围里。
 
 ### 2.5 部署
 
@@ -113,12 +113,12 @@ flowchart LR
 
 - 平台的总名定为「匠心智能体平台」，此前的总名 Yi 不再使用。
 - Qian 以前指基于 Kun 的平台层，现在只作前端框架的名字（原 yue）。原来叫 Qian 的后端并入 Kun。
-- iClaw 的 Python Agent 引擎改名 SanYuanAgent。
+- 私有产品里的 Python Agent 引擎改名 SanYuanAgent。
 - 组件 id 前缀 `qian.`、清单与配置的文件名这些运行期字面当作历史字面保留，不再表示产品名；`qian` 命令行与 `@qian/*` 导入名本次不改。
 
 ## 6 旧仓库与旧地址
 
 - `idadawn/kun`、`idadawn/qian`：已于 2026-11-17 归档为只读，说明文档指向新仓库；归档时的内容已由最后一次同步带进 `kun`。按提交或版本标签取 Kun 源码的下游，可以继续用 `idadawn/kun`。
-- iClaw 仓库：只删去引擎目录并指向新仓库，其余部分的去向待定，见 2.4 节。
+- 引擎原来所在的私有仓库：只删去引擎目录并指向新仓库，其余部分的去向待定，见 2.4 节。
 - 旧文档和任务文件里的 PR 编号：迁入时改写成带仓库名的完整形式，例如 `idadawn/qian#123`，避免和新仓库的编号混淆。
 - `CavaiLAB/kun` 这个地址：2026-10 Kun 仓库迁到 `idadawn/kun` 之后，这个地址一直跳转过去。新的 `CavaiLAB/kun` 建立之后跳转失效。还在用旧地址取 Kun 源码的地方，要改成 `idadawn/kun`。
