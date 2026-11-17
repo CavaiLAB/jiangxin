@@ -105,7 +105,7 @@ flowchart LR
 
 - 平台的总名定为「匠心智能体平台」，此前的总名 Yi 不再使用。
 - Qian 以前指基于 Kun 的平台层，现在只作前端框架的名字（原 yue）。原来叫 Qian 的后端并入 Kun。
-- NeuroAgent 改名 SanYuanAgent。
+- iClaw 的 Python Agent 引擎改名 SanYuanAgent。
 - 组件 id 前缀 `qian.`、清单与配置的文件名这些运行期字面当作历史字面保留，不再表示产品名；`qian` 命令行与 `@qian/*` 导入名本次不改。
 
 ## 6 旧仓库与旧地址
