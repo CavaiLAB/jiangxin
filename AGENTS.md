@@ -1,12 +1,12 @@
 # AGENTS.md：给编码代理的入口说明
 
-这个仓库是**匠心智能体平台**的主页与总览：理念、总体架构、插件模型、Agent 协同、仓库归属、路线、协作约定、三种形态、平台级裁定。目前只有文档和文档站的工具（`website/`），没有产品代码。
+这个仓库是**匠心智能体平台**的主页与总览：理念、角色与产品形态、总体架构、插件模型、应用互通、历史系统接入、Agent 协同、仓库归属、路线、协作约定、三种形态、平台级裁定。它同时是组合体：把 Agent 框架与企业级框架拼成一个产品（已定，2026-11-19）。目前只有文档和文档站的工具（`website/`），没有产品代码；组合体里放什么还是提议，见 [docs/05-repositories.md](docs/05-repositories.md) 第 1.1 节。
 
 ## 先读什么
 
-1. [README.md](README.md)：平台是什么，三个框架各管什么。
+1. [README.md](README.md)：平台是什么，两种角色，三个框架各管什么。
 2. [docs/glossary.md](docs/glossary.md)：名字与术语各指什么。
-3. [docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)：产品负责人定了什么。没列在里面的都不是已定。
+3. 两份平台级裁定：[docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)（P1 至 P21）与 [docs/decisions/2026-11-19-platform.md](docs/decisions/2026-11-19-platform.md)（P22 至 P33）：产品负责人定了什么。没列在里面的都不是已定。新的裁定接着编号。
 4. [docs/07-governance.md](docs/07-governance.md)：协作约定。
 
 ## 规则
@@ -17,7 +17,7 @@
 - 说现状的时候写清是「已有」（在来源仓库里已经实现）还是「规划」，不把规划写成已经实现。
 - 本仓库是公开的。不放密钥和内部地址，不放还没修复的安全问题的细节，不放私有仓库的内部实现细节；不放产品清单与建设状态；对私有的来源产品只写可以承接的能力类别，不写功能盘点与差距，也不写它的名字。见[协作约定](docs/07-governance.md)第 11 节。
 - 只写现在的名字和位置：不写前端框架的旧名、旧仓库的地址，不用「原」加框架名指代来源，不讲改名的经过；讲位置写路径或现在的名字。决策记录与历史文档、给使用者的迁移指南、改名与导入工具除外。见[协作约定](docs/07-governance.md)第 11 节。
-- 代码在各框架仓库：后端在 `CavaiLAB/kun`，还没归并的部分在它的过渡目录 `_import/qian/` 下；前端框架库在 `CavaiLAB/qian`；Agent 引擎的核心在 `CavaiLAB/sanyuan-agent`，服务层与媒体适配层还在原来的私有仓库。要改代码去对应的仓库，按那边的 `AGENTS.md` 办。过渡目录里的文件与本仓库的[平台级裁定](docs/decisions/2026-11-17-platform.md)有出入时，以平台级裁定为准。
+- 代码在各框架仓库：后端在 `CavaiLAB/kun`，还没归并的部分在它的过渡目录 `_import/qian/` 下；前端框架库在 `CavaiLAB/qian`；Agent 引擎的核心在 `CavaiLAB/sanyuan-agent`，服务层与媒体适配层还在原来的私有仓库。要改代码去对应的仓库，按那边的 `AGENTS.md` 办。过渡目录里的文件与本仓库的平台级裁定（`docs/decisions/` 下）有出入时，以平台级裁定为准。
 - 改了一处口径，把引用它的其他文档一起改掉：三个框架仓库的 README 都引用这里的名称与分工。
 - 改动走分支和 PR，不直接推 `main`。建仓期间的初始文档除外，见[协作约定](docs/07-governance.md)第 2 节。
 
@@ -30,4 +30,5 @@
 - 图用 Mermaid 语法写在 `` ```mermaid `` 代码块里。站点在构建时把它渲染成静态图，画不出来构建会失败；站点上的排版和 GitHub 上不一样。
 - 合并到 `main` 后 CI 把站点发布到 `docs-site` 分支。那个分支是发布产物，不要在上面提交。
 - `docs/` 顶层新增页面，在 `docs/_meta.json` 里登记。
+- 图片放在 `docs/_images/` 下，用相对路径引用；放在 `docs/` 之外的带不进站点。界面示意图要写明是示意，图里不出现真实的企业、人名与数据。
 - 改了 `website/scripts/`，跑 `pnpm test` 与 `pnpm typecheck`。
