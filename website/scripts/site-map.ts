@@ -116,7 +116,8 @@ export function rewriteUrl(url: string, from: RepoFile, ctx: RewriteContext, kin
   if (kind === 'image') {
     if (absolute) return null;
     if (relative === null) throw new Error(`图片 ${url} 不在 docs/ 下，带不进站点`);
-    return relative + hash;
+    // 图片是当模块引入的：不带 ./ 的路径会被打包器当成包名，到 node_modules 里去找
+    return (relative.startsWith('../') ? relative : `./${relative}`) + hash;
   }
 
   if (relative !== null && site !== null && PAGE.test(site) && (!absolute || ctx.exists(site))) return relative + hash;

@@ -107,9 +107,17 @@ test('相对链接指向不存在的页面时照样改写，让构建去报死�
 
 test('图片：docs/ 下的跟着走，别处的报错', () => {
   const from: RepoFile = { repo: 'kun', path: 'README.md' };
-  assert.equal(rewriteUrl('docs/img/layers.png', from, context(), 'image'), 'img/layers.png');
+  assert.equal(rewriteUrl('docs/img/layers.png', from, context(), 'image'), './img/layers.png', '带上 ./，不然打包器当成包名');
   assert.equal(rewriteUrl('https://example.com/a.png', from, context(), 'image'), null);
   assert.throws(() => rewriteUrl('assets/logo.png', from, context(), 'image'), /带不进站点/);
+});
+
+test('图片：本仓库 README 与 docs/ 里的写法', () => {
+  const readme: RepoFile = { repo: 'jiangxin', path: 'README.md' };
+  assert.equal(rewriteUrl('docs/_images/office.png', readme, context(), 'image'), './_images/office.png');
+  const nested: RepoFile = { repo: 'kun', path: 'docs/guide/start.md' };
+  assert.equal(rewriteUrl('../img/layers.png', nested, context(), 'image'), '../img/layers.png', '往上走的写法不变');
+  assert.equal(rewriteUrl('shot.png', nested, context(), 'image'), './shot.png');
 });
 
 test('不进站点的文件不该拿来改写', () => {
@@ -164,9 +172,9 @@ test('只改链接地址，其余原样', () => {
       '[代码块里的](docs/migration.md)',
       '```',
       '',
-      '![分层](img/layers.png)',
+      '![分层](./img/layers.png)',
       '',
-      '[![分层](img/layers.png)](architecture.md)',
+      '[![分层](./img/layers.png)](architecture.md)',
       '',
       '直接写出来的地址不动：<https://github.com/CavaiLAB/kun/blob/main/docs/migration.md>',
       '',
