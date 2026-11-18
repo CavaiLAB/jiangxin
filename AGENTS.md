@@ -5,7 +5,7 @@
 ## 先读什么
 
 1. [README.md](README.md)：平台是什么，三个框架各管什么。
-2. [docs/glossary.md](docs/glossary.md)：新旧名字各指什么。「Qian」换了所指，不读这张表会误解旧文档。
+2. [docs/glossary.md](docs/glossary.md)：名字与术语各指什么。
 3. [docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)：产品负责人定了什么。没列在里面的都不是已定。
 4. [docs/07-governance.md](docs/07-governance.md)：协作约定。
 
@@ -16,7 +16,8 @@
 - 分清「已定」「提议」「待定」。产品负责人没有裁定的事，不写成已定；需要拍板的问题登记出来，不自行决定。
 - 说现状的时候写清是「已有」（在来源仓库里已经实现）还是「规划」，不把规划写成已经实现。
 - 本仓库是公开的。不放密钥和内部地址，不放还没修复的安全问题的细节，不放私有仓库的内部实现细节；不放产品清单与建设状态；对私有的来源产品只写可以承接的能力类别，不写功能盘点与差距，也不写它的名字。见[协作约定](docs/07-governance.md)第 11 节。
-- 代码在各框架仓库：后端在 `CavaiLAB/kun`。两个原仓库 `idadawn/kun` 与 `idadawn/qian` 已于 2026-11-17 归档为只读，内容都已迁入：原 Kun 已提到仓库根，原 Qian 在过渡目录 `_import/qian/` 下；前端框架库在 `CavaiLAB/qian`；Agent 引擎的核心在 `CavaiLAB/sanyuan-agent`，服务层与媒体适配层还在原来的私有仓库。要改代码去对应的仓库，按那边的 `AGENTS.md` 办。原仓库文件里的写法与本仓库的[平台级裁定](docs/decisions/2026-11-17-platform.md)有出入时，以平台级裁定为准。
+- 只写现在的名字和位置：不写前端框架的旧名、旧仓库的地址，不用「原」加框架名指代来源，不讲改名的经过；讲位置写路径或现在的名字。决策记录与历史文档、给使用者的迁移指南、改名与导入工具除外。见[协作约定](docs/07-governance.md)第 11 节。
+- 代码在各框架仓库：后端在 `CavaiLAB/kun`，还没归并的部分在它的过渡目录 `_import/qian/` 下；前端框架库在 `CavaiLAB/qian`；Agent 引擎的核心在 `CavaiLAB/sanyuan-agent`，服务层与媒体适配层还在原来的私有仓库。要改代码去对应的仓库，按那边的 `AGENTS.md` 办。过渡目录里的文件与本仓库的[平台级裁定](docs/decisions/2026-11-17-platform.md)有出入时，以平台级裁定为准。
 - 改了一处口径，把引用它的其他文档一起改掉：三个框架仓库的 README 都引用这里的名称与分工。
 - 改动走分支和 PR，不直接推 `main`。建仓期间的初始文档除外，见[协作约定](docs/07-governance.md)第 2 节。
 

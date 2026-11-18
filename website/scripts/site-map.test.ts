@@ -49,7 +49,7 @@ test('认出指向本组织仓库主干上文件的 GitHub 地址', () => {
   assert.equal(parseRepoFileUrl('https://github.com/CavaiLAB/kun'), null);
   assert.equal(parseRepoFileUrl('https://github.com/CavaiLAB/kun/tree/main/docs'), null);
   assert.equal(parseRepoFileUrl('https://github.com/CavaiLAB/kun/blob/main/README.md?plain=1'), null);
-  assert.equal(parseRepoFileUrl('https://github.com/idadawn/kun/blob/main/README.md'), null);
+  assert.equal(parseRepoFileUrl('https://github.com/example/kun/blob/main/README.md'), null);
 });
 
 test('框架仓库的 README 里的链接', () => {
@@ -85,7 +85,7 @@ test('不动的链接', () => {
   const ctx = context();
   assert.equal(rewriteUrl('#现状', from, ctx), null);
   assert.equal(rewriteUrl('https://github.com/CavaiLAB/jiangxin', from, ctx), null, '指向仓库本身的地址');
-  assert.equal(rewriteUrl('https://github.com/idadawn/kun', from, ctx), null);
+  assert.equal(rewriteUrl('https://github.com/example/kun', from, ctx), null);
   assert.equal(rewriteUrl('mailto:someone@example.com', from, ctx), null);
   assert.equal(rewriteUrl('../elsewhere/x.md', from, ctx), null, '指到仓库外面');
   assert.equal(rewriteUrl('docs/migration.md?plain=1', from, ctx), null, '带查询串');
