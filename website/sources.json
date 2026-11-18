@@ -3,17 +3,17 @@
     {
       "repo": "kun",
       "label": "Kun",
-      "commit": "831bbac998c72acd6824fd3699c367d60d3c7222"
+      "commit": "1b34264a2e8229c9fe48ec588bc758b570ae0934"
     },
     {
       "repo": "qian",
       "label": "Qian",
-      "commit": "6c8143790dc85625782fac00e6b282587e3ed4db"
+      "commit": "97675720f0ed7ce961555dbab5d3814bb372f7b4"
     },
     {
       "repo": "sanyuan-agent",
       "label": "SanYuanAgent",
-      "commit": "fa2714232d72a302c030e7186a3515de17458bd5"
+      "commit": "b890282ec132745ac973bafe9fb52cb4b9bc9f94"
     }
   ]
 }
