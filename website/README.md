@@ -125,7 +125,7 @@ bash website/scripts/setup-ci-keys.sh
 ## 还没做的
 
 - PR 预览。现在 PR 上只构建和检查，不发布预览。
-- 原仓库 `idadawn/qian` 那个文档站里的组件页、API 参考与示例没有并进来，怎么并待定。
+- `kun` 过渡目录里那个文档站（`_import/qian/website/`）的组件页、API 参考与示例没有并进来，怎么并待定。
 
 ## 改这里的脚本
 
