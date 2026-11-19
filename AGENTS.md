@@ -6,7 +6,7 @@
 
 1. [README.md](README.md)：平台是什么，两种角色，三个框架各管什么。
 2. [docs/glossary.md](docs/glossary.md)：名字与术语各指什么。
-3. 两份平台级裁定：[docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)（P1 至 P21）与 [docs/decisions/2026-11-19-platform.md](docs/decisions/2026-11-19-platform.md)（P22 至 P33）：产品负责人定了什么。没列在里面的都不是已定。新的裁定接着编号。
+3. 平台级裁定：[docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)（P1 至 P21）与 [docs/decisions/2026-11-19-platform.md](docs/decisions/2026-11-19-platform.md)（P22 至 P33），以及 [2026-11-20 迁移与发布裁定](docs/decisions/2026-11-20-release.md)（P34 至 P36），记录产品负责人已定的事项。没列在里面的都不是已定。新的裁定接着编号。
 4. [docs/07-governance.md](docs/07-governance.md)：协作约定。
 
 ## 规则

@@ -41,7 +41,7 @@
 - 文档站用 Rspress，搭在 `jiangxin` 仓库的 `website/` 下（已定）。各仓库的文档仍以 Markdown 放在各自的仓库里，那是唯一的一份；站点把 `jiangxin` 与三个框架仓库的 README 和 `docs/` 聚到一起，框架仓库的按钉住的提交取（做法是提议）。
 - 图用 Mermaid 语法写，在 GitHub 上直接能看；站点用 Pele 把它渲染成静态图（已定）。
 - 每个 PR 上 CI 都会构建站点，死链、失效的锚点和画不出来的图会让它失败。提交前也可以在 `website/` 下自己构建一次。
-- 站点部署在内网的 K3s 上，合并到 `main` 后由 CI 发布（已定）；部署清单在部署仓库。`kun` 过渡目录里那个文档站（`_import/qian/website/`）的组件页与 API 参考怎么并进来，见[仓库与归属](05-repositories.md)第 4 节。
+- 站点部署在内网的 K3s 上，合并到 `main` 后由 CI 发布（已定）；部署清单在部署仓库。`kun` 过渡目录里那个文档站（`_import/qian/website/`）按前端发布标签生成 Qian 组件页。其余 API 参考与示例的归属见[仓库与归属](05-repositories.md)第 4 节。
 
 ## 6 质量门禁
 
@@ -57,8 +57,8 @@
 
 | 框架 | 版本 | 发布位置 |
 |---|---|---|
-| Kun | 一条日历版本线（已定） | 内核档发 nuget.org；平台档在正式对外发布之前只发 GitHub Packages，之后全族上 nuget.org（已定） |
-| Qian | 首发 10 个包统一 0.2.0（已定，2026-11-17）。之后 8 个层包同一个版本号，TypeScript 运行时与前端插件开发包各自定版本；10 个包要不要锁成同一版本，待定 | GitHub Packages（`https://npm.pkg.github.com`，作用域 `@cavailab`；已定，2026-11-17），0.2.0 已于 2026-11-17 发布；0.2.1 已于 2026-11-18 发布，10 个包一起升版，返修 0.2.0 里数据组件与业务选择器一渲染就出错的问题，装包用 0.2.1（0.2.0 仍留在包源上）。可见性定为公开（已定，2026-11-17），10 个包已于同日改为公开。从这个包源装包，公开的也要带令牌，怎么配置（认证那一行放进用户级配置）见 qian 仓库的[迁移说明](https://github.com/CavaiLAB/qian/blob/main/docs/migrating-from-yue.md)第 2 节。出处与发布步骤见 qian 仓库的[迁移文档](https://github.com/CavaiLAB/qian/blob/main/docs/migration.md)第 1、11 节 |
+| Kun | 一条日历版本线（已定） | 首个合并版的内核档通过可信发布（OIDC）发到 nuget.org，平台档发到 CavaiLAB 的公开 GitHub Packages 并关联 `CavaiLAB/kun`。之后全族上 nuget.org 的时点沿用原裁定 |
+| Qian | 首发 10 个包统一 0.2.0（已定，2026-11-17）。后续 8 个界面层包统一版本，TypeScript 运行时与前端插件开发包各自定版本（已定，2026-11-20） | GitHub Packages（`https://npm.pkg.github.com`，作用域 `@cavailab`；已定，2026-11-17），0.2.0 已于 2026-11-17 发布；0.2.1 已于 2026-11-18 发布，10 个包一起升版，返修 0.2.0 里数据组件与业务选择器一渲染就出错的问题，装包用 0.2.1（0.2.0 仍留在包源上）。可见性定为公开（已定，2026-11-17），10 个包已于同日改为公开。从这个包源装包，公开的也要带令牌，怎么配置（认证那一行放进用户级配置）见 qian 仓库的[迁移说明](https://github.com/CavaiLAB/qian/blob/main/docs/migrating-from-yue.md)第 2 节。出处与发布步骤见 qian 仓库的[迁移文档](https://github.com/CavaiLAB/qian/blob/main/docs/migration.md)第 1、11 节 |
 | SanYuanAgent | 待定 | 待定 |
 
 哪个版本的 Kun 配哪个版本的 Qian 与 SanYuanAgent，由 `jiangxin` 维护一张版本矩阵。提议。
@@ -80,9 +80,8 @@
 |---|---|
 | 各仓库的负责人与评审人数 | 第 1、2 节 |
 | 任务管理方式 | 第 4 节 |
-| Qian 的 10 个包以后要不要锁成同一版本 | 第 7 节 |
 | SanYuanAgent 的版本、发布位置与许可 | 第 7、8 节 |
-| 原文档站的内容怎么并进新站点 | [仓库与归属](05-repositories.md)第 4 节 |
+| 组件站的其余 API 参考与示例如何汇入平台站 | [仓库与归属](05-repositories.md)第 4 节 |
 | 对已接受的合并蓝图的修订（已登记，待确认） | [仓库与归属](05-repositories.md)第 4 节 |
 | Agent 协同的细则 | [Agent 协同](04-agent-collaboration.md)第 9 节。它是路线里程碑 M7 的前提，不卡阶段 1 |
 | 公共包源上的包何时改指新的源码地址 | 第 11 节 |
