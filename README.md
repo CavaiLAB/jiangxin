@@ -2,7 +2,7 @@
 
 企业级的 AI 原生平台。人用自然语言说清要什么，智能体把它落成可运行的系统；系统上线后在人的反馈里继续改进。
 
-> **状态：规划稿（2026-11-19）。** 本仓库是平台的主页与总览，也是把 Agent 框架与企业级框架拼成一个产品的组合体（已定）；目前只有框架级文档。代码在各框架仓库里，迁入与归并按[路线](docs/06-roadmap.md)分阶段进行。文档里标「已定」的是产品负责人已经裁定的事，标「提议」「待定」的还没有拍板。
+> **状态：规划稿（2026-11-20）。** 本仓库是平台的主页与总览，也是把 Agent 框架与企业级框架拼成一个产品的组合体（已定）。组合体的代码在本仓库，见下面的[匠心工业智能体平台](#匠心工业智能体平台)；三个框架的代码在各自的仓库里，迁入与归并按[路线](docs/06-roadmap.md)分阶段进行。文档里标「已定」的是产品负责人已经裁定的事，标「提议」「待定」的还没有拍板。
 
 ## 这是什么
 
@@ -17,7 +17,7 @@
 | | 平台开发 | 最终用户 |
 |---|---|---|
 | 做什么 | 开发 Agent 框架与企业级应用平台 | 基于 Agent 平台，在企业级框架上构建自己需要的软件。不负责框架与核心的开发，只使用工具 |
-| 交付或产出 | 两样东西：Agent 框架（SanYuanAgent 加 Agent 平台），企业级应用平台（Kun 加 Qian）。两者互补，最终是一体化的产品 | 两种扩展：基于企业级应用平台开发的业务插件；加在 Agent 上的组件 |
+| 交付或产出 | 两样东西：Agent 框架（Agent 运行时加 Agent 平台；运行时 2026-11-20 定为 DSH，SanYuanAgent 以后怎么接待定），企业级应用平台（Kun 加 Qian）。两者互补，最终是一体化的产品 | 两种扩展：基于企业级应用平台开发的业务插件；加在 Agent 上的组件 |
 
 最终用户的使用界面是 Agent 平台（已定）。提议它是一个三栏的工作台：左边是导航，中间是和 Agent 的对话，右边是工作区，企业级应用平台的页面在工作区里打开。下图是示意，不是最终设计，图里的企业、人名与数据是虚构的。
 
@@ -54,17 +54,33 @@
 | 框架 | 角色 | 技术栈 | 仓库 | 来源 | 代码现在在哪 |
 |---|---|---|---|---|---|
 | **Kun** | 企业级后端框架：租户、身份、权限、数据、事件、审计、网关、组件运行时与能力目录；模型服务也由它提供 | .NET 10 | [CavaiLAB/kun](https://github.com/CavaiLAB/kun) | 两套后端代码归并而成：.NET 微服务框架与建在它上面的平台层 | `CavaiLAB/kun`：`Kun.*` 已在仓库根，其余还在过渡目录 `_import/qian/` |
-| **Qian** | 前端框架：设计令牌、组件库、应用外壳、微前端、由 Schema 驱动的界面 | TypeScript、React | [CavaiLAB/qian](https://github.com/CavaiLAB/qian) | 后端仓库前端工作区里的框架库 | `CavaiLAB/qian`；已发布到 GitHub Packages，现在是 0.2.1 |
-| **SanYuanAgent** | 智能体引擎，一个独立运行的 SDK：推理循环、工具、技能、记忆、沙箱、模型路由。云上、桌面和机器人这类边缘设备都要用到它 | Python 3.12 | [CavaiLAB/sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | 私有产品里的 Python Agent 引擎 | 核心已在 `CavaiLAB/sanyuan-agent`，服务层与媒体适配层还在原来的私有仓库 |
+| **Qian** | 前端框架：设计令牌、组件库、应用外壳、微前端、由 Schema 驱动的界面 | TypeScript、React | [CavaiLAB/qian](https://github.com/CavaiLAB/qian) | 后端仓库前端工作区里的框架库 | `CavaiLAB/qian`；已发布到 GitHub Packages，现在是 0.2.1，冻结在这一版（2026-11-20 定） |
+| **SanYuanAgent** | 智能体引擎，一个独立运行的 SDK：推理循环、工具、技能、记忆、沙箱、模型路由。云上、桌面和机器人这类边缘设备都要用到它（2026-11-20 起，Web 端和客户端的 Agent 运行时改用 DSH） | Python 3.12 | [CavaiLAB/sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | 私有产品里的 Python Agent 引擎 | 核心已在 `CavaiLAB/sanyuan-agent`，服务层与媒体适配层还在原来的私有仓库 |
 
 三个框架各用一种主语言、各占一个仓库，彼此只经[契约](docs/02-architecture.md#7-契约)和发布出来的包往来，不做跨仓库的源码引用。
+
+## 匠心工业智能体平台
+
+组合体现在放的是「匠心工业智能体平台」：用开源的智能体运行框架 DSH 做 Agent 运行时和界面外壳，在它上面加企业要用的能力，换上匠心的名称、logo 与主题色。客户可能用到 Web 端和客户端（桌面）两个端，管理端先不做；产品版本号是日历版本号 `vYYYY.M.D`。这几条是产品负责人 2026-11-20 定的。第一版是不是全部基于 DSH、登录与策略由哪个后端提供、SanYuanAgent 以后怎么接，都还没有定。见 [2026-11-20 产品裁定](docs/decisions/2026-11-20-product.md)。
+
+| 目录 | 放什么 |
+|---|---|
+| [`distribution/`](distribution/README.md) | 发行目录：钉死版本的 DSH、品牌包与插件包、配置补丁、启动器。Web 端和客户端共用 |
+| [`apps/web/`](apps/web/README.md) | Web 端 |
+| [`apps/desktop/`](apps/desktop/README.md) | 客户端（桌面）：一个薄的 Electron 壳 |
+| [`apps/console/`](apps/console/README.md) | 管理端，先不做 |
+| [`packages/`](packages/README.md) | 品牌包、企业插件的样板、界面组件包 |
+| [`tests/egress/`](tests/egress/README.md) | 外联检查 |
+| [`tools/mock-model/`](tools/mock-model/README.md) | 本机的假模型服务 |
+
+这些代码都还没有发布过。DSH 按 MIT 许可使用，产品里带着它的版权与许可声明。
 
 ## 总体结构
 
 ```mermaid
 flowchart TB
   P["人：提出意图，判断对错，审核"]
-  Q["Agent 平台<br/>对话区、工作区、待确认。界面用 Qian 搭"]
+  Q["Agent 平台<br/>对话区、工作区、待确认。外壳用 DSH 的客户端"]
   K["Kun 后端<br/>网关、租户、身份、权限、数据、事件、审计<br/>组件运行时、能力目录、Agent 协同（规划）"]
   S["SanYuanAgent 智能体引擎<br/>推理循环、工具、技能、记忆、沙箱"]
   M["模型服务<br/>由 Kun 提供；设备上可以另有本机小模型"]
@@ -80,6 +96,8 @@ flowchart TB
 ```
 
 SanYuanAgent 是独立运行的 SDK（已定）。提议：不接平台也能运行；装在设备上时只向外连到平台；设备上有本机模型时，断网后本机的活照干。见[总体架构](docs/02-architecture.md)第 5 节。
+
+2026-11-20 补：匠心工业智能体平台的 Agent 运行时与界面外壳改用 DSH（已定）。上图是这之前的规划，SanYuanAgent 在里面的位置、登录与策略由哪个后端提供，怎么改待定。
 
 ## 四条主线
 
@@ -120,6 +138,7 @@ SanYuanAgent 是独立运行的 SDK（已定）。提议：不接平台也能运
 | [2026-11-17 平台级裁定](docs/decisions/2026-11-17-platform.md) | 产品负责人定了什么（P1 至 P21），改写了已接受的合并蓝图的哪几条 |
 | [2026-11-19 平台级裁定](docs/decisions/2026-11-19-platform.md) | 产品负责人定了什么（P22 至 P33）：两种角色、组合体、应用互通、历史系统、人审、路线重排 |
 | [2026-11-20 迁移与发布裁定](docs/decisions/2026-11-20-release.md) | P34 至 P36，前端包版本、组件文档归属、后端合并版发布渠道 |
+| [2026-11-20 产品裁定](docs/decisions/2026-11-20-product.md) | P37 至 P41：Agent 运行时与界面外壳用 DSH、两个端、产品名与版本号、代码放进 `jiangxin`；取代了哪几条，还有哪些没定 |
 | [术语表](docs/glossary.md) | 平台与框架的名字、常用术语各指什么 |
 
 这些文档连同三个框架仓库的文档聚成了一个站点。站点部署在内网，合并到 `main` 后自动更新；在本机跑起来的办法见 [website/README.md](website/README.md)。
@@ -128,4 +147,4 @@ SanYuanAgent 是独立运行的 SDK（已定）。提议：不接平台也能运
 
 先读[协作约定](docs/07-governance.md)。用编码代理（Codex、Claude Code 等）干活时，让它先读 [AGENTS.md](AGENTS.md)。
 
-要改代码，去代码所在的仓库提 PR；要改平台级的设计与口径，在本仓库提 PR。
+组合体的代码在本仓库，三个框架的代码去各自的仓库提 PR；要改平台级的设计与口径，在本仓库提 PR。
