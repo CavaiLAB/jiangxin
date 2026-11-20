@@ -141,7 +141,7 @@ DSH 的配置是一层层叠出来的，后面的层按行覆盖前面的：
 
 `vendor/` 下的 tarball 和锁文件一起提交，`npm ci` 直接可用。锁文件给每个 tarball 记了完整性校验值（sha512），`npm ci` 会逐个核对。要是改成构建时现生成，打出来的 tarball 只要和锁文件里记的差一个字节，`npm ci` 就报完整性校验失败；每次都得先刷新锁文件，`npm ci` 也就不再是「按锁文件原样装」了。外联检查的镜像构建和桌面壳的 `runtime/` 同步，也都直接用这两样。
 
-代价是 tarball 是 `packages/` 源码的构建产物，两边可能对不上。所以改了 `packages/` 下的插件包（包括它的 README，README 也打进 tarball），一定要重跑 `scripts/vendor-packages.sh`，把 tarball、`package.json`、锁文件和生成的补丁一起提交。在同一台机器上，源码不变时重跑打出来的 tarball 逐字节相同；换了机器或工具版本是不是也相同，没有核对过。
+代价是 tarball 是 `packages/` 源码的构建产物，两边可能对不上。所以改了 `packages/` 下的插件包（包括它的 README，README 也打进 tarball），一定要重跑 `scripts/vendor-packages.sh`，把 tarball、`package.json`、锁文件和生成的补丁一起提交。源码不变时，不管在哪个目录重跑，打出来的 tarball 都逐字节相同（CSS 模块的类名哈希按包内的相对路径算，见 `packages/ui-kit/tools/build-plugin.mjs`）；换了机器或工具版本是不是也相同，没有核对过。
 
 ## 启动前检查
 

@@ -122,7 +122,8 @@ function clientPlugins(manifest, externals, emittedAssets) {
         const source = await readFile(args.path)
         const isModule = args.path.endsWith('.module.css')
         const result = transform({
-          filename: args.path,
+          // 类名里的 [hash] 按这里给的文件名算。给包内的相对路径，换个目录构建，打出来的 tarball 也不变。
+          filename: relative(packageDir, args.path).split(sep).join('/'),
           code: source,
           minify: true,
           ...(isModule ? { cssModules: { pattern: '[hash]_[local]' } } : {}),
