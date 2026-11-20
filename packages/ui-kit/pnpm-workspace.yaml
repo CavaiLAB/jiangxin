@@ -1,0 +1,4 @@
+# 这个包单独安装依赖。统一的 pnpm 工作区以后再建（见仓库根的 AGENTS.md）。
+# esbuild 的安装脚本只是校验平台二进制，放行。
+allowBuilds:
+  esbuild: true

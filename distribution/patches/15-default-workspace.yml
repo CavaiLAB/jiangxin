@@ -1,0 +1,14 @@
+# 补丁 15：默认工作区放进实例自己的目录
+#
+# 问题：DSH 第一次用时建的「默认工作区」是 <系统「文稿」目录>/deepseek-harness/default-workspace
+#   （macOS 上是 ~/Documents/deepseek-harness/default-workspace），不跟 DSH_HOME 走。
+#   在装了 DSH 桌面版的机器上，这正是用户自己那份 DSH 的默认工作区，两个实例会共用一个目录；
+#   在每人一个实例的部署里，也不该让工作区落在容器的系统「文稿」目录。
+# 做什么：workspace-controller 的 documentsDirectory 取 JX_DOCUMENTS_DIR，没设时用
+#   $DSH_HOME/documents，于是默认工作区是 $DSH_HOME/documents/deepseek-harness/default-workspace。
+#   路径里的 deepseek-harness 这一段是上游写死的（DEFAULT_WORKSPACE_DIRECTORY 的上一级），改不了。
+# 注意：默认工作区一旦登记就不会再挪。改了这个补丁之后，已经登记过默认工作区的状态目录
+#   要清掉重来（或在界面上另选工作区），新值才会生效。
+- id: workspace-controller
+  config:
+    documentsDirectory: !!js process.env.JX_DOCUMENTS_DIR || dshHomePath('documents')

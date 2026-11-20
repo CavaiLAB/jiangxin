@@ -1,0 +1,24 @@
+{
+  "name": "@jx/desktop",
+  "private": true,
+  "version": "0.0.0",
+  "description": "匠心工业智能体平台客户端：薄的 Electron 壳，里面跑已发布的 DSH，窗口里装它的 Web 界面。",
+  "productName": "匠心工业智能体平台",
+  "license": "UNLICENSED",
+  "author": "匠心",
+  "main": "src/main.js",
+  "scripts": {
+    "icons": "bash scripts/make-icons.sh",
+    "runtime:install": "bash scripts/install-runtime.sh",
+    "dev": "bash scripts/dev.sh",
+    "test": "node --test tests/",
+    "smoke": "node scripts/smoke-host.js",
+    "pack:mac": "bash scripts/pack-mac.sh",
+    "start:built": "bash scripts/run-built.sh",
+    "clean": "bash scripts/clean.sh"
+  },
+  "devDependencies": {
+    "electron": "44.11.5",
+    "electron-builder": "26.18.0"
+  }
+}

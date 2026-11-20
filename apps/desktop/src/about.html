@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; script-src 'self'">
+<title>关于</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --fg: #16181d;
+    --muted: #5b616e;
+    --line: #e3e5ea;
+    --panel: #f6f7f9;
+    --accent: #c8402b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1b1b1c;
+      --fg: #f1f2f4;
+      --muted: #a3a8b3;
+      --line: #34363b;
+      --panel: #242528;
+      --accent: #f0735e;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font: 13px/1.6 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 28px 28px 20px;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+  img.logo { width: 112px; height: 112px; margin-bottom: 8px; }
+  h1 { font-size: 20px; font-weight: 600; margin: 0 0 6px; letter-spacing: 0.02em; }
+  .version { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+  .version strong { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .tag {
+    font-size: 11px; line-height: 18px; padding: 0 7px; border-radius: 9px;
+    border: 1px solid var(--line); color: var(--muted);
+  }
+  .tag.beta { border-color: var(--accent); color: var(--accent); }
+  .built-on { margin: 14px 0 0; font-size: 13px; }
+  .runtime { margin: 2px 0 0; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  section.license { width: 100%; margin-top: 18px; display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  section.license h2 { font-size: 12px; font-weight: 600; margin: 0 0 6px; color: var(--muted); }
+  pre {
+    flex: 1; min-height: 0; margin: 0; padding: 10px 12px; overflow: auto;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    font: 11px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  footer { width: 100%; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 12px; color: var(--muted); }
+  button {
+    font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line);
+    border-radius: 6px; padding: 3px 12px; cursor: pointer;
+  }
+  button:hover { border-color: var(--muted); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+  <img class="logo" src="../assets/icon-256.png" alt="">
+  <h1 id="name"></h1>
+  <div class="version">版本 <strong id="version"></strong><span class="tag" id="channel"></span></div>
+  <p class="built-on" id="built-on"></p>
+  <p class="runtime" id="runtime"></p>
+  <section class="license">
+    <h2>DSH 的许可声明（MIT）</h2>
+    <pre id="license"></pre>
+  </section>
+  <footer>
+    <span>Electron、Chromium 及其他开源组件各有其许可声明。</span>
+    <button id="open-licenses" hidden>查看全部许可文件</button>
+  </footer>
+  <script src="about.js"></script>
+</body>
+</html>

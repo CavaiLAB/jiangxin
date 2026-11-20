@@ -1,0 +1,18 @@
+# 补丁 20：不往 DeepSeek 上传会话日志和插件清单
+#
+# 做什么：
+#   - session-log-deepseek：enabled 钉成 false。上游默认 true，会把完整的会话日志
+#     （消息、工具参数和结果、工作区路径）作为 `dsh_session_log` 字段附在发往 DeepSeek
+#     官方适配器的每个请求里，自定义了 baseURL 也一样。界面「设置 → 通用 → 使用官方模型
+#     API 时上传会话日志」改的就是这个键；钉在 --patch 层后界面写不过它。
+#   - plugin-package-inventory-deepseek：整行关掉。它把已装插件包清单作为
+#     `dsh_plugin_packages` 字段附在 DeepSeek 请求里。
+# 补丁 10 已经关掉了 DeepSeek 的模型路由，这两项本来就没有请求可附；这里再关一次，
+#   是为了以后有人重新打开官方路由时不会默认上传，也让界面上的开关显示为锁定。
+# 注意：整行替换 config，maxBytes 写回上游默认值 8 MiB。
+- id: session-log-deepseek
+  config:
+    enabled: false
+    maxBytes: 8388608
+- id: plugin-package-inventory-deepseek
+  disabled: true

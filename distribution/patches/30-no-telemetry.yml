@@ -1,0 +1,24 @@
+# 补丁 30：关掉遥测和产品分析
+#
+# 做什么：
+#   - session-telemetry-otel：mode 钉成 DISABLED。上游默认 FEEDBACK_ONLY：用户一点赞/点踩/写反馈，
+#     就把这个会话到此为止的完整日志（含上下文）用 OTLP 发到
+#     https://dsh-otel-collector.deepseeksvc.com/v1/logs，资源里带匿名用户标识。
+#     上游这一行用 `process.env.DSH_TELEMETRY_MODE || 'FEEDBACK_ONLY'`，这里写成字面量，
+#     环境变量也打不开它。DISABLED 时不建任何传输；exporter.url 仍指向本机一个不监听的端口，
+#     万一被打开也发不出去。
+#   - desktop-product-telemetry、product-analytics：上游只在 profile 名为 desktop 时启用；
+#     这里无条件关掉，避免有人用 desktop 这个 profile 名启动时打开（默认地址来自
+#     DSH_PRODUCT_ANALYTICS_OTLP_URL）。
+# 注意：整行替换 config，session-telemetry-otel 其余键用插件自己的默认值。
+- id: session-telemetry-otel
+  config:
+    mode: DISABLED
+    shutdownTimeoutMillis: 3000
+    maxRequestBytes: 4000000
+    exporter:
+      url: http://127.0.0.1:9/v1/logs
+- id: desktop-product-telemetry
+  disabled: true
+- id: product-analytics
+  disabled: true

@@ -1,0 +1,43 @@
+# 由 distribution/scripts/vendor-packages.sh 从 @jx/brand-theme@0.1.0 的补丁生成，不要手改。
+# 要改就改 packages/brand-theme/cordis.patch.yml，再跑一次脚本。
+# 品牌包：名称、标志、主题色、界面文案。
+# 和包里原件的唯一区别：插件行的 name 从包名 '@jx/brand-theme' 改成了相对本文件的入口路径，
+# 这样不管状态目录（DSH_HOME）放在哪里都找得到包（原因见 scripts/vendor-packages.sh 开头）。
+#
+# @jx/brand-theme 的补丁：装上这个包以后，DSH 的插件组合要改的地方。
+# 语法见 DSH 文档 docs/user/develop/basic/config.md（按行 id 改，或用 insert 加新行）。
+
+# 1. 关掉 DSH 官方品牌包。它往侧栏放 DSH 的标志和字标，往首页放鲸鱼动画。
+#    官方 README 给换品牌的发行版的建议就是「不带这个包，另组合一个占同样位置的包」。
+#    只写 disabled 不写 config：这一行原来的配置保持不动。
+- id: ui-brand-official
+  disabled: true
+
+# 2. （这里原来有一条：把默认语言设成 zh-CN。已去掉。）
+#    发行目录把补丁叠在命令行那一层，那一层的设置界面上改不动，
+#    用户在「设置 → 通用 → 语言」里切换语言会完全没反应（实测）。
+#    默认语言现在由浏览器一半决定：没人选过语言、浏览器的语言又不是 zh-CN / en-US 时，
+#    替用户选一个换过品牌的语言包（src/client/default-language.ts）。
+#    部署方要是想把语言锁死，在自己的补丁里写 `- id: locale` 加 `config: { preference: zh-CN }` 即可，
+#    那时语言行会显示成只读并说明原因。
+
+# 3. 模型的自我介绍。DSH 在系统提示词最前面固定放一句
+#    "You are an AI agent powered by DeepSeek Harness."，用户问「你是谁」时模型会照着说。
+#    includeHarnessIdentity 是 @deepseek-ai/dsh-system-prompt 文档里写了的配置项，关掉以后这句不再出现；
+#    带我们名字的那句由本包的宿主一半补在同一个位置（src/index.ts）。
+#    补丁里的 config 是整行替换，所以 DSH 的 web 组合里原有的 personaPrefix 要照抄，不然就丢了。
+#    升级 DSH 时对一下原文有没有变：dsh --dump-config 里 system-prompt 那一行。
+- id: system-prompt
+  config:
+    includeHarnessIdentity: false
+    personaPrefix: You are a coding agent powered by the {{model}} model.
+
+# 4. 加上品牌包自己。宿主一半管网页标题、站点图标和模型的自我介绍，浏览器一半管侧栏、首页、主题色、文案。
+#    版本号在启动时通过环境变量给（形如 v2026.11.20）；不给就是本机构建，界面显示「本地开发」。
+#    变量名跟发行目录的启动器（distribution/bin/jx-dsh）和桌面壳用的是同一对。
+- insert:
+    - id: jx-brand-theme
+      name: '../node_modules/@jx/brand-theme/lib/index.js'
+      config:
+        version: !!js process.env.JX_PRODUCT_VERSION
+        commit: !!js process.env.JX_PRODUCT_COMMIT

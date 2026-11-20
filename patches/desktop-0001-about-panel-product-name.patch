@@ -1,0 +1,43 @@
+补丁　　desktop-0001-about-panel-product-name
+状态　　样例。没有用它构建过任何东西；第一版如果走「薄壳」（apps/desktop），这个补丁用不到。
+针对　　DSH 0.2.2-rc.5（标签 dsh-v0.2.2-rc.5，提交 9c2670d3）
+文件　　apps/desktop/src/main.ts，第 1161 行，1 处 1 行
+用法　　在上游源码的根目录执行：git apply <本文件>（先用 git apply --check 试）
+
+改了什么
+  macOS「关于」面板里的应用名，从写死的 'DeepSeek Harness' 换成 '匠心工业智能体平台'。
+
+原因
+  1. 这个名字写死在源码里，没有配置项，也没有构建参数：改 electron-builder 配置里的 productName
+     只影响应用包名、程序坞和菜单栏，不影响这一处。
+  2. 「DeepSeek Harness」是上游的注册商标，上游的 BRAND_GUIDELINES.md 要求别的项目不要直接拿它
+     当名字用。换了品牌的构建里不能留这个名字。
+  3. 它是「只能改源码」这一类的代表：上游桌面壳里写死的产品名一共 89 处
+     （这一处，加 src/locale.ts 里 8 种语言各 11 条文案共 88 处），都没有抽成常量。
+
+撤销条件（满足任何一条就删掉这个补丁）
+  1. 上游把关于面板的应用名改成可配置的（比如读打包后 package.json 的 productName，或者读构建参数）。
+     升级 DSH 时先看 app.setAboutPanelOptions 这一段还写不写死。
+  2. 我们不从源码构建上游桌面壳了（第一版走薄壳就是这种情况）。
+
+连带
+  单打这一个补丁没有意义，它属于「换应用名」这一组，同组的还有：
+  scripts/electron-builder-config.mjs 的 productName 和 artifactName、src/locale.ts 的 88 处、
+  scripts/smoke-packaged-runtime.ts 和 cli/dsh 里写死的应用包名（不一起改，打包会在冒烟那一步失败）。
+  整组的清单和行数见 apps/desktop/README.md 的「两条路线」和 apps/desktop/docs/upstream-rebrand-surface.md。
+
+验证
+  打好补丁后构建未签名的 macOS 包，打开应用菜单里的「关于」，名字应该是「匠心工业智能体平台」。
+  只验证过补丁能干净地打到钉死的源码上（见 apps/desktop/scripts/check-patches.sh），没有构建。
+
+--- a/apps/desktop/src/main.ts
++++ b/apps/desktop/src/main.ts
+@@ -1158,7 +1158,7 @@
+   const applicationIconPath = development ? join(app.getAppPath(), 'resources', 'icon-windows.png')
+     : join(process.resourcesPath, 'icon.png')
+   app.setAboutPanelOptions({
+-    applicationName: 'DeepSeek Harness',
++    applicationName: '匠心工业智能体平台',
+     applicationVersion: app.getVersion(),
+     // The release has no separate build number; omit Electron's bundle version.
+     version: '',

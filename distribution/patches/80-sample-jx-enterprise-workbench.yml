@@ -1,0 +1,15 @@
+# 由 distribution/scripts/vendor-packages.sh 从 @jx/enterprise-workbench@0.1.0 的补丁生成，不要手改。
+# 要改就改 packages/enterprise-workbench/cordis.patch.yml，再跑一次脚本。
+# 样板插件：演示企业插件怎么做，台账数据是假的。正式发行前删掉这个文件，并从 package.json 里去掉 @jx/enterprise-workbench。
+# 和包里原件的唯一区别：插件行的 name 从包名 '@jx/enterprise-workbench' 改成了相对本文件的入口路径，
+# 这样不管状态目录（DSH_HOME）放在哪里都找得到包（原因见 scripts/vendor-packages.sh 开头）。
+#
+# @jx/enterprise-workbench 的补丁：往 DSH 的插件组合里加一行，把这个插件挂上。
+# 一行同时带上宿主一半和浏览器一半：name 写成包名，DSH 按 package.json 里的
+# main（宿主）和 exports["./client"]（浏览器）各取一半。
+- insert:
+    - id: jx-enterprise-workbench
+      name: '../node_modules/@jx/enterprise-workbench/lib/index.js'
+      config:
+        # 模拟接口延迟的毫秒数，只为了演示表格的「加载中」状态；不设就是 0。
+        latencyMs: !!js Number(process.env.JX_WORKBENCH_LATENCY_MS ?? 0)

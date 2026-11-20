@@ -1,0 +1,33 @@
+# 反向代理验证用的 nginx 配置：浏览器访问 https://jx.example.test/ui/，代理去掉 /ui/ 前缀转给 DSH。
+# 要点（对应 DSH 文档 docs/user/guide/public-deployments.md 的「What the proxy must do」）：
+#   1. 原样保留浏览器看到的 Host（DSH 拿 Host 和 --trusted-host 比对，改写成上游地址会被拒 403）
+#   2. 去掉挂载前缀（proxy_pass 末尾的 / 负责去掉 /ui/）
+#   3. 转发 WebSocket 升级（/api/remote.mux）
+#   4. 把 cookie 的 Path=/ 改成 /ui/，并在 HTTPS 这一段加上 Secure
+#   5. /ui 重定向到 /ui/（只有 /ui/ 能用令牌换 cookie）
+worker_processes 1;
+events { worker_connections 256; }
+http {
+  map $http_upgrade $connection_upgrade { default upgrade; '' close; }
+  log_format jx '$remote_addr "$request" $status host=$http_host upgrade=$http_upgrade';
+  access_log /out/nginx-access.log jx;
+  error_log /out/nginx-error.log info;
+  server {
+    listen 443 ssl;
+    server_name jx.example.test;
+    ssl_certificate /certs/proxy.pem;
+    ssl_certificate_key /certs/proxy.key;
+    location = /ui { return 301 /ui/; }
+    location /ui/ {
+      proxy_pass http://__DSH_UPSTREAM__/;
+      proxy_http_version 1.1;
+      proxy_set_header Host $http_host;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
+      proxy_cookie_path / /ui/;
+      proxy_cookie_flags ~ secure;
+      proxy_buffering off;
+      proxy_read_timeout 1h;
+    }
+  }
+}

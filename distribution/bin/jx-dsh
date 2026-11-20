@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+# 匠心工业智能体平台的 DSH 启动器：从一个「发行目录」启动钉死版本的 DSH。
+#
+# 用法：jx-dsh --profile <名字> [启动器参数...] [应用参数...]
+#   例：jx-dsh --profile web --dump-config
+#       jx-dsh --profile web --host 127.0.0.1 --port 3180 --no-open
+#
+# 做的事：
+#   1. 找发行目录：JX_DISTRIBUTION_DIR，没设就是本脚本的上一级目录。
+#   2. 用发行目录里 node_modules/.bin/dsh（版本由 package.json 钉死）。
+#   3. 显式设 DSH_HOME（默认 <发行目录>/.dev/home）和 DSH_AGENTS_HOME
+#      （默认 <发行目录>/.dev/agents-home），拒绝落到 ~/.dsh 或 ~/.agents。
+#   4. 把 <发行目录>/patches/*.yml 按文件名排序，逐个作为 --patch 叠在 profile 层之后；
+#      JX_EXTRA_PATCHES（冒号分隔）里的文件再叠在最后。
+#   5. 带上外联相关的环境变量（见下），以及产品版本号 JX_PRODUCT_VERSION / JX_PRODUCT_COMMIT。
+#
+# 环境变量：
+#   JX_DISTRIBUTION_DIR  发行目录（桌面壳等可以指向别的发行目录）
+#   DSH_HOME / DSH_AGENTS_HOME  状态目录与共享 agents 目录
+#   JX_EXTRA_PATCHES     额外补丁，冒号分隔，叠在 patches/ 之后
+#   JX_NPM_REGISTRY      插件管理器与 pnpm 用的 npm 源（默认本机不监听的端口，即不外联）
+#   JX_PRODUCT_VERSION   产品版本号，形如 v2026.11.20、v2026.11.20-1、v2026.11.20-beta.1；
+#                        不设则视为「本地开发」
+#   JX_PRODUCT_COMMIT    构建所在的提交（可选）
+#   JX_DSH_DRY_RUN=1     只打印最终命令，不启动
+set -euo pipefail
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+dist_dir="${JX_DISTRIBUTION_DIR:-$(cd "$script_dir/.." && pwd)}"
+dist_dir="$(cd "$dist_dir" && pwd)"
+
+dsh_bin="$dist_dir/node_modules/.bin/dsh"
+if [ ! -x "$dsh_bin" ]; then
+  echo "jx-dsh: 找不到 $dsh_bin。先在发行目录里装依赖：(cd \"$dist_dir\" && npm ci --ignore-scripts)" >&2
+  exit 2
+fi
+
+if [ "${1:-}" != "--profile" ] || [ -z "${2:-}" ]; then
+  echo "jx-dsh: 第一个参数必须是 --profile <名字>，例如：jx-dsh --profile web --dump-config" >&2
+  exit 2
+fi
+profile_flag="$1"
+profile_name="$2"
+shift 2
+
+# --- 状态目录：一律显式指定，绝不落到用户自己的 ~/.dsh、~/.agents --------------------------
+export DSH_HOME="${DSH_HOME:-$dist_dir/.dev/home}"
+export DSH_AGENTS_HOME="${DSH_AGENTS_HOME:-$dist_dir/.dev/agents-home}"
+mkdir -p "$DSH_HOME" "$DSH_AGENTS_HOME"
+DSH_HOME="$(cd "$DSH_HOME" && pwd)"
+DSH_AGENTS_HOME="$(cd "$DSH_AGENTS_HOME" && pwd)"
+for guarded in "$HOME/.dsh" "$HOME/.agents"; do
+  if [ "$DSH_HOME" = "$guarded" ] || [ "$DSH_AGENTS_HOME" = "$guarded" ]; then
+    echo "jx-dsh: 拒绝使用 $guarded（那是用户自己的 DSH 状态）。请把 DSH_HOME / DSH_AGENTS_HOME 指到别处。" >&2
+    exit 2
+  fi
+done
+
+# --- 外联相关的环境变量 -------------------------------------------------------------------------
+# 补丁 30 已把会话遥测钉成 DISABLED（字面量）；这里再设一次，防止有人去掉补丁后回到默认。
+export DSH_TELEMETRY_MODE=DISABLED
+# 插件管理器与 pnpm 的 npm 源（见补丁 60）。
+export JX_NPM_REGISTRY="${JX_NPM_REGISTRY:-http://127.0.0.1:9/}"
+export npm_config_registry="$JX_NPM_REGISTRY"
+# pnpm / npm 不做更新提示与匿名统计。
+export npm_config_update_notifier=false
+export NO_UPDATE_NOTIFIER=1
+# Node 的诊断报告（process.report.getReport()）默认对每个已连接套接字的对端做同步的反向 DNS 查询。
+# DSH 的 @deepseek-ai/node-addon-system 在 Linux 上靠它判断 glibc/musl（打开界面、建会话时触发），
+# 于是浏览器、模型网关的 IP 都会被拿去查 PTR；DNS 不通时还会卡住事件循环。外联检查抓包抓出来的。
+case " ${NODE_OPTIONS:-} " in
+  *" --report-exclude-network "*) ;;
+  *) export NODE_OPTIONS="${NODE_OPTIONS:+$NODE_OPTIONS }--report-exclude-network" ;;
+esac
+
+# --- 产品版本号（PLAN 第 6 节）----------------------------------------------------------------
+version_re='^v[0-9]{4}\.([1-9]|1[0-2])\.([1-9]|[12][0-9]|3[01])(-([1-9][0-9]*|beta\.[1-9][0-9]*))?$'
+if [ -n "${JX_PRODUCT_VERSION:-}" ]; then
+  if ! [[ "$JX_PRODUCT_VERSION" =~ $version_re ]]; then
+    echo "jx-dsh: JX_PRODUCT_VERSION=$JX_PRODUCT_VERSION 不符合 vYYYY.M.D[-N|-beta.N]（月日不补零）" >&2
+    exit 2
+  fi
+  export JX_PRODUCT_VERSION
+  export JX_PRODUCT_VERSION_LABEL="$JX_PRODUCT_VERSION"
+else
+  export JX_PRODUCT_VERSION_LABEL="本地开发"
+fi
+export JX_PRODUCT_COMMIT="${JX_PRODUCT_COMMIT:-}"
+export JX_DSH_VERSION="$(node -p "require('$dist_dir/node_modules/@deepseek-ai/dsh/package.json').version")"
+
+# --- 补丁：patches/*.yml 按文件名排序，再加 JX_EXTRA_PATCHES ----------------------------------
+patch_args=()
+while IFS= read -r patch_file; do
+  [ -n "$patch_file" ] && patch_args+=(--patch "$patch_file")
+done < <(LC_ALL=C ls -1 "$dist_dir"/patches/*.yml 2>/dev/null | LC_ALL=C sort)
+if [ -n "${JX_EXTRA_PATCHES:-}" ]; then
+  old_ifs="$IFS"; IFS=':'
+  for extra in $JX_EXTRA_PATCHES; do
+    IFS="$old_ifs"
+    [ -n "$extra" ] || continue
+    if [ ! -f "$extra" ]; then echo "jx-dsh: 额外补丁不存在：$extra" >&2; exit 2; fi
+    patch_args+=(--patch "$(cd "$(dirname "$extra")" && pwd)/$(basename "$extra")")
+  done
+  IFS="$old_ifs"
+fi
+
+# --- 启动前检查（bin/jx-preflight.mjs）--------------------------------------------------------
+# DSH 对版本对不上的插件只停用、不报错，照常启动；品牌包被停用时产品会带着 DSH 的品牌起来。
+# 所以每次启动前先查一遍（大约半秒）。--dump-config 本身不查（检查就是靠它做的）。
+# JX_SKIP_PREFLIGHT=1 跳过。
+skip_preflight="${JX_SKIP_PREFLIGHT:-}"
+for arg in "$@"; do
+  case "$arg" in --dump-config|--dump-config-schema) skip_preflight=1 ;; esac
+done
+if [ "$skip_preflight" != "1" ] && [ "${JX_DSH_DRY_RUN:-}" != "1" ]; then
+  if ! node "$script_dir/jx-preflight.mjs" --dist "$dist_dir" --profile "$profile_name"; then
+    echo "jx-dsh: 启动前检查没通过，不启动。确实要跳过检查时设 JX_SKIP_PREFLIGHT=1。" >&2
+    exit 1
+  fi
+fi
+
+cmd=("$dsh_bin" "$profile_flag" "$profile_name" ${patch_args[@]+"${patch_args[@]}"} "$@")
+
+{
+  echo "jx-dsh: 发行目录 $dist_dir"
+  echo "jx-dsh: DSH $JX_DSH_VERSION，产品版本 $JX_PRODUCT_VERSION_LABEL${JX_PRODUCT_COMMIT:+（$JX_PRODUCT_COMMIT）}"
+  echo "jx-dsh: DSH_HOME=$DSH_HOME"
+  echo "jx-dsh: DSH_AGENTS_HOME=$DSH_AGENTS_HOME"
+  echo "jx-dsh: 工作目录 $(pwd)"
+  printf 'jx-dsh: 命令'; printf ' %q' "${cmd[@]}"; echo
+} >&2
+
+if [ "${JX_DSH_DRY_RUN:-}" = "1" ]; then exit 0; fi
+exec "${cmd[@]}"

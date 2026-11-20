@@ -1,0 +1,45 @@
+/*
+ * 样式覆盖：DSH 界面里没有插槽、只能靠样式盖掉的品牌图形。目前只有一处。
+ *
+ * 对话进行中的状态指示：DSH 在「运行中」的文字前面画了一个 14px 的鲸鱼尾巴小动画
+ * （@deepseek-ai/dsh-client-ui-chat 的 RunningWhaleTail，写死在组件里，没有插槽）。
+ * 这里把鲸鱼尾巴藏掉，换成一个跟着文字颜色走的呼吸圆点。
+ *
+ * 依赖的内部结构：[data-chat-running] > 内容（最后一个 span）> 图标（第一个 aria-hidden 的 span）。
+ * data-chat-running 这个属性是 DSH 自己留的标记，比较稳；里面的层级是摸出来的。
+ * 上游改了结构这条规则就不生效，鲸鱼尾巴会重新露出来，不会报错——升级 DSH 后要看一眼对话进行中的样子。
+ */
+[data-chat-running] > span:last-child > span[aria-hidden='true']:first-child > * {
+  display: none;
+}
+
+[data-chat-running] > span:last-child > span[aria-hidden='true']:first-child::before {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  /* DSH 的主题给所有元素设了超椭圆圆角（corner-shape: superellipse(1.5)），圆形会被压成方圆角；
+     它的约定是：正圆和胶囊形在写 border-radius 的地方同时声明 corner-shape: round。 */
+  corner-shape: round;
+  background: currentColor;
+  animation: jx-brand-running 1.2s ease-in-out infinite;
+}
+
+@keyframes jx-brand-running {
+  0%,
+  100% {
+    transform: scale(0.55);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-chat-running] > span:last-child > span[aria-hidden='true']:first-child::before {
+    animation: none;
+  }
+}

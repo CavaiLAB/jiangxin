@@ -1,0 +1,163 @@
+/* 设备台账面板。版式照 DSH 的整页面板：整页滚动，内容居中成一列。
+   颜色、圆角、边框只用 DSH 的主题变量（--dsw-*），所以深浅两种主题、匠心的配色都自动跟着走。 */
+
+.page {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  color: var(--dsw-alias-label-primary);
+  background: var(--dsw-alias-bg-base);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+/* 表格比文字页需要更宽的一列。 */
+.content {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 clamp(24px, 4vw, 48px) 48px;
+}
+
+@media (max-width: 767px) {
+  .content {
+    padding-inline: 20px;
+  }
+}
+
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 28px;
+  margin-bottom: 20px;
+}
+
+/* macOS 桌面端的标题栏是隐藏式的，顶部要给红绿灯按钮留出位置（跟 DSH 自己的页面一致）。 */
+:global([data-platform='darwin']) .heading {
+  padding-top: 48px;
+}
+
+.headingText {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.headingText h1 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+}
+
+.headingText p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--dsw-alias-label-secondary);
+}
+
+.actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 导出是一个下载链接，画成跟旁边的小号描边按钮一样。 */
+.exportLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: var(--dsw-radius-sm);
+  box-shadow: inset 0 0 0 0.5px var(--dsw-alias-border-l3);
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--dsw-alias-label-primary);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .exportLink:hover {
+    background: var(--dsw-alias-interactive-bg-hover);
+  }
+}
+
+.exportLink:focus-visible {
+  outline: var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* 筛选项后面的台数。 */
+.count {
+  margin-left: 6px;
+  font-variant-numeric: tabular-nums;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border: 0.5px solid var(--dsw-alias-border-l3);
+  border-radius: var(--dsw-radius-md);
+  background: var(--dsw-alias-bg-layer-1);
+}
+
+.error div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.error span {
+  font-size: 13px;
+  color: var(--dsw-alias-label-secondary);
+  overflow-wrap: anywhere;
+}
+
+.muted {
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 16px;
+  row-gap: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.selectedCount {
+  color: var(--dsw-alias-state-business-primary);
+}
+
+/* 数据来源说明靠右。 */
+.source {
+  margin-left: auto;
+  color: var(--dsw-alias-label-tertiary);
+}

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; script-src 'self'">
+<title>正在启动</title>
+<style>
+  :root { color-scheme: light dark; --bg: #ffffff; --fg: #16181d; --muted: #5b616e; --line: #e3e5ea; --panel: #f6f7f9; --accent: #c8402b; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1b1b1c; --fg: #f1f2f4; --muted: #a3a8b3; --line: #34363b; --panel: #242528; --accent: #f0735e; }
+  }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--fg);
+    font: 14px/1.6 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    -webkit-app-region: drag;
+  }
+  img { width: 120px; height: 120px; }
+  h1 { font-size: 20px; font-weight: 600; margin: 4px 0 0; }
+  p { margin: 0; color: var(--muted); }
+  .bar { width: 160px; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; margin-top: 8px; }
+  .bar::after { content: ""; display: block; width: 40%; height: 100%; background: var(--accent); border-radius: 2px; animation: slide 1.2s ease-in-out infinite; }
+  @keyframes slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(260%); } }
+  @media (prefers-reduced-motion: reduce) { .bar::after { animation: none; width: 100%; opacity: 0.5; } }
+  pre {
+    max-width: min(720px, 86vw); max-height: 38vh; overflow: auto; margin: 10px 0 0; padding: 10px 12px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px; text-align: left;
+    font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word;
+    -webkit-app-region: no-drag; user-select: text; -webkit-user-select: text;
+  }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+  <img src="../assets/icon-256.png" alt="">
+  <h1 id="name"></h1>
+  <p id="status">正在启动…</p>
+  <div class="bar" id="bar"></div>
+  <pre id="detail" hidden></pre>
+  <script src="loading.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# 补丁 50：关掉联网搜索和网页抓取的提供方
+#
+# 做什么：
+#   - web-search-deepseek、web-deepseek-api：联网搜索默认走 DeepSeek（Messages 搜索或
+#     https://api.deepseek.com/v1/tools/search），请求里带搜索词，以及用户最近一句提问的
+#     前 128 个字符（ori_question）。
+#   - web-fetch-http：web_fetch 默认在本机直接抓模型给的任意网址，不需要逐次确认，
+#     还能访问回环和内网地址。对「数据不出客户网络」来说，这是模型可以主动把数据带出去的口子。
+#   - web：只清掉 fetchProvider 的固定选择（上游钉的是 http），没有提供方时
+#     web_search / web_fetch 返回 WEB_PROVIDER_UNAVAILABLE。
+# 已知副作用：工具本身还挂在预设里（模型能看到 web_search / web_fetch，调用会报错）。
+#   要从模型的工具列表里彻底去掉，得改各预设行里的 tool-web（整行重写预设），还没做。
+# 以后要放开 web_fetch：接企业代理并加白名单后，再单独打开 web-fetch-http。
+- id: web-search-deepseek
+  disabled: true
+- id: web-deepseek-api
+  disabled: true
+- id: web-fetch-http
+  disabled: true
+- id: web
+  config: {}

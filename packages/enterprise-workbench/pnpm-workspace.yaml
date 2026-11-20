@@ -1,0 +1,4 @@
+# 这个包自成一个 pnpm 工作区根（它不在 DSH 的仓库里，也不跟别的包共用安装目录）。
+# esbuild 的安装脚本要放行，否则 pnpm 10+ 会拒绝执行并报错。
+allowBuilds:
+  esbuild: true

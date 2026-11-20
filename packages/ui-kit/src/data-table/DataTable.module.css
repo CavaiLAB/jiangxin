@@ -1,0 +1,167 @@
+/*
+ * 数据表格的样式。只用 DSH 主题给的语义变量（--dsw-alias-*、--dsw-radius-*），
+ * 不写色值、不写深浅两套选择器：深浅由主题切换变量值。
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 0.5px solid var(--dsw-alias-border-l3);
+  border-radius: var(--dsw-radius-md);
+  background: var(--dsw-alias-bg-layer-1);
+  color: var(--dsw-alias-label-primary);
+  overflow: hidden;
+}
+
+/* 列多时横向滚动只发生在这一层，圆角外框不跟着动。 */
+.scroller {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.headCell {
+  padding: 8px 12px;
+  border-bottom: 0.5px solid var(--dsw-alias-border-l3);
+  background: var(--dsw-alias-card-fill);
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  text-align: start;
+  white-space: nowrap;
+}
+
+.cell {
+  padding: 10px 12px;
+  border-bottom: 0.5px solid var(--dsw-alias-border-l2);
+  text-align: start;
+  vertical-align: middle;
+}
+
+.row:last-child .cell {
+  border-bottom: 0;
+}
+
+.alignEnd {
+  text-align: end;
+}
+
+.selectCell {
+  width: 36px;
+  padding-inline-end: 0;
+}
+
+.row {
+  transition: background-color 120ms ease;
+}
+
+@media (hover: hover) {
+  .row:hover {
+    background: var(--dsw-alias-interactive-bg-hover);
+  }
+}
+
+.row.selected {
+  background: var(--dsw-alias-state-business-tertiary);
+}
+
+/* 重新取数时旧行还在，置灰表示不是最新的。 */
+.stale {
+  opacity: 0.55;
+}
+
+.checkbox {
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--dsw-alias-brand-primary);
+  cursor: pointer;
+}
+
+.checkbox:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.checkbox:focus-visible {
+  outline: var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color, var(--dsw-alias-state-business-primary));
+  outline-offset: 2px;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  /* 不按文字基线对齐：表头里有全角括号时基线会差一两个像素，各列的按钮就不在一条线上了。 */
+  vertical-align: middle;
+  margin: -4px -6px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: var(--dsw-radius-xs);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.alignEnd .sortButton {
+  flex-direction: row-reverse;
+}
+
+@media (hover: hover) {
+  .sortButton:hover {
+    background: var(--dsw-alias-interactive-bg-hover);
+    color: var(--dsw-alias-label-primary);
+  }
+}
+
+.sortButton:focus-visible {
+  outline: var(--dsw-focus-ring-width) solid var(--dsw-focus-ring-color, var(--dsw-alias-state-business-primary));
+  outline-offset: 1px;
+}
+
+.sorted {
+  color: var(--dsw-alias-state-business-primary);
+}
+
+.sortIcon {
+  flex: none;
+}
+
+.sortIdle {
+  opacity: 0.45;
+}
+
+.statusCell {
+  padding: 0;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 112px;
+  padding: 24px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  border-top: 0.5px solid var(--dsw-alias-border-l3);
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}

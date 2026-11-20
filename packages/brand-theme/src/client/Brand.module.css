@@ -1,0 +1,19 @@
+/* 标志是位图：按给定边长等比缩放，不拉伸。 */
+.mark {
+  flex: none;
+  display: block;
+  object-fit: contain;
+  user-select: none;
+}
+
+/* 侧栏名称。外层容器（DSH 的 .brandName）定了 18px 的字号和 24px 的行高；
+   全称有九个字，用 15px 才能在默认宽度的侧栏里放下，拖窄时省略。 */
+.name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--dsw-alias-label-primary);
+}

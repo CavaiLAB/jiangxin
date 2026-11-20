@@ -1,0 +1,39 @@
+# 补丁 10：模型路由只走我们指定的 OpenAI 兼容地址
+#
+# 做什么：
+#   - 在 llm-pi-ai 里加一条路由 `jiangxin`，地址取环境变量 JX_MODEL_BASE_URL，
+#     没设时是本机假模型 http://127.0.0.1:3190/v1；密钥引用 JX_MODEL_API_KEY（本机假模型用假值）。
+#   - 新会话默认用这条路由的 jx-mock-1。
+#   - 关掉 DeepSeek 官方的两条模型路由（API 密钥路由、账号路由）。它们默认连
+#     https://api.deepseek.com（推理、每十分钟拉一次模型列表），还会在请求里带
+#     匿名用户标识头、会话日志、插件清单。
+# 为什么放在 --patch 这一层：这一层最后叠，界面「设置 → 模型」写的是 profile 层，
+#   与这里冲突的写入会被拒绝，所以路由在界面上改不动。
+# 注意：补丁是整行替换 config，不是按键合并。llm-pi-ai 这一行在上游各层没有 config，
+#   agent-default-model 这一行上游有 provider/model 两个键，这里都重写了。
+# 什么时候撤：不撤。接上自己的模型网关后，改 JX_MODEL_BASE_URL、显示名和模型清单。
+- id: llm-pi-ai
+  config:
+    providers:
+      jiangxin:
+        displayName: 匠心模型网关（本机假模型）
+        api: openai-completions
+        baseURL: !!js process.env.JX_MODEL_BASE_URL || 'http://127.0.0.1:3190/v1'
+        apiKeyEnv: JX_MODEL_API_KEY
+        compat:
+          supportsDeveloperRole: false
+          maxTokensField: max_tokens
+        models:
+          - id: jx-mock-1
+            name: 匠心假模型 1（本机测试）
+            contextWindow: 128000
+            maxTokens: 8192
+            reasoningEfforts: false
+- id: agent-default-model
+  config:
+    provider: jiangxin
+    model: jx-mock-1
+- id: llm-deepseek
+  disabled: true
+- id: llm-deepseek-account
+  disabled: true

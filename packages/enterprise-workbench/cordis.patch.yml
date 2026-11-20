@@ -1,0 +1,9 @@
+# @jx/enterprise-workbench 的补丁：往 DSH 的插件组合里加一行，把这个插件挂上。
+# 一行同时带上宿主一半和浏览器一半：name 写成包名，DSH 按 package.json 里的
+# main（宿主）和 exports["./client"]（浏览器）各取一半。
+- insert:
+    - id: jx-enterprise-workbench
+      name: '@jx/enterprise-workbench'
+      config:
+        # 模拟接口延迟的毫秒数，只为了演示表格的「加载中」状态；不设就是 0。
+        latencyMs: !!js Number(process.env.JX_WORKBENCH_LATENCY_MS ?? 0)
