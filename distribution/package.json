@@ -1,0 +1,15 @@
+{
+  "name": "@jx/distribution",
+  "private": true,
+  "version": "0.0.0",
+  "description": "匠心工业智能体平台的发行目录，Web 端和客户端共用：钉死版本的 DSH、品牌包与插件包（vendor/ 里的 tarball），加上按文件名顺序叠加的补丁（patches/）。",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=24.9.0"
+  },
+  "dependencies": {
+    "@deepseek-ai/dsh": "0.2.2-rc.5",
+    "@jx/brand-theme": "file:vendor/jx-brand-theme-0.1.0.tgz",
+    "@jx/enterprise-workbench": "file:vendor/jx-enterprise-workbench-0.1.0.tgz"
+  }
+}

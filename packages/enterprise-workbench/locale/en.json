@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Equipment ledger (sample)",
+    "description": "Sample enterprise UI plugin: a sidebar entry and an equipment ledger panel backed by the plugin’s own host endpoint."
+  }
+}

@@ -1,0 +1,51 @@
+# 匠心工业智能体平台客户端的打包配置（现在只做 macOS arm64 的未签名本机构建）。
+# 版本号不写在这里：打包时用 --config.extraMetadata.version=<不带 v 的版本> 注入，见 scripts/pack-mac.sh。
+
+# 本机构建用的 bundle id，带 .dev 后缀。正式的 id 等产品负责人定。
+# 故意不和 DSH 的任何标识沾边，这样系统里以它命名的条目（偏好设置、窗口状态）都只属于这个原型。
+appId: cn.jiangxin.agent.desktop.dev
+productName: 匠心工业智能体平台
+copyright: "DSH 部分：Copyright (c) 2026 DeepSeek，按 MIT 许可使用"
+
+directories:
+  output: release
+  buildResources: build
+
+# 壳自己的代码很小，打进 asar。DSH 运行时不走这里，由 afterPack 钩子整目录放进 Resources/runtime。
+files:
+  - src/**/*
+  - assets/**/*
+  - package.json
+asar: true
+
+# 壳自己没有原生模块，不需要重编。
+npmRebuild: false
+nodeGypRebuild: false
+
+# 用 node_modules 里已经下好的那份 Electron，不再另下一份，保证开发和打包是同一个二进制。
+electronDist: node_modules/electron/dist
+electronVersion: 44.11.5
+
+# 把发行目录（DSH 运行时）和各家的许可文件放进应用包。
+afterPack: scripts/after-pack.js
+
+# 现在不发布、不做自动更新：不生成更新描述文件。
+publish: null
+
+# 有意没有 protocols 一节：不注册 dsh:// 或任何别的协议。
+
+mac:
+  target:
+    - target: dir
+  icon: build/icon.icns
+  category: public.app-category.productivity
+  # 不签名、不公证。Electron 官方二进制自带的临时签名不绑定 Info.plist，改名换图标后仍能在本机运行。
+  identity: null
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  extendInfo:
+    CFBundleDisplayName: 匠心工业智能体平台
+    CFBundleDevelopmentRegion: zh_CN
+    CFBundleLocalizations:
+      - zh_CN
+    # Electron 默认带着摄像头、蓝牙、麦克风的用途说明；壳用不到，由 scripts/after-pack.js 去掉。

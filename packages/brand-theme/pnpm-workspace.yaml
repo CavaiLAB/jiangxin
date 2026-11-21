@@ -1,0 +1,3 @@
+# 这个包单独安装依赖。统一的 pnpm 工作区以后再建（见仓库根的 AGENTS.md）。
+allowBuilds:
+  esbuild: true

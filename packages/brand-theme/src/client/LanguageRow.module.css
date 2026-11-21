@@ -1,0 +1,59 @@
+/* 语言行。尺寸照 DSH 原来的语言行：16px 上下留白、底部一条细线、36px 高的下拉。 */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+  border-bottom: 0.5px solid var(--dsw-alias-border-l2);
+}
+
+.rowText {
+  flex: 1;
+  min-width: 0;
+  padding-right: 16px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.hint {
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--dsw-alias-label-tertiary);
+}
+
+.selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 36px;
+  padding: 0 14px;
+  border: none;
+  border-radius: var(--dsw-radius-md);
+  background: var(--dsw-alias-bg-module-platform);
+  font: inherit;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+  cursor: pointer;
+}
+
+.selector:disabled {
+  color: var(--dsw-alias-label-tertiary);
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .selector:not(:disabled):hover {
+    background: var(--dsw-alias-interactive-bg-hover);
+  }
+}
+
+.chevron {
+  flex: none;
+}

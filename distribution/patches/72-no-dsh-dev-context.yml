@@ -1,0 +1,10 @@
+# 不让模型知道自己跑在 DSH 的界面里。
+#
+# harness-dev-context 这一行往模型的上下文里写「你在 DeepSeek Harness Web GUI 里」，还给出 DSH 的安装目录。
+# 对我们的用户来说，这是别人的产品名和本机路径，没有用处。DSH 自己的说明
+# （packages/context/harness-dev-context/README.md）写明，不想让模型知道这些时就关掉这一行。
+# 试验实例上关过，对话不受影响。
+#
+# 什么时候可以去掉：这一行支持换品牌（比如产品名可以配置）以后。
+- id: harness-dev-context
+  disabled: true

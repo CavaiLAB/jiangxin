@@ -1,0 +1,47 @@
+补丁　　desktop-0002-no-dsh-protocol-registration
+状态　　样例。没有用它构建过任何东西；第一版如果走「薄壳」（apps/desktop），这个补丁用不到
+　　　　（薄壳本来就不登记任何协议）。
+针对　　DSH 0.2.2-rc.5（标签 dsh-v0.2.2-rc.5，提交 9c2670d3）
+文件　　apps/desktop/src/main.ts，第 1488 行，1 处 1 行
+用法　　在上游源码的根目录执行：git apply <本文件>（先用 git apply --check 试）
+
+改了什么
+  去掉启动时的 app.setAsDefaultProtocolClient('dsh')：应用不再把自己登记成 dsh:// 链接的默认处理程序。
+  下面的 open-url 处理留着不动（没有登记就收不到，留着是为了补丁尽量小）。
+
+原因
+  1. 和用户自己装的 DeepSeek Harness 抢协议。dsh:// 的默认处理程序全系统只有一个，谁后启动谁抢到。
+     同一台机器上装着官方桌面版时，我们的应用一启动，官方版登录完成页上的「回到应用」链接
+     （dsh://open）就会把我们的应用拉到前台，而不是官方版。
+  2. 这个行为没有开关：打包后的应用一启动就登记，没有配置项或环境变量能关。
+  3. 我们用不到它。上游只用 dsh://open 做一件事：DeepSeek 账号在浏览器里登录完以后把应用拉回前台。
+     我们关掉了 DeepSeek 账号登录，没有任何地方会发这个链接。
+  4. 它是「行为上和上游冲突、只能改源码」这一类的代表。
+
+撤销条件（满足任何一条就删掉这个补丁）
+  1. 上游让协议名可配置，或者提供了不登记的开关。
+  2. 我们不从源码构建上游桌面壳了（第一版走薄壳就是这种情况）。
+  3. 以后真的需要「从浏览器把应用拉回前台」时，也不是撤掉这个补丁恢复 dsh://，而是换成登记我们自己的
+     协议名（比如 jiangxin://），那是另一个补丁。
+
+连带
+  必须和另一处一起改才算关干净：scripts/electron-builder-config.mjs 第 111 行的
+  protocols: [{ name: 'DeepSeek Harness', schemes: ['dsh'] }]。那一行会把协议写进应用包的 Info.plist，
+  系统的启动服务只凭这个声明就会把应用列为 dsh:// 的候选处理程序。那一处按「一处一个补丁」另写，
+  还没有写。
+
+验证
+  打好两处补丁后构建并启动应用，然后看 dsh:// 的默认处理程序有没有变成我们的应用。
+  注意：这个验证会改动系统的启动服务登记，不能在装着用户自己的 DeepSeek Harness 的机器上做，
+  要在干净的测试机上做。只验证过补丁能干净地打到钉死的源码上，没有构建。
+
+--- a/apps/desktop/src/main.ts
++++ b/apps/desktop/src/main.ts
+@@ -1485,7 +1485,6 @@
+     window.focus()
+   }
+ 
+-  if (app.isPackaged || process.env.DSH_DESKTOP_DEV_APP === '1') app.setAsDefaultProtocolClient('dsh')
+   app.on('open-url', (event, url) => {
+     event.preventDefault()
+     if (url === 'dsh://open' || url === 'dsh://open/') focusPrimaryWindow()

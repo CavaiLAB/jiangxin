@@ -1,0 +1,29 @@
+# 补丁 60：插件管理器只用我们指定的 npm 源，不用公共镜像和 CDN
+#
+# 做什么（plugin-manager 这一行上游没有 config，这里写的键之外都是插件默认值）：
+#   - registry：查包、装包先问的源。取 JX_NPM_REGISTRY；没设时指向本机一个不监听的端口，
+#     装插件会失败但不会外联。企业部署时设成客户内网的 npm 源。
+#   - fallbackRegistries：上游默认 ['https://registry.npmmirror.com/']（公共源不可达时退到它），
+#     清空。
+# 启动脚本另外把 npm_config_registry 设成同一个值，pnpm 自己的配置也指过去，
+#   否则插件页的源选择里还会出现 registry.npmjs.org。
+# 关不掉的（只能靠网络层的出站策略拦）：
+#   - detailNpmFileSources：打开一个还没装的官方插件的详情页时，从 jsdelivr / unpkg / npmmirror
+#     读说明文档。三个地址写死在 @deepseek-ai/dsh-plugin-detail 里，配置要求列表至少一项，
+#     写空列表插件管理器会启动失败（试过），所以这里保留默认。
+#   - 插件管理器里还有别的会直接连外部地址的操作，配置管不住。部署时每个实例都要有网络层的
+#     出站策略，只放行模型网关（和企业内部的 npm 源）。
+#
+# 另外关掉插件页的「源测速」（ui-plugin-manager）：打开插件页时，宿主会向写死的
+#   https://registry.npmjs.org/-/ping 和 https://registry.npmmirror.com/-/ping 各发一个请求，
+#   看哪个快就默认用哪个。这一项是外联检查抓包抓出来的（源码普查时漏掉了）。
+#   三个键都写上；后两个是上游文档里的默认值。
+- id: plugin-manager
+  config:
+    registry: !!js process.env.JX_NPM_REGISTRY || 'http://127.0.0.1:9/'
+    fallbackRegistries: []
+- id: ui-plugin-manager
+  config:
+    registryProbeEnabled: false
+    registryProbeTimeoutMs: 1500
+    registryProbeCacheTtlMs: 300000

@@ -2,9 +2,39 @@
 /docs/index.md
 /docs/frameworks/
 
-# 文档站的依赖、缓存与构建产物
+# 依赖：各项目各自安装（website/ 用 pnpm；组合体的代码见 AGENTS.md）
 node_modules/
+
+# 文档站的缓存与构建产物
 /website/.cache/
 /website/doc_build/
 
+# 组合体代码的构建产物
+/packages/*/lib/
+/apps/desktop/release/
+*.tsbuildinfo
+
+# 桌面壳随包的发行目录：由 apps/desktop/scripts/install-runtime.sh 从 distribution/ 同步生成
+/apps/desktop/runtime/
+
+# DSH 的源码检出：只用来查和试打补丁（apps/desktop/scripts/check-patches.sh），不入库
+/upstream/
+
+# 插件包的 tarball：只有发行目录 vendor/ 里的入库，发行目录按它们和锁文件安装
+*.tgz
+!/distribution/vendor/*.tgz
+
+# 本机状态：DSH 的状态目录、Electron 的用户数据、缓存、日志、截图、抓包结果
+.dev/
+*.pcap
+*.log
+
+# 系统与编辑器
 .DS_Store
+.idea/
+.vscode/
+
+# 密钥一律不入库
+.env
+.env.*
+!.env.example

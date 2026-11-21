@@ -1,0 +1,15 @@
+# 补丁 40：关掉 DeepSeek 账号与账号通知
+#
+# 做什么：整行关掉 DeepSeek 账号服务和它在界面上的两个插件。
+#   - deepseek-account：登录、个人信息、余额走 https://platform.deepseek.com，
+#     通知列表、内容、事件上报走 https://harness.deepseek.com（登录后每十分钟左右轮询一次）。
+#   - ui-settings-account：设置里的账号页和侧栏账号菜单；菜单里的「反馈」会在系统浏览器里
+#     打开飞书问卷，并带上账号 UID、版本号和设备信息。
+#   - ui-account-notifications：账号通知卡片与轮询。
+# 账号模型路由 llm-deepseek-account 已在补丁 10 关掉。
+- id: deepseek-account
+  disabled: true
+- id: ui-settings-account
+  disabled: true
+- id: ui-account-notifications
+  disabled: true
