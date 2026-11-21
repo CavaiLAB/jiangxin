@@ -4,7 +4,9 @@
 >
 > 2026-11-19 补：`jiangxin` 仓库就是组合体（已定，[2026-11-19 平台级裁定](decisions/2026-11-19-platform.md) P23），见第 1.1 节。
 >
-> 2026-11-20 补：Agent 运行时与界面外壳改用 DSH，组合体的代码放进 `jiangxin`（已定，[2026-11-20 产品裁定](decisions/2026-11-20-product.md) P37 至 P41）。第 1.1 节按这几条改写过；第 2 节以后是这之前写的。
+> 2026-11-20 补：Agent 运行时与界面外壳改用 DSH，组合体的代码放进 `jiangxin`（已定，[2026-11-20 产品裁定](decisions/2026-11-20-product.md) P37 至 P41）。第 1.1 节按这几条改写过。
+>
+> 2026-11-21 更新：第 2 节列出 Kun 归并后的路径和首个合并预览版。导入时的布局另注明日期。
 
 以前的问题是乱：后端分在两个仓库里，平台层精确钉住框架的版本；前端、文档站、任务看板和后端挤在一个仓库，Agent 引擎又在另一个产品的仓库里。现在按「一个框架一个仓库、一种主语言」重新分，方便更多人各管一块。
 
@@ -19,7 +21,7 @@
 | [qian](https://github.com/CavaiLAB/qian) | 前端框架 | TypeScript |
 | [sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | 智能体引擎 | Python |
 
-四个仓库已于 2026-11-17 改为公开。SanYuanAgent 的核心已于同日带历史迁入 `sanyuan-agent`；前端的框架库也已带历史导入 `qian`，发布了 0.2.0；后端的两个来源仓库也已带历史迁入 `kun`，同日归档为只读；`Kun.*` 已提到仓库根，其余还在过渡目录 `_import/qian/`，归并还没有做；`jiangxin` 里是文档、文档站的工具，以及 2026-11-20 放进来的组合体代码（P41）。
+四个仓库已于 2026-11-17 改为公开。SanYuanAgent 的核心已于同日带历史迁入 `sanyuan-agent`；前端的框架库也已带历史导入 `qian`，发布了 0.2.0；后端的两个来源仓库也已带历史迁入 `kun`，同日归档为只读；Kun 已完成按域归并，当前目录见第 2 节；`jiangxin` 里是文档、文档站的工具，以及 2026-11-20 放进来的组合体代码（P41）。
 
 ### 1.1 组合体
 
@@ -77,18 +79,18 @@
 
 ## 2 现有代码去哪
 
-后端的两个来源仓库已于 2026-11-17 带历史迁入 `kun`：`Kun.*` 已提到仓库根，文档与决策记录也已整理进 `docs/`；其余在过渡目录 `_import/qian/` 下。第 2.1 节表里「现在的位置」是 `kun` 里的路径，第 2.3 节的是 `_import/qian/` 下的路径。
+两个来源仓库于 2026-11-17 带历史迁入 `kun`。当时平台侧代码临时放在 `_import/qian/`；[Kun #110](https://github.com/CavaiLAB/kun/pull/110) 已移除最后的过渡入口。以下现行路径均从各仓库的根目录算起。
 
 ### 2.1 并：两个后端并成 Kun
 
-| 现在的位置 | 内容 | 去向 |
+| 2026-11-17 导入时的位置 | 内容 | 归并后在 Kun 的位置 |
 |---|---|---|
-| 仓库根 | 35 个 `Kun.*` 模块、示例、测试、文档 | `kun`。其中五个模块归档，不并入 |
-| `_import/qian/packages/Qian.*` | 56 个 .NET 包项目：组件运行时、租户、身份、权限、数据、事件、审计、配置、文件、网关、调度、注册表、生命周期、profile、表面、能力目录、插件开发包 | `kun`，包名并为 `Kun.*` |
-| `_import/qian/` 下的 `plugins/`、`profiles/`、`hosts/` | 39 个组件文件夹（其中 25 个还是骨架）、5 个 profile、2 个宿主 | `kun` |
-| `_import/qian/` 下的 `contracts/`、`tck/`、`schemas/` | 冻结的跨服务契约、一致性测试、Schema | `kun` |
+| 仓库根 | 当时的 35 个 `Kun.*` 模块、示例、测试、文档 | `src/`、`samples/`、`tests/`、`docs/`；五个模块按蓝图归档 |
+| `_import/qian/packages/Qian.*` | 当时的 56 个 .NET 包项目 | `src/`，与职责重叠的模块按域归并 |
+| `_import/qian/` 下的 `plugins/`、`profiles/`、`hosts/` | 组件清单、profile、宿主 | `plugins/`、`profiles/`、`hosts/` |
+| `_import/qian/` 下的 `contracts/`、`tck/`、`schemas/` | 跨服务契约、一致性测试、Schema | `contracts/`、`tck/`、`schemas/` |
 
-归并不是原样搬运：两边重叠的职责合成一份，合并之后共 84 个包。怎么并，见 [kun 仓库的迁移与归并](https://github.com/CavaiLAB/kun/blob/main/docs/migration.md)。
+首个合并预览版 `2026.11.20-beta.1` 已在 GitHub Packages 发布 85 个 NuGet 包，其中内核档 42 个、平台档 43 个。使用方可从[预发布说明](https://github.com/CavaiLAB/kun/releases/tag/v2026.11.20-beta.1)查 54 个旧 `Qian.*` 包各自的替代项，从[包迁移指南](https://github.com/CavaiLAB/kun/blob/main/docs/guides/package-migration.md)查包源与安装方法。实际发布记录见 [Kun #115](https://github.com/CavaiLAB/kun/pull/115)。
 
 ### 2.2 拆：后端仓库里的前端
 
@@ -109,13 +111,15 @@
 
 ### 2.3 过渡目录 `_import/qian/` 里的其余部分
 
-| 现在的位置 | 内容 | 去向 |
+2026-11-17 随平台侧一同导入的开发工具、组件站与看板现在位于以下目录。
+
+| Kun 根目录下的位置 | 内容 | 归属 |
 |---|---|---|
 | `tests/`、`tools/`、`scripts/`、工作流 | 测试、工具、脚本、CI | 随 `kun`，与合并蓝图一致 |
 | `docs/` | 决策清单、决策记录、需求与规格 | 现有的随 `kun`，与合并蓝图一致；跨框架的新决策提议记在 `jiangxin` |
 | `deploy/` | 开发期工具的部署清单 | 随 `kun`，与合并蓝图一致 |
 | `website/` | 文档站，用 Rspress 搭的：组件页、API 参考、示例、设计文档 | 先留在后端，随 `kun`（已定，前端只迁框架库）。继续用 Rspress（已定）。前端组件页由该站按 `qian` 的发布标签生成定稿（已定，2026-11-20）。其余 API 参考与示例的归属见第 4 节 |
-| `pm/` | 任务文件与看板 | 待定，见第 4 节 |
+| `pm/` | Kun 任务文件与看板 | 看板从 Kun 主干的 `pm/tasks/` 生成；跨仓库任务与汇总看板的归属见第 4 节 |
 
 ### 2.4 拆：私有产品里的 Agent 引擎
 
@@ -153,13 +157,13 @@ flowchart LR
 
 ## 4 对已接受的合并蓝图的修订
 
-后端的归并有一份合并蓝图：`kun` 过渡目录里的 [`_import/qian/docs/adr/ADR-023-kun-qian-merge-blueprint.md`](https://github.com/CavaiLAB/kun/blob/71cbd5b4fb8f9f813684940a192ca15ea5feaac3/_import/qian/docs/adr/ADR-023-kun-qian-merge-blueprint.md)，2026-11-17 接受，裁定记在同一目录的 [`_import/qian/pm/tasks/S1-DEC-036.md`](https://github.com/CavaiLAB/kun/blob/71cbd5b4fb8f9f813684940a192ca15ea5feaac3/_import/qian/pm/tasks/S1-DEC-036.md)（D1–D14）。它按「全部并进一个仓库」来写目标布局：.NET 包、前端工作区、文档站、任务看板、契约、部署清单都在同一个仓库里。
+后端归并蓝图的 2026-11-17 快照见 [`_import/qian/docs/adr/ADR-023-kun-qian-merge-blueprint.md`](https://github.com/CavaiLAB/kun/blob/71cbd5b4fb8f9f813684940a192ca15ea5feaac3/_import/qian/docs/adr/ADR-023-kun-qian-merge-blueprint.md)，2026-11-17 接受，当时的裁定记在 [`_import/qian/pm/tasks/S1-DEC-036.md`](https://github.com/CavaiLAB/kun/blob/71cbd5b4fb8f9f813684940a192ca15ea5feaac3/_import/qian/pm/tasks/S1-DEC-036.md)（D1–D14）。它按「全部并进一个仓库」来写目标布局：.NET 包、前端工作区、文档站、任务看板、契约、部署清单都在同一个仓库里。
 
-分成四个仓库、迁入 CavaiLAB、定下平台的总名，是产品负责人同一天的裁定，它们改写了这份已接受的蓝图。修订项已登记为决策任务 S1-DEC-038，在 `kun` 的 `_import/qian/pm/tasks/` 下。其中合并后的仓库与前端的去处已定（[平台级裁定](decisions/2026-11-17-platform.md) P20、P21），其余待产品负责人逐项确认。确认并回写之前，蓝图里没有确认的各项仍是原来的写法。
+分成四个仓库、迁入 CavaiLAB、定下平台的总名，是产品负责人同一天的裁定，它们改写了这份已接受的蓝图。修订项登记在 Kun 根目录的[决策任务 S1-DEC-038](https://github.com/CavaiLAB/kun/blob/main/pm/tasks/S1-DEC-038.md)。其中合并后的仓库与前端的去处已定（[平台级裁定](decisions/2026-11-17-platform.md) P20、P21），其余待产品负责人逐项确认。确认并回写之前，蓝图里没有确认的各项仍是原来的写法。
 
 | 事项 | 蓝图的写法 | 现在的情况与提议 |
 |---|---|---|
-| 合并后的仓库 | Kun 当时所在的仓库，把平台层整棵树带历史导入它的一个子目录 | Kun 的家是 `CavaiLAB/kun`，迁移现在开始（已定，P20）。两个来源仓库已于 2026-11-17 带历史导入，同日冻结、归档为只读，最后一次同步也已合入 `kun`；之后怎么分批整理与归并，见 `kun` 仓库的迁移计划 |
+| 合并后的仓库 | Kun 当时所在的仓库，把平台层整棵树带历史导入它的一个子目录 | P20 指定 `CavaiLAB/kun`。两个来源仓库在 2026-11-17 带历史导入后冻结、归档；现行布局见第 2 节，[迁移计划](https://github.com/CavaiLAB/kun/blob/main/docs/migration-plan.md)记录各批次的工作 |
 | 前端 | 留在后端仓库的前端工作区里，放在最后一批 | 前端有自己的仓库，现在开始迁入（已定，P21），不再等后端的最后一批。范围只迁框架库（已定，产品负责人 2026-11-17 选定）；框架库已于同日迁入 `qian` |
 | TypeScript 运行时、前端插件开发包、外壳工具包 | 和前端在同一个工作区 | 运行时与插件开发包算框架库，已随 `qian`；外壳工具包是应用外壳对接平台的专有接线，留在后端 |
 | 命令行与声明式表面的校验库 | 同上 | 留在后端，随 `kun`：两者不依赖任何前端包，蓝图把命令行算在 Kun 的定位里 |
