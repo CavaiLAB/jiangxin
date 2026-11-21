@@ -46,6 +46,8 @@ const ENV = Object.freeze({
   blockExternal: 'JX_DESKTOP_BLOCK_EXTERNAL',
   /** 渲染进程的远程调试端口。不要用 9222、9229、9230（用户自己的 DSH 可能在用）。 */
   remoteDebugPort: 'JX_DESKTOP_REMOTE_DEBUG_PORT',
+  /** 自带的假模型：1 起，0 不起；不给时看打包时写进包里的 mockModel。已设 JX_MODEL_BASE_URL 时一律不起。 */
+  mockModel: 'JX_DESKTOP_MOCK_MODEL',
 });
 
 module.exports = {

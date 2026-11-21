@@ -90,11 +90,22 @@ npm run pack:mac -- 2026.11.20-beta.1
 npm run start:built
 ```
 
-脚本实际执行的是 `electron-builder --mac --arm64 --dir --publish never --config.extraMetadata.version=<版本号>`，再加两项只属于本机构建的元数据（见「状态目录与隔离」）。打包时：
+脚本实际执行的是 `electron-builder --mac --arm64 --dir --publish never --config.extraMetadata.version=<版本号>`，再加两项只属于本机构建的元数据（见「状态目录与隔离」）。
+
+两个可选的环境变量：
+
+- `JX_PACK_STATE_ROOT=<绝对路径>`：换掉写进包里的状态根目录（默认是 `apps/desktop/.dev`）。要把应用拷进「应用程序」长期用，设成不依赖构建目录的位置，比如 `~/Library/Application Support/cn.jiangxin.agent.desktop.dev`。
+- `JX_PACK_MOCK_MODEL=1`：本机试用构建自带假模型。应用启动时先用 Electron 自带的 Node 起 `tools/mock-model/server.mjs`（本机空闲端口），再把它的地址和假密钥交给 DSH，不用另外开终端跑假模型。已设 `JX_MODEL_BASE_URL` 时不起；启动时 `JX_DESKTOP_MOCK_MODEL=0` 也能关掉。
+
+```bash
+JX_PACK_STATE_ROOT="$HOME/Library/Application Support/cn.jiangxin.agent.desktop.dev" JX_PACK_MOCK_MODEL=1 npm run pack:mac -- 2026.11.21-beta.2
+```
+
+打包时：
 
 - 先从 `distribution/` 同步并重装 `runtime/`（`JX_PACK_SKIP_RUNTIME_SYNC=1` 跳过），再跑 `runtime/bin/jx-preflight.mjs`，查不过不打；
 - 用本地 `node_modules/electron/dist`，不另下 Electron；
-- `scripts/after-pack.js` 把发行目录整个放进 `Contents/Resources/runtime`，把 DSH、Electron、Chromium 的许可文件放进 `Contents/Resources/licenses`，去掉 Electron 自带的示例应用和用不到的权限用途说明；
+- `scripts/after-pack.js` 把发行目录整个放进 `Contents/Resources/runtime`，把 DSH、Electron、Chromium 的许可文件放进 `Contents/Resources/licenses`，把假模型放进 `Contents/Resources/mock-model/`（只是一个文件，一律放；只有打开了才会起），去掉 Electron 自带的示例应用和用不到的权限用途说明；
 - 不写 `CFBundleURLTypes`（不声明任何协议），不带更新配置。
 
 应用包里 1.3 GB 的发行目录里，有 LibreOffice 的原生引擎和 WASM 版各一份（加起来约 300 MB），还有别的平台用不到的东西，正式发布前要按平台裁剪。DSH 依赖的几百个 npm 包各自的许可还没有汇总，正式发布前要做。
@@ -148,6 +159,7 @@ npm run start:built
 | `JX_DESKTOP_BLOCK_EXTERNAL` | `1`：窗口发往本机 DSH 以外的请求一律拦下（默认只记到 `logs/window-egress.log`，不拦） |
 | `JX_DESKTOP_REMOTE_DEBUG_PORT` | 渲染进程的远程调试端口。9222、9229、9230 会被拒绝（留给用户自己的 DSH），可以用 9322 |
 | `JX_DESKTOP_TITLEBAR` | `hiddenInset`：隐藏标题栏的实验开关。已知不能用：页面里没有可拖动区域，窗口拖不动，红绿灯会压住侧栏左上角 |
+| `JX_DESKTOP_MOCK_MODEL` | `1`：启动时先起自带的假模型，把地址和假密钥交给 DSH；`0`：不起。不给时看打包时写进包里的 `mockModel`（`JX_PACK_MOCK_MODEL=1`）。已设 `JX_MODEL_BASE_URL` 时一律不起。假模型的输出和请求日志在 `logs/`，壳退出或被强制结束时它跟着退出 |
 
 ## 状态目录与隔离
 
@@ -162,14 +174,14 @@ npm run start:built
 | `host-cwd/` | DSH 进程的工作目录（DSH 会读工作目录下的 `.env`，所以给它一个自己管的空目录） |
 | `generated/` | 壳生成的配置补丁 |
 | `run/` | DSH 进程的记录文件（下次启动时用来清理上次没停干净的进程） |
-| `logs/` | `desktop-shell.log`、`dsh-host.log`、`window-egress.log` |
+| `logs/` | `desktop-shell.log`、`dsh-host.log`、`window-egress.log`；起了自带假模型时还有 `mock-model.log`、`mock-model-requests.jsonl` |
 | `screenshots/` | 自检的截图和结果 |
 
 根目录怎么定：
 
 1. 设了 `JX_DESKTOP_STATE_DIR` 就用它；
 2. 开发启动用 `apps/desktop/.dev`；
-3. 打好的包用打包时写进去的目录。`pack-mac.sh` 打的是本机构建，会把 `apps/desktop/.dev` 的绝对路径写进包里，所以在访达里双击也是用这个目录；
+3. 打好的包用打包时写进去的目录。`pack-mac.sh` 打的是本机构建，默认把 `apps/desktop/.dev` 的绝对路径写进包里，所以在访达里双击也是用这个目录；设了 `JX_PACK_STATE_ROOT` 就写它（要拷进「应用程序」长期用的时候）；
 4. 打好的包里既没写、环境变量也没给时，**拒绝启动**并报错，不会退回系统默认位置。正式构建的状态放在哪里还没定，建议放在 `~/Library/Application Support/` 下以 bundle id 命名的目录里，不用 `~/.dsh`。
 
 另外几条隔离规则（`src/state.js`、`src/launch.js`，测试在 `tests/isolation.test.js`）：

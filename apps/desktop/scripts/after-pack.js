@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * electron-builder 的 afterPack 钩子：应用包生成之后（签名之前）往里放两样东西。
+ * electron-builder 的 afterPack 钩子：应用包生成之后（签名之前）往里放三样东西。
  *
  *   1. 发行目录 → Contents/Resources/runtime
  *      默认是 apps/desktop/runtime；设了 JX_PACK_DISTRIBUTION_DIR 就打那个目录。
@@ -9,6 +9,8 @@
  *      （比如各包里的 test、example 目录），DSH 的依赖树有九万多个文件，按原样整目录放最稳。
  *   2. 许可文件 → Contents/Resources/licenses
  *      DSH 是 MIT 许可，分发时必须带版权声明和许可全文；Electron 和 Chromium 也各有声明。
+ *   3. 自带的假模型 → Contents/Resources/mock-model/server.mjs
+ *      只是一个文件，一律放进去；只有打包时写入 mockModel 或启动时打开 JX_DESKTOP_MOCK_MODEL 才会起，见 src/mock-model.js。
  */
 
 const { execFileSync } = require('node:child_process');
@@ -91,10 +93,19 @@ exports.default = async function afterPack(context) {
   );
   console.log(`  • after-pack  已放入许可文件 ${licensesDir}`);
 
-  // 3. Electron 自带的示例应用用不到，去掉（用 electronDist 时 electron-builder 不会替我们删）。
+  // 3. 自带的假模型
+  const mockSource = path.join(projectDir, '..', '..', 'tools', 'mock-model', 'server.mjs');
+  if (!fs.existsSync(mockSource)) {
+    throw new Error(`after-pack: 找不到假模型 ${mockSource}`);
+  }
+  fs.mkdirSync(path.join(resourcesDir, 'mock-model'), { recursive: true });
+  fs.copyFileSync(mockSource, path.join(resourcesDir, 'mock-model', 'server.mjs'));
+  console.log('  • after-pack  已放入自带的假模型');
+
+  // 4. Electron 自带的示例应用用不到，去掉（用 electronDist 时 electron-builder 不会替我们删）。
   fs.rmSync(path.join(resourcesDir, 'default_app.asar'), { force: true });
 
-  // 4. Electron 默认带着摄像头、蓝牙、麦克风等的用途说明。壳用不到这些权限，去掉，免得系统弹出误导人的授权框。
+  // 5. Electron 默认带着摄像头、蓝牙、麦克风等的用途说明。壳用不到这些权限，去掉，免得系统弹出误导人的授权框。
   if (context.electronPlatformName === 'darwin') {
     const plist = path.join(resourcesDir, '..', 'Info.plist');
     for (const key of [

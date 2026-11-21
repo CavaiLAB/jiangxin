@@ -8,6 +8,11 @@
 #
 # 可选的环境变量：
 #   JX_PACK_DISTRIBUTION_DIR   打进包里的发行目录，默认是 apps/desktop/runtime
+#   JX_PACK_STATE_ROOT         写进包里的状态根目录（绝对路径），默认是 apps/desktop/.dev。
+#                              要拷进「应用程序」长期用的本机构建，设成不依赖构建目录的位置，
+#                              比如 ~/Library/Application Support/cn.jiangxin.agent.desktop.dev
+#   JX_PACK_MOCK_MODEL=1       打开自带的假模型：应用启动时先起假模型，再把地址交给 DSH，
+#                              不用另外开终端跑 tools/mock-model（已设 JX_MODEL_BASE_URL 时不起）
 #
 # 产物：release/mac-arm64/匠心工业智能体平台.app
 set -euo pipefail
@@ -47,15 +52,24 @@ fi
 node "$PACK_DIST/bin/jx-preflight.mjs" --dist "$PACK_DIST" --profile web
 bash scripts/make-icons.sh
 
-# 这是本机构建：把状态根目录（apps/desktop/.dev）写进包里。
-# 这样从访达双击启动时状态也落在 .dev 下，而不是系统默认位置。正式构建不会带这一项。
+# 这是本机构建：把状态根目录（默认 apps/desktop/.dev，JX_PACK_STATE_ROOT 可改）写进包里。
+# 这样从访达双击启动时状态也落在这里，而不是系统默认位置。正式构建不会带这一项。
+STATE_ROOT="${JX_PACK_STATE_ROOT:-$JX_DESKTOP_DEV_DIR}"
+case "$STATE_ROOT" in
+  /*) ;;
+  *) echo "pack-mac: JX_PACK_STATE_ROOT 必须是绝对路径，现在是 $STATE_ROOT" >&2; exit 1 ;;
+esac
 EXTRA=(
   "--config.extraMetadata.jiangxin.channel=dev"
-  "--config.extraMetadata.jiangxin.stateRoot=$JX_DESKTOP_DEV_DIR"
+  "--config.extraMetadata.jiangxin.stateRoot=$STATE_ROOT"
 )
 if [ -n "$VERSION" ]; then
   # 产品版本号在打包时注入，界面上显示的版本取 app.getVersion()。
   EXTRA+=(--config.extraMetadata.version="$VERSION")
+fi
+if [ "${JX_PACK_MOCK_MODEL:-}" = "1" ]; then
+  # 本机试用：应用自己起假模型。只在没设 JX_MODEL_BASE_URL 时起，见 src/mock-model.js。
+  EXTRA+=("--config.extraMetadata.jiangxin.mockModel=true")
 fi
 
 rm -rf release/mac-arm64
