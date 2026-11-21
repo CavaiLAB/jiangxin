@@ -6,4 +6,6 @@
 
 本次迁移保留现网运行的旧应用外壳，按冻结的 Qian `0.2.1` 归档验收。保留现有数据库及其中的数据，不清库。
 
+业务预发继续运行原有外壳和远程模块。归档时核对冻结版本的包、标签与源码；验收范围见 [Kun 的外壳迁移决策](https://github.com/CavaiLAB/kun/blob/7bc0f343c74598c26489c541c0722773483b286f/pm/tasks/S1-DEC-039.md)，版本与来源见 [Qian 的维护记录](https://github.com/CavaiLAB/qian/blob/main/docs/migration.md)。
+
 匠心工业智能体平台的 Web 与桌面端继续按 [P38](2026-11-20-product.md#1-已定) 使用 DSH 客户端。旧外壳代码以后的用途、Qian 是否再发新版，以及产品的登录、租户、策略和审计由哪个后端提供，仍待后续裁定。
