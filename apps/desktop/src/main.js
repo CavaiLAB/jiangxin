@@ -20,6 +20,7 @@ const { contextMenuTemplate } = require('./context-menu');
 const { DshHost, redact } = require('./host');
 const { planLaunch } = require('./launch');
 const { buildMenu } = require('./menu');
+const { decideMockModel, locateMockModel, startMockModel } = require('./mock-model');
 const { runSelftest } = require('./selftest');
 const { describeVersion, displayVersion } = require('./version');
 
@@ -130,6 +131,9 @@ let mainWindow;
 let aboutWindow;
 /** @type {DshHost | undefined} */
 let host;
+/** 自带的假模型（只有本机试用构建或打开开关时才有）。 */
+/** @type {Awaited<ReturnType<typeof startMockModel>> | undefined} */
+let mockModel;
 /** 认证 Cookie（`名字=值`）。只在主进程内存里，不进浏览器的 Cookie 存储，不写日志。 */
 /** @type {string | undefined} */
 let authCookie;
@@ -408,7 +412,43 @@ async function loadShellPage(state, message) {
   });
 }
 
+/**
+ * 本机试用构建：DSH 启动前起自带的假模型，把它的地址和假密钥交给 DSH。
+ * 起不来只记一笔、照样启动 DSH（界面能开，只是发消息会失败）。
+ */
+async function startBundledMockModel() {
+  let decision;
+  try {
+    decision = decideMockModel({
+      option: option(ENV.mockModel),
+      baked: buildMetadata().mockModel,
+      modelBaseUrl: plan.hostOptions.env.JX_MODEL_BASE_URL,
+    });
+  } catch (error) {
+    shellLog(`不起自带的假模型：${error instanceof Error ? error.message : String(error)}`);
+    return;
+  }
+  if (!decision.enabled) {
+    if (decision.reason !== '没有打开') shellLog(`不起自带的假模型：${decision.reason}`);
+    return;
+  }
+  try {
+    mockModel = await startMockModel({
+      nodeBinary: plan.hostOptions.nodeBinary,
+      electronAsNode: plan.hostOptions.electronAsNode,
+      script: locateMockModel({ isPackaged: app.isPackaged, resourcesPath: process.resourcesPath, appDir: APP_DIR }),
+      logsDir: plan.dirs.logs,
+    });
+    plan.hostOptions.env.JX_MODEL_BASE_URL = mockModel.baseURL;
+    plan.hostOptions.env.JX_MODEL_API_KEY = mockModel.apiKey;
+    shellLog(`自带的假模型已就绪：${mockModel.baseURL}（进程 ${String(mockModel.pid)}，${decision.reason}）`);
+  } catch (error) {
+    shellLog(`自带的假模型没起来，照样启动 DSH：${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
 async function startHost() {
+  await startBundledMockModel();
   host = new DshHost(plan.hostOptions);
   host.on('exit', (/** @type {{ code: number | null, signal: string | null, tail: string }} */ info) => {
     authCookie = undefined;
@@ -544,6 +584,11 @@ async function quitApp(code) {
     await host?.stop();
   } catch (error) {
     shellLog(`停 DSH 时出错：${error instanceof Error ? error.message : String(error)}`);
+  }
+  try {
+    await mockModel?.stop();
+  } catch (error) {
+    shellLog(`停假模型时出错：${error instanceof Error ? error.message : String(error)}`);
   }
   shellLog(`退出，code=${String(code)}`);
   app.exit(code);

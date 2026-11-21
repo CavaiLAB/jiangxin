@@ -19,6 +19,7 @@
 //   MOCK_MODEL_LOG（默认 <本目录>/.dev/requests.jsonl，每个请求一行；密钥只记有没有、多长）
 //   MOCK_MODEL_DEFAULT_FILE（关键词后面没写文件名时读哪个文件，默认 jiangxin-demo.txt）
 //   MOCK_MODEL_CHUNK_DELAY_MS（流式每块之间停多久，默认 15）
+//   MOCK_MODEL_EXIT_WITH_PARENT（设成 1：标准输入读到结尾就退出。被别的进程带起来时用，父进程没了它跟着退）
 
 import { createServer } from 'node:http'
 import { appendFileSync, mkdirSync } from 'node:fs'
@@ -431,3 +432,11 @@ server.listen(PORT, HOST, () => {
 const stop = () => server.close(() => process.exit(0))
 process.on('SIGINT', stop)
 process.on('SIGTERM', stop)
+
+// 被桌面壳这类进程带起来时，标准输入是一根父进程一直不关的管子。父进程没了（包括被强制结束），
+// 管子随之关闭，这里读到结尾就退出，不留下占着端口的孤儿进程。
+if (process.env.MOCK_MODEL_EXIT_WITH_PARENT === '1') {
+  process.stdin.on('end', () => process.exit(0))
+  process.stdin.on('error', () => process.exit(0))
+  process.stdin.resume()
+}

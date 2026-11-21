@@ -37,5 +37,6 @@ node tools/mock-model/server.mjs
 | `MOCK_MODEL_LOG` | `tools/mock-model/.dev/requests.jsonl` | 请求日志，每个请求一行：方法、路径、请求头（密钥类已隐去）、模型、工具名、请求体里多出来的字段、怎么回的 |
 | `MOCK_MODEL_DEFAULT_FILE` | `jiangxin-demo.txt` | 关键词后面没写文件名时读哪个文件 |
 | `MOCK_MODEL_CHUNK_DELAY_MS` | `15` | 流式回复每块之间停多久 |
+| `MOCK_MODEL_EXIT_WITH_PARENT` | 不设 | 设成 `1`：标准输入读到结尾就退出。被别的进程带起来时用（桌面壳自带假模型时就这样起），父进程没了它跟着退 |
 
 外联检查用请求日志判断模型请求里有没有夹带别的东西（`extraBodyKeys`，以及请求头里的匿名用户标识）。
