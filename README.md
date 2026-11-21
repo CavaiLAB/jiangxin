@@ -53,7 +53,7 @@
 
 | 框架 | 角色 | 技术栈 | 仓库 | 来源 | 代码现在在哪 |
 |---|---|---|---|---|---|
-| **Kun** | 企业级后端框架：租户、身份、权限、数据、事件、审计、网关、组件运行时与能力目录；模型服务也由它提供 | .NET 10 | [CavaiLAB/kun](https://github.com/CavaiLAB/kun) | 两套后端代码归并而成：.NET 微服务框架与建在它上面的平台层 | `CavaiLAB/kun`：`Kun.*` 已在仓库根，其余还在过渡目录 `_import/qian/` |
+| **Kun** | 企业级后端框架：租户、身份、权限、数据、事件、审计、网关、组件运行时与能力目录；模型服务也由它提供 | .NET 10 | [CavaiLAB/kun](https://github.com/CavaiLAB/kun) | 两套后端代码归并而成：.NET 微服务框架与建在它上面的平台层 | `CavaiLAB/kun` 的 `src/` 放 .NET 项目；组件清单、profile 和宿主分别在根目录的 `plugins/`、`profiles/` 和 `hosts/` |
 | **Qian** | 前端框架：设计令牌、组件库、应用外壳、微前端、由 Schema 驱动的界面 | TypeScript、React | [CavaiLAB/qian](https://github.com/CavaiLAB/qian) | 后端仓库前端工作区里的框架库 | `CavaiLAB/qian`；已发布到 GitHub Packages，现在是 0.2.1，冻结在这一版（2026-11-20 定） |
 | **SanYuanAgent** | 智能体引擎，一个独立运行的 SDK：推理循环、工具、技能、记忆、沙箱、模型路由。云上、桌面和机器人这类边缘设备都要用到它（2026-11-20 起，Web 端和客户端的 Agent 运行时改用 DSH） | Python 3.12 | [CavaiLAB/sanyuan-agent](https://github.com/CavaiLAB/sanyuan-agent) | 私有产品里的 Python Agent 引擎 | 核心已在 `CavaiLAB/sanyuan-agent`，服务层与媒体适配层还在原来的私有仓库 |
 
@@ -115,7 +115,7 @@ SanYuanAgent 是独立运行的 SDK（已定）。提议：不接平台也能运
 | 0 立项 | 建仓库、主页与框架级文档 | 进行中 |
 | 1 治理就位 | 权限与评审规则、任务管理方式、CI 基线；确认对已接受的合并蓝图的修订 | 未开始。修订项已登记，待产品负责人确认 |
 | 2 SanYuanAgent 迁入 | Agent 引擎独立成库 | 核心已于 2026-11-17 带历史迁入；服务层与媒体适配层随后 |
-| 3 Kun 归并与 Qian 独立成库 | 两套后端代码按合并蓝图归并，包名统一为 `Kun.*`；前端的框架库迁入自己的仓库 | 2026-11-17 定现在开始，后端与前端同时进行；后端的两个来源仓库已于同日带历史导入 `kun` 并归档为只读，`Kun.*` 已提到仓库根、文档已整理进 `docs/`，构建并轨在做，按域归并未做；前端的框架库已于同日带历史导入 `qian`，发布了 0.2.0。合并蓝图已于同日接受 |
+| 3 Kun 归并与 Qian 独立成库 | 两套后端代码按合并蓝图归并，包名统一为 `Kun.*`；前端的框架库迁入自己的仓库 | 2026-11-17 接受合并蓝图，两个后端来源仓库带历史导入后归档，前端框架库迁入 `qian` 并发布 0.2.0。Kun 已完成按域归并并[移除过渡目录](https://github.com/CavaiLAB/kun/pull/110)，发布了[首个合并预览版](https://github.com/CavaiLAB/kun/releases/tag/v2026.11.20-beta.1)。Qian 已按 P38 冻结在 0.2.1 |
 | 4 协同与生命体 | 已拆成里程碑，最小的一圈提前（已定，2026-11-19）：能问能查、能办事、一句话做应用、给 Agent 加组件、应用互通与市场、历史系统、协同与人审、端与三级 | 未开始 |
 
 阶段 2 与阶段 3 互不依赖，可以并行。各阶段的进入与完成条件、各里程碑的完成标志见[路线与迁移](docs/06-roadmap.md)。
