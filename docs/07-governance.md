@@ -65,7 +65,7 @@
 
 哪个版本的 Kun 配哪个版本的 Qian 与 SanYuanAgent，由 `jiangxin` 维护一张版本矩阵。提议。
 
-旧前端包的撤下、弃用范围和使用方迁移入口见[裁定 P43](decisions/2026-11-21-shell-migration.md#p43-旧-npm-包如何处理)。
+旧前端层包的撤下范围见[裁定 P43](decisions/2026-11-21-shell-migration.md#p43-旧-npm-包如何处理)。仍使用旧运行时或插件 SDK 的项目，按[裁定 P44 的逐版替代对照](decisions/2026-11-23-legacy-npm.md)迁移。
 
 ## 8 许可
 
