@@ -58,7 +58,7 @@
 
 | 框架 | 版本 | 发布位置 |
 |---|---|---|
-| Kun | 一条日历版本线（已定） | 首个合并版的内核档通过可信发布（OIDC）发到 nuget.org，平台档发到 CavaiLAB 的公开 GitHub Packages 并关联 `CavaiLAB/kun`。之后全族上 nuget.org 的时点沿用原裁定 |
+| Kun | 一条日历版本线（已定） | [首个合并稳定版 2026.11.21](https://github.com/CavaiLAB/kun/releases/tag/v2026.11.21) 的 42 个内核包已通过可信发布（OIDC）发到 nuget.org，43 个平台包已发到 CavaiLAB 的公开 GitHub Packages 并关联 `CavaiLAB/kun`。之后全族上 nuget.org 的时点沿用原裁定 |
 | Qian | 首发 10 个包统一 0.2.0（已定，2026-11-17）。后续 8 个界面层包统一版本，TypeScript 运行时与前端插件开发包各自定版本（已定，2026-11-20）。同一天又定了 Qian 冻结在 0.2.1（[产品裁定](decisions/2026-11-20-product.md) P38），之后还发不发新版本，待定 | GitHub Packages（`https://npm.pkg.github.com`，作用域 `@cavailab`；已定，2026-11-17），0.2.0 已于 2026-11-17 发布；0.2.1 已于 2026-11-18 发布，10 个包一起升版，返修 0.2.0 里数据组件与业务选择器一渲染就出错的问题，装包用 0.2.1（0.2.0 仍留在包源上）。可见性定为公开（已定，2026-11-17），10 个包已于同日改为公开。从这个包源装包，公开的也要带令牌，怎么配置（认证那一行放进用户级配置）见 qian 仓库的[迁移说明](https://github.com/CavaiLAB/qian/blob/main/docs/migrating-from-yue.md)第 2 节。出处与发布步骤见 qian 仓库的[迁移文档](https://github.com/CavaiLAB/qian/blob/main/docs/migration.md)第 1、11 节 |
 | SanYuanAgent | 待定 | 待定 |
 | 匠心工业智能体平台（组合体） | 日历版本号：`vYYYY.M.D` 正式版，`vYYYY.M.D-N` 补丁版，`vYYYY.M.D-beta.N` 测试版，月和日不补零，构建时注入（已定，2026-11-20，[产品裁定](decisions/2026-11-20-product.md) P40）。各包 `package.json` 里的版本号是包自己的内部版本，另算 | 待定。还没有发布过 |
