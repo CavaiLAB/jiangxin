@@ -17,3 +17,5 @@ GitHub Packages 已撤下 `@idadawn/yue-sdk`、`@idadawn/yue-contracts`、`@idad
 旧运行时 `@idadawn/qian-runtime` 的 `0.1.0`、`0.1.1` 和旧插件 SDK `@idadawn/qian-plugin-sdk` 的 `0.1.0` 已决定弃用，三个版本仍可下载。截至 2026-11-21，包源的原生弃用标记仍待写入，安装时不会显示弃用提示。
 
 旧插件 SDK 依赖已撤下的层包，从空缓存重新安装会失败，使用原锁文件恢复也会失败。旧运行时的两个版本仍能独立安装。使用方可将运行时和插件 SDK 分别换为 `@cavailab/qian-runtime@0.2.1` 和 `@cavailab/qian-plugin-sdk@0.2.1`，更新依赖和锁文件。[包名对照与安装说明](https://github.com/CavaiLAB/qian/blob/main/docs/migrating-from-yue.md#旧依赖还能否从包源安装)
+
+2026-11-23 的[后继裁定 P44](2026-11-23-legacy-npm.md)记录了注册表的最终结果，以及这三个保留版本各自的替代包。
