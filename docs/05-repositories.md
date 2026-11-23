@@ -6,7 +6,7 @@
 >
 > 2026-11-20 补：Agent 运行时与界面外壳改用 DSH，组合体的代码放进 `jiangxin`（已定，[2026-11-20 产品裁定](decisions/2026-11-20-product.md) P37 至 P41）。第 1.1 节按这几条改写过。
 >
-> 2026-11-21 更新：第 2 节列出 Kun 归并后的路径和首个合并预览版。导入时的布局另注明日期。
+> 2026-11-23 更新：第 2 节列出 Kun 归并后的路径，以及首个合并稳定版的包源和安装入口。导入时的布局另注明日期。
 
 以前的问题是乱：后端分在两个仓库里，平台层精确钉住框架的版本；前端、文档站、任务看板和后端挤在一个仓库，Agent 引擎又在另一个产品的仓库里。现在按「一个框架一个仓库、一种主语言」重新分，方便更多人各管一块。
 
@@ -90,7 +90,9 @@
 | `_import/qian/` 下的 `plugins/`、`profiles/`、`hosts/` | 组件清单、profile、宿主 | `plugins/`、`profiles/`、`hosts/` |
 | `_import/qian/` 下的 `contracts/`、`tck/`、`schemas/` | 跨服务契约、一致性测试、Schema | `contracts/`、`tck/`、`schemas/` |
 
-首个合并预览版 `2026.11.20-beta.1` 已在 GitHub Packages 发布 85 个 NuGet 包，其中内核档 42 个、平台档 43 个。使用方可从[预发布说明](https://github.com/CavaiLAB/kun/releases/tag/v2026.11.20-beta.1)查 54 个旧 `Qian.*` 包各自的替代项，从[包迁移指南](https://github.com/CavaiLAB/kun/blob/main/docs/guides/package-migration.md)查包源与安装方法。实际发布记录见 [Kun #115](https://github.com/CavaiLAB/kun/pull/115)。
+[首个合并稳定版 `2026.11.21`](https://github.com/CavaiLAB/kun/releases/tag/v2026.11.21) 于 2026-11-23 发布。42 个内核包从 nuget.org 还原，43 个平台包从 CavaiLAB 的公开 GitHub Packages 还原。使用该版的 [NuGet.config](https://github.com/CavaiLAB/kun/releases/download/v2026.11.21/NuGet.config) 配置两个包源，再按[逐包清单](https://github.com/CavaiLAB/kun/releases/download/v2026.11.21/release-packages.json)选择依赖。54 个旧 `Qian.*` 包的替代项与安装步骤见[包迁移指南](https://github.com/CavaiLAB/kun/blob/main/docs/guides/package-migration.md)。
+
+此前的[合并预览版 `2026.11.20-beta.1`](https://github.com/CavaiLAB/kun/releases/tag/v2026.11.20-beta.1) 在 GitHub Packages 发布了全部 85 个包。发布记录见 [Kun #115](https://github.com/CavaiLAB/kun/pull/115)。
 
 ### 2.2 拆：后端仓库里的前端
 
