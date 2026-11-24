@@ -8,12 +8,12 @@
     {
       "repo": "qian",
       "label": "Qian",
-      "commit": "8f66f36c12e4014a58465192db47e27bcaeb6dce"
+      "commit": "758062ea9c5f743c4490804991d51103ade135c2"
     },
     {
       "repo": "sanyuan-agent",
       "label": "SanYuanAgent",
-      "commit": "b890282ec132745ac973bafe9fb52cb4b9bc9f94"
+      "commit": "eb6ce28171981f1b093c9c5423ecf9f9a40ae31c"
     }
   ]
 }
