@@ -1,12 +1,12 @@
 # AGENTS.md：给编码代理的入口说明
 
-这个仓库是**匠心智能体平台**的主页与总览：理念、角色与产品形态、总体架构、插件模型、应用互通、历史系统接入、Agent 协同、仓库归属、路线、协作约定、三种形态、平台级裁定。它同时是组合体：把 Agent 框架与企业级框架拼成一个产品（已定，2026-11-19）。组合体的代码也在这里：基于 DSH 的「匠心工业智能体平台」，2026-11-20 放进来（已定，P41），目录和约定见下面「组合体的代码」。
+这个仓库是**匠心工业智能体平台**的主页与总览：理念、角色与产品形态、总体架构、插件模型、应用互通、历史系统接入、Agent 协同、仓库归属、路线、协作约定、三种形态、平台级裁定。它同时是组合体：把 Agent 框架与企业级框架拼成一个产品（已定，2026-11-19）。组合体的代码也在这里：基于 DSH 的产品代码，2026-11-20 放进来（已定，P41），目录和约定见下面「组合体的代码」。
 
 ## 先读什么
 
 1. [README.md](README.md)：平台是什么，两种角色，三个框架各管什么，组合体里有什么。
 2. [docs/glossary.md](docs/glossary.md)：名字与术语各指什么。
-3. 平台级裁定：[docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)（P1 至 P21）与 [docs/decisions/2026-11-19-platform.md](docs/decisions/2026-11-19-platform.md)（P22 至 P33），以及 [2026-11-20 迁移与发布裁定](docs/decisions/2026-11-20-release.md)（P34 至 P36）和 [2026-11-20 产品裁定](docs/decisions/2026-11-20-product.md)（P37 至 P41）、[2026-11-21 旧应用外壳迁移裁定](docs/decisions/2026-11-21-shell-migration.md)（P42、P43）和 [2026-11-23 旧 npm 版本迁移裁定](docs/decisions/2026-11-23-legacy-npm.md)（P44），记录产品负责人已定的事项。没列在里面的都不是已定。新的裁定接着编号。
+3. 平台级裁定：[docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)（P1 至 P21）与 [docs/decisions/2026-11-19-platform.md](docs/decisions/2026-11-19-platform.md)（P22 至 P33），以及 [2026-11-20 迁移与发布裁定](docs/decisions/2026-11-20-release.md)（P34 至 P36）和 [2026-11-20 产品裁定](docs/decisions/2026-11-20-product.md)（P37 至 P41）、[2026-11-21 旧应用外壳迁移裁定](docs/decisions/2026-11-21-shell-migration.md)（P42、P43）和 [2026-11-23 旧 npm 版本迁移裁定](docs/decisions/2026-11-23-legacy-npm.md)（P44）、[2026-11-24 平台级裁定](docs/decisions/2026-11-24-platform.md)（P45 至 P56），记录产品负责人已定的事项。没列在里面的都不是已定。新的裁定接着编号。
 4. [docs/07-governance.md](docs/07-governance.md)：协作约定。
 5. 要改组合体的代码，再读下面「组合体的代码」和那个目录里的 README。
 

@@ -71,7 +71,7 @@ flowchart LR
 | 企业级应用平台 | 后端 Kun；前端 Qian | 租户、身份、权限、数据、事件、审计；应用、应用市场、历史系统的接入 |
 | 组合体 | 在 `jiangxin` 仓库 | 把上面两样拼成一个产品 |
 
-Agent 平台的客户端基于企业级框架（已定）。原来的提议是这样落：界面用 Qian 搭；身份、权限、应用与能力来自 Kun；智能来自 SanYuanAgent。2026-11-20 起界面外壳用 DSH 的客户端、Agent 运行时用 DSH（已定，P37、P38），这条提议由此改写；身份、权限这些由哪个后端提供，SanYuanAgent 以后怎么接，待定。组合体里现在有什么，见[仓库与归属](05-repositories.md)第 1.1 节。
+Agent 平台的客户端基于企业级框架（已定）。原来的提议是这样落：界面用 Qian 搭；身份、权限、应用与能力来自 Kun；智能来自 SanYuanAgent。2026-11-20 起界面外壳用 DSH 的客户端、Agent 运行时用 DSH（已定，P37、P38），这条提议由此改写；身份、权限这些由哪个后端提供，SanYuanAgent 以后怎么接，待定（SanYuanAgent 2026-11-24 起暂缓开发，[P53](decisions/2026-11-24-platform.md)）。组合体里现在有什么，见[仓库与归属](05-repositories.md)第 1.1 节。
 
 ## 4 Agent 平台是入口
 
