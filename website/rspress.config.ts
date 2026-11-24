@@ -21,9 +21,9 @@ export default defineConfig({
   root: docsDir,
   base,
   lang: 'zh',
-  title: '匠心智能体平台',
-  description: '匠心智能体平台的框架级文档：平台总览，以及 Kun、Qian、SanYuanAgent 三个框架',
-  logoText: '匠心智能体平台',
+  title: '匠心工业智能体平台',
+  description: '匠心工业智能体平台的框架级文档：平台总览，以及 Kun、Qian、SanYuanAgent 三个框架',
+  logoText: '匠心工业智能体平台',
   // 产物里的链接带 .html，任何静态服务器都能直接打开
   route: { cleanUrls: false },
   markdown: {
