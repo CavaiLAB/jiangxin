@@ -31,7 +31,7 @@ for patch in "$PATCH_DIR"/desktop-*.patch; do
   # 补丁里 "+++ b/<路径>" 的那些文件就是它要改的文件。
   while IFS= read -r target; do
     if [ ! -f "$UPSTREAM/$target" ]; then
-      echo "打不上  $name：上游里没有 $target"
+      echo "打不上  ${name}：上游里没有 $target"
       missing=1
       continue
     fi
@@ -45,10 +45,10 @@ for patch in "$PATCH_DIR"/desktop-*.patch; do
   if (cd "$tree" && git apply --check "$patch" 2>/dev/null); then
     echo "能打上  $name"
   else
-    echo "打不上  $name：上下文对不上，要对着新源码重写这个补丁"
+    echo "打不上  ${name}：上下文对不上，要对着新源码重写这个补丁"
     failed=$((failed + 1))
   fi
 done
 
-echo "check-patches: 共 $count 个补丁，$failed 个打不上（对照 $UPSTREAM）"
+echo "check-patches: 共 $count 个补丁，$failed 个打不上（对照 ${UPSTREAM}）"
 [ "$failed" -eq 0 ]

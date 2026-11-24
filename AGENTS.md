@@ -48,6 +48,7 @@
 - 启动 DSH 一律经 `distribution/bin/jx-dsh` 或桌面壳。它们会显式设 `DSH_HOME`、`DSH_AGENTS_HOME`，并用补丁把默认工作区放进状态目录。直接跑 `dsh` 时这三样缺一不可，不然会读写这台机器上别人自己的 DSH 状态（`~/.dsh`、`~/.agents`、`~/Documents/deepseek-harness`）。
 - 本机试用走假模型（`tools/mock-model/`），不用真的模型密钥，不登录任何上游账号。
 - CI 现在只构建文档站，组合体代码的检查在本机跑（上表最后一列）。
+- 仓库里的 shell 脚本，变量后面紧跟中文或全角标点时写 `${名字}`，不写 `$名字`。macOS 上的 bash 在 UTF-8 的语言环境下会把后面那个字的第一个字节读进变量名，脚本报变量未定义就退出；没设语言的环境里看不出来。改了 shell 脚本跑 `node tools/check-shell-vars.mjs`，启动用的脚本再在 `LANG=zh_CN.UTF-8` 下跑一遍。
 - 代码里的标识符用英文，注释和说明用中文。
 
 ## 文档站

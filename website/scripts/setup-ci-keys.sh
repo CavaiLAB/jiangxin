@@ -25,11 +25,11 @@ setup() {
   if gh repo deploy-key list -R "$ORG/$repo" --json title --jq '.[].title' | grep -qF "$TITLE"; then has_key=1; fi
 
   if [[ $has_secret == 1 && $has_key == 1 ]]; then
-    echo "$repo：已配置，跳过"
+    echo "${repo}：已配置，跳过"
     return
   fi
   if [[ $has_secret == 1 || $has_key == 1 ]]; then
-    echo "$repo：密钥与 deploy key 只有一个在（密钥 $has_secret，deploy key $has_key）。把在的那个删掉再重跑" >&2
+    echo "${repo}：密钥与 deploy key 只有一个在（密钥 ${has_secret}，deploy key ${has_key}）。把在的那个删掉再重跑" >&2
     return 1
   fi
 
@@ -37,7 +37,7 @@ setup() {
   gh repo deploy-key add "$tmp/$repo.pub" -R "$ORG/$repo" --title "$TITLE, $(date +%F)"
   gh secret set "$secret" -R "$HOME_REPO" < "$tmp/$repo"
   rm -f "$tmp/$repo" "$tmp/$repo.pub"
-  echo "$repo：已登记只读 deploy key，私钥已存成密钥 $secret"
+  echo "${repo}：已登记只读 deploy key，私钥已存成密钥 $secret"
 }
 
 setup kun SOURCES_KEY_KUN
