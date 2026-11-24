@@ -52,7 +52,7 @@ wait_for() { # 文件 正则 超时秒数
 
 # --- 镜像与网络 -----------------------------------------------------------------------------------
 for image in jx-egress/base:1 jx-egress/dsh:0.2.2-rc.5 jx-egress/browser:1.64.0; do
-  docker image inspect "$image" >/dev/null 2>&1 || { echo "egress: 缺镜像 $image，先构建" >&2; "$here/build-images.sh"; break; }
+  docker image inspect "$image" >/dev/null 2>&1 || { echo "egress: 缺镜像 ${image}，先构建" >&2; "$here/build-images.sh"; break; }
 done
 remove_containers
 if ! docker network inspect "$NET" >/dev/null 2>&1; then

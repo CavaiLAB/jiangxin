@@ -23,7 +23,7 @@ if [ "$SOURCE_DIR" = "$RUNTIME_DIR" ]; then
 fi
 for f in package.json package-lock.json .npmrc bin/jx-preflight.mjs; do
   if [ ! -f "$SOURCE_DIR/$f" ]; then
-    echo "install-runtime: 发行目录里没有 $f：$SOURCE_DIR" >&2
+    echo "install-runtime: 发行目录里没有 ${f}：$SOURCE_DIR" >&2
     exit 1
   fi
 done
@@ -43,7 +43,7 @@ npm ci --ignore-scripts --no-audit --no-fund
 EXPECTED="$(node -p "require('./package.json').dependencies['@deepseek-ai/dsh']")"
 ACTUAL="$(node -p "require('./node_modules/@deepseek-ai/dsh/package.json').version")"
 if [ "$EXPECTED" != "$ACTUAL" ]; then
-  echo "install-runtime: 装出来的 DSH 是 $ACTUAL，清单里钉的是 $EXPECTED" >&2
+  echo "install-runtime: 装出来的 DSH 是 ${ACTUAL}，清单里钉的是 $EXPECTED" >&2
   exit 1
 fi
 echo "install-runtime: 已从 $SOURCE_DIR 同步，DSH $ACTUAL 和插件包装到了 $RUNTIME_DIR"

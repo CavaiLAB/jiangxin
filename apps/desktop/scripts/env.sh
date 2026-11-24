@@ -14,7 +14,7 @@ unset _jx_env_self
 
 # 自检：算出来的目录必须是桌面壳自己的目录，否则宁可停下也不乱建目录。
 if [ ! -f "$JX_DESKTOP_DIR/scripts/env.sh" ] || [ ! -f "$JX_DESKTOP_DIR/package.json" ]; then
-  echo "env.sh: 没能定位到 apps/desktop（算出来的是 $JX_DESKTOP_DIR），停止" >&2
+  echo "env.sh: 没能定位到 apps/desktop（算出来的是 ${JX_DESKTOP_DIR}），停止" >&2
   return 1 2>/dev/null || exit 1
 fi
 

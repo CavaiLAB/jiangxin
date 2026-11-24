@@ -9,6 +9,12 @@ mock_log_dir="$root/tools/mock-model/.dev"
 mkdir -p "$mock_log_dir"
 
 mock_pid=""
+# 先装好清理，再起假模型：之后不管在哪一步退出，起过的假模型都会被停掉。
+cleanup() {
+  if [ -n "$mock_pid" ]; then kill "$mock_pid" 2>/dev/null || true; fi
+}
+trap cleanup EXIT INT TERM
+
 if curl -fsS --max-time 1 "http://127.0.0.1:${MOCK_MODEL_PORT:-3190}/healthz" >/dev/null 2>&1; then
   echo "dev.sh: 假模型已经在 ${MOCK_MODEL_PORT:-3190} 端口上运行，直接用它。" >&2
 else
@@ -18,13 +24,8 @@ else
     curl -fsS --max-time 1 "http://127.0.0.1:${MOCK_MODEL_PORT:-3190}/healthz" >/dev/null 2>&1 && break
     sleep 0.1
   done
-  echo "dev.sh: 假模型已启动（进程 $mock_pid），日志在 $mock_log_dir/" >&2
+  echo "dev.sh: 假模型已启动（进程 ${mock_pid}），日志在 $mock_log_dir/" >&2
 fi
-
-cleanup() {
-  if [ -n "$mock_pid" ]; then kill "$mock_pid" 2>/dev/null || true; fi
-}
-trap cleanup EXIT INT TERM
 
 # 演示用的文件：在问题里写「读文件 jiangxin-demo.txt」，假模型会让 DSH 读它。
 # 放进默认工作区（见 distribution/patches/15-default-workspace.yml）。

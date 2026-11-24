@@ -31,7 +31,7 @@ dist_dir="$(cd "$dist_dir" && pwd)"
 
 dsh_bin="$dist_dir/node_modules/.bin/dsh"
 if [ ! -x "$dsh_bin" ]; then
-  echo "jx-dsh: 找不到 $dsh_bin。先在发行目录里装依赖：(cd \"$dist_dir\" && npm ci --ignore-scripts)" >&2
+  echo "jx-dsh: 找不到 ${dsh_bin}。先在发行目录里装依赖：(cd \"$dist_dir\" && npm ci --ignore-scripts)" >&2
   exit 2
 fi
 
@@ -51,7 +51,7 @@ DSH_HOME="$(cd "$DSH_HOME" && pwd)"
 DSH_AGENTS_HOME="$(cd "$DSH_AGENTS_HOME" && pwd)"
 for guarded in "$HOME/.dsh" "$HOME/.agents"; do
   if [ "$DSH_HOME" = "$guarded" ] || [ "$DSH_AGENTS_HOME" = "$guarded" ]; then
-    echo "jx-dsh: 拒绝使用 $guarded（那是用户自己的 DSH 状态）。请把 DSH_HOME / DSH_AGENTS_HOME 指到别处。" >&2
+    echo "jx-dsh: 拒绝使用 ${guarded}（那是用户自己的 DSH 状态）。请把 DSH_HOME / DSH_AGENTS_HOME 指到别处。" >&2
     exit 2
   fi
 done
@@ -123,7 +123,7 @@ cmd=("$dsh_bin" "$profile_flag" "$profile_name" ${patch_args[@]+"${patch_args[@]
 
 {
   echo "jx-dsh: 发行目录 $dist_dir"
-  echo "jx-dsh: DSH $JX_DSH_VERSION，产品版本 $JX_PRODUCT_VERSION_LABEL${JX_PRODUCT_COMMIT:+（$JX_PRODUCT_COMMIT）}"
+  echo "jx-dsh: DSH ${JX_DSH_VERSION}，产品版本 $JX_PRODUCT_VERSION_LABEL${JX_PRODUCT_COMMIT:+（${JX_PRODUCT_COMMIT}）}"
   echo "jx-dsh: DSH_HOME=$DSH_HOME"
   echo "jx-dsh: DSH_AGENTS_HOME=$DSH_AGENTS_HOME"
   echo "jx-dsh: 工作目录 $(pwd)"
