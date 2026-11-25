@@ -1,0 +1,145 @@
+/*
+ * @jx/ui-kit 的 Tailwind 入口。
+ *
+ * 不用自己编译：插件构建时 jx-dsh-plugin-build 认出 *.tailwind.css，先用 Tailwind 编译，再像全局样式那样打进
+ * lib/client.js。扫描范围是这个包的 src/（下面的 @source）加上使用方插件自己的 src/（构建脚本用 --cwd 指过去），
+ * 所以插件代码里写的 jx: 类名也会编进来。
+ *
+ * 和 shadcn 的标准写法相比改了五处，都在 DSH 里实测过：
+ *   1. 不引 preflight（它重置整个页面的元素，DSH 的界面也在这个页面里），换成下面只作用于带 jx: 类名的元素的小重置；
+ *   2. 工具类不放进 @layer：DSH 的样式都不分层，分层的规则对上不分层的一定输（圆角形状、滚动条、焦点色会被盖掉）；
+ *   3. 类名都带 jx: 前缀，只管自己的元素；
+ *   4. DSH 给所有元素设了超椭圆圆角，正圆和胶囊形要显式写回 corner-shape: round；
+ *   5. 深色跟 DSH 的 body[data-ds-dark-theme]；语义色和圆角全部指到 DSH 的 --dsw-* 变量，深浅色、品牌包换色自动跟着走。
+ *
+ * 第 5 处直接写在 @theme inline 里：工具类里展开的就是 var(--dsw-…)，不在 body 上另挂 --primary 这类通用的变量名，
+ * 免得和别的插件撞。
+ */
+@layer theme;
+@import "tailwindcss/theme.css" layer(theme) prefix(jx);
+@import "tailwindcss/utilities.css" prefix(jx);
+@import "tw-animate-css";
+
+/* 扫描这个包自己的源码。使用方插件的源码由构建脚本交给 Tailwind（--cwd <插件>/src）。 */
+@source "..";
+
+@custom-variant dark (&:where([data-ds-dark-theme], [data-ds-dark-theme] *));
+
+/*
+ * 下面九条自定义变体抄自 shadcn 4.23.0 的 dist/tailwind.css（MIT 许可，见 NOTICE.md）。生成的组件用它们认 Base UI 的
+ * data-open、data-checked 这类属性。那个文件里另有滚动渐隐、闪光动画、折叠面板的工具类，还有一条不带前缀的全局
+ * .shimmer 规则，组件用不到，没有抄。
+ */
+@custom-variant data-open {
+  &:where([data-state="open"]),
+  &:where([data-open]:not([data-open="false"])) {
+    @slot;
+  }
+}
+@custom-variant data-closed {
+  &:where([data-state="closed"]),
+  &:where([data-closed]:not([data-closed="false"])) {
+    @slot;
+  }
+}
+@custom-variant data-checked {
+  &:where([data-state="checked"]),
+  &:where([data-checked]:not([data-checked="false"])) {
+    @slot;
+  }
+}
+@custom-variant data-unchecked {
+  &:where([data-state="unchecked"]),
+  &:where([data-unchecked]:not([data-unchecked="false"])) {
+    @slot;
+  }
+}
+@custom-variant data-selected {
+  &:where([data-selected="true"]) {
+    @slot;
+  }
+}
+@custom-variant data-disabled {
+  &:where([data-disabled="true"]),
+  &:where([data-disabled]:not([data-disabled="false"])) {
+    @slot;
+  }
+}
+@custom-variant data-active {
+  &:where([data-state="active"]),
+  &:where([data-active]:not([data-active="false"])) {
+    @slot;
+  }
+}
+@custom-variant data-horizontal {
+  &:where([data-orientation="horizontal"]) {
+    @slot;
+  }
+}
+@custom-variant data-vertical {
+  &:where([data-orientation="vertical"]) {
+    @slot;
+  }
+}
+
+/*
+ * 第 5 处：shadcn 的语义色 → DSH 的变量。DSH 把这些变量声明在 body 上，深色和品牌包换色也在那里覆盖。
+ * 用哪个变量照 DSH 同类组件的样式（@deepseek-ai/dsh-client-ui-primitives 的 *.module.css）。
+ */
+@theme inline {
+  --color-background: var(--dsw-alias-bg-base);
+  --color-foreground: var(--dsw-alias-label-primary);
+  --color-card: var(--dsw-alias-bg-layer-2);
+  --color-card-foreground: var(--dsw-alias-label-primary);
+  --color-popover: var(--dsw-alias-bg-layer-2);
+  --color-popover-foreground: var(--dsw-alias-label-primary);
+  /* 主按钮：DSH 的 Button.module.css 用的是 button-primary-fill 和 label-primary-foreground。 */
+  --color-primary: var(--dsw-alias-button-primary-fill);
+  --color-primary-foreground: var(--dsw-alias-label-primary-foreground);
+  --color-secondary: var(--dsw-alias-interactive-bg-hover-solid);
+  --color-secondary-foreground: var(--dsw-alias-label-primary);
+  --color-muted: var(--dsw-alias-interactive-bg-hover-solid);
+  --color-muted-foreground: var(--dsw-alias-label-tertiary);
+  /* 列表里被指到的那一行：DSH 菜单行悬停的底色。 */
+  --color-accent: var(--dsw-alias-interactive-bg-hover);
+  --color-accent-foreground: var(--dsw-alias-label-primary);
+  --color-destructive: var(--dsw-alias-state-error-primary);
+  --color-border: var(--dsw-alias-border-l2);
+  /* 输入框的边框：DSH 的 Input.module.css 用 border-l4。 */
+  --color-input: var(--dsw-alias-border-l4);
+  --color-ring: var(--dsw-alias-state-business-primary);
+
+  /* 圆角的档位和 DSH 一一对应：jx:rounded-md 就是 --dsw-radius-md（12px），DSH 的按钮、输入框、菜单行都用它；
+     菜单卡片用 lg（16px）。 */
+  --radius-xs: var(--dsw-radius-xs);
+  --radius-sm: var(--dsw-radius-sm);
+  --radius-md: var(--dsw-radius-md);
+  --radius-lg: var(--dsw-radius-lg);
+  --radius-xl: var(--dsw-radius-xl);
+}
+
+/* 第 1 处：小重置。:where() 让它的优先级是 0，任何一个工具类都能盖过它；只碰带 jx: 类名的元素。 */
+:where([class*="jx:"]),
+:where([class*="jx:"])::before,
+:where([class*="jx:"])::after {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+:where(button[class*="jx:"], input[class*="jx:"], select[class*="jx:"], textarea[class*="jx:"]) {
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+  background-color: transparent;
+  border-radius: 0;
+}
+:where(svg[class*="jx:"], img[class*="jx:"]) {
+  display: block;
+  vertical-align: middle;
+}
+
+/* 第 4 处：正圆和胶囊形。优先级比 DSH 的「* { corner-shape }」高，而且同样不分层。 */
+[class*="jx:"][class*="rounded-full"] {
+  corner-shape: round;
+}
