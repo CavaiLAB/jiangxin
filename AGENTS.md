@@ -1,36 +1,42 @@
 # AGENTS.md：给编码代理的入口说明
 
-这个仓库是**匠心工业智能体平台**的主页与总览：理念、角色与产品形态、总体架构、插件模型、应用互通、历史系统接入、Agent 协同、仓库归属、路线、协作约定、三种形态、平台级裁定。它同时是组合体：把 Agent 框架与企业级框架拼成一个产品（已定，2026-11-19）。组合体的代码也在这里：基于 DSH 的产品代码，2026-11-20 放进来（已定，P41），目录和约定见下面「组合体的代码」。
+这个仓库是**匠心工业智能体平台**的产品仓库，也是平台的主页。平台只按这一句描述（已定，2026-11-26，P79）：企业级的 AI 原生平台。人用自然语言说清要什么，智能体把它落成可运行的系统；系统上线后在人的反馈里继续改进。
+
+结构只这样说：匠心是产品，代码在本仓库（已定，P41），目录和约定见下面「产品的代码」；Kun 是企业级框架，代码在 `CavaiLAB/kun`；DSH 是上游的 Agent 运行时，版本钉死，不改它的源码。
+
+`docs/` 里是平台的文档：平台做什么与设计理念、工业智能制造、产品形态、总体架构、插件模型、应用互通、历史系统接入、Agent 协同、DSH 的对接与升级、在平台上做开发、遵循的标准、路线、协作约定、平台级裁定。
 
 ## 先读什么
 
-1. [README.md](README.md)：平台是什么，两种角色，三个框架各管什么，组合体里有什么。
+1. [README.md](README.md)：平台是什么，匠心、Kun、DSH 各管什么，仓库里现在有什么。
 2. [docs/glossary.md](docs/glossary.md)：名字与术语各指什么。
 3. 平台级裁定：[docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)（P1 至 P21）与 [docs/decisions/2026-11-19-platform.md](docs/decisions/2026-11-19-platform.md)（P22 至 P33），以及 [2026-11-20 迁移与发布裁定](docs/decisions/2026-11-20-release.md)（P34 至 P36）和 [2026-11-20 产品裁定](docs/decisions/2026-11-20-product.md)（P37 至 P41）、[2026-11-21 旧应用外壳迁移裁定](docs/decisions/2026-11-21-shell-migration.md)（P42、P43）和 [2026-11-23 旧 npm 版本迁移裁定](docs/decisions/2026-11-23-legacy-npm.md)（P44）、[2026-11-24 平台级裁定](docs/decisions/2026-11-24-platform.md)（P45 至 P56）和 [2026-11-25 平台级裁定](docs/decisions/2026-11-25-platform.md)（P57 至 P77），记录产品负责人已定的事项。没列在里面的都不是已定。新的裁定接着编号。
 4. [docs/07-governance.md](docs/07-governance.md)：协作约定。
-5. 要改组合体的代码，再读下面「组合体的代码」和那个目录里的 README。
+5. 要改产品的代码，再读下面「产品的代码」和那个目录里的 README。
 
 ## 规则
 
 - 文档用中文。
-- 不写参考平台和对标项目的名字。DSH 是组合体的依赖，文档里称呼它写「DSH」，不写它的全称；代码里躲不开的包名和配置行名，照引的上游原文（源码、提示词、界面上的文字），以及许可与商标声明，照写。
+- 不写参考平台和对标项目的名字。DSH 是产品的依赖，文档里称呼它写「DSH」，不写它的全称；代码里躲不开的包名和配置行名，照引的上游原文（源码、提示词、界面上的文字），以及许可与商标声明，照写。
 - 分清「已定」「提议」「待定」。产品负责人没有裁定的事，不写成已定；需要拍板的问题登记出来，不自行决定。
-- 说现状的时候写清是「已有」（在来源仓库里已经实现）还是「规划」，不把规划写成已经实现。
+- 说现状的时候写清是「已有」（已经实现）还是「规划」，不把规划写成已经实现。
+- 平台的定位只用开头那一句，一个字不改。2026-11-26 起不再用的几种说法，新写的文字里不要出现，见[协作约定](docs/07-governance.md)第 5 节。「形态」这个词只用来说部署的两种形态。
 - 本仓库是公开的。不放密钥和内部地址，不放还没修复的安全问题的细节，不放私有仓库的内部实现细节；不放产品清单与建设状态；对私有的来源产品只写可以承接的能力类别，不写功能盘点与差距，也不写它的名字。见[协作约定](docs/07-governance.md)第 11 节。这些对代码、注释、测试数据和提交说明一样适用，另外不留本机路径和用户名。
 - 只写现在的名字和位置：不写前端框架的旧名、旧仓库的地址，不用「原」加框架名指代来源，不讲改名的经过；讲位置写路径或现在的名字。决策记录与历史文档、给使用者的迁移指南、改名与导入工具除外。见[协作约定](docs/07-governance.md)第 11 节。
-- 框架的代码在各框架仓库：后端在 `CavaiLAB/kun`，.NET 项目在 `src/`，组件清单在 `plugins/`；前端框架库在 `CavaiLAB/qian`（2026-11-25 起归档，只读，见 P77）；Agent 引擎的核心在 `CavaiLAB/sanyuan-agent`，服务层与媒体适配层还在原来的私有仓库。要改框架的代码去对应的仓库，按那边的 `AGENTS.md` 办。各框架的历史文件与本仓库的平台级裁定（`docs/decisions/` 下）有出入时，以平台级裁定为准。组合体的代码在本仓库，见下一节。
-- 改了一处口径，把引用它的其他文档一起改掉：三个框架仓库的 README 都引用这里的名称与分工。
+- 企业级框架的代码在 `CavaiLAB/kun`：.NET 项目在 `src/`，组件清单在 `plugins/`。要改它去那个仓库，按那边的 `AGENTS.md` 办。Kun 的历史文件与本仓库的平台级裁定（`docs/decisions/` 下）有出入时，以平台级裁定为准。产品的代码在本仓库，见下一节。
+- 另外两个仓库不要去改：`CavaiLAB/qian` 已归档，只读（P77）；`CavaiLAB/sanyuan-agent` 保留，暂不维护（P78）。
+- 改了一处口径，把引用它的其他文档一起改掉：Kun 的 README 与文档引用这里的名称与分工。
 - 改动走分支和 PR，不直接推 `main`。建仓期间的初始文档除外，见[协作约定](docs/07-governance.md)第 2 节。
 
-## 组合体的代码
+## 产品的代码
 
 都在仓库根下。各目录怎么用，看它自己的 README。
 
 | 目录 | 是什么 | 包管理与检查 |
 |---|---|---|
-| [`distribution/`](distribution/README.md) | 发行目录：钉死版本的 DSH、以 tarball 装入的插件包、按文件名叠加的配置补丁、启动器 `bin/jx-dsh` 与启动前检查 `bin/jx-preflight.mjs`。Web 端和客户端共用 | npm。`npm ci --ignore-scripts`，然后 `node bin/jx-preflight.mjs` |
+| [`distribution/`](distribution/README.md) | 发行目录：钉死版本的 DSH、以 tarball 装入的插件包、按文件名叠加的配置补丁、启动器 `bin/jx-dsh` 与启动前检查 `bin/jx-preflight.mjs`。Web 端和桌面端共用 | npm。`npm ci --ignore-scripts`，然后 `node bin/jx-preflight.mjs` |
 | [`apps/web/`](apps/web/README.md) | Web 端：启动脚本，反向代理的配置与验证 | 用 `distribution/` 装好的依赖；`apps/web/dev.sh` 在本机起假模型和 Web 端 |
-| [`apps/desktop/`](apps/desktop/README.md) | 客户端（桌面）：薄的 Electron 壳 | npm。`npm test`（单测不需要先装依赖）；启动与打包的准备见它的 README |
+| [`apps/desktop/`](apps/desktop/README.md) | 桌面端：薄的 Electron 壳 | npm。`npm test`（单测不需要先装依赖）；启动与打包的准备见它的 README |
 | [`apps/console/`](apps/console/README.md) | 管理端，先不做，占位 | — |
 | [`packages/`](packages/README.md) | `brand-theme`（品牌包）、`enterprise-workbench`（企业插件样板，假数据）、`ui-kit`（界面组件包与插件构建脚本） | 各包各用 pnpm，先装 `ui-kit`。每个包里 `pnpm install --frozen-lockfile`、`pnpm run typecheck`、`pnpm run test` |
 | [`tests/egress/`](tests/egress/README.md) | 外联检查 | 要 Docker |
@@ -47,7 +53,7 @@
 - 改了 `packages/` 下的插件包，跑 `distribution/scripts/vendor-packages.sh`，把 `distribution/vendor/` 下的 tarball、`distribution/package.json`、`distribution/package-lock.json` 和它生成的 `distribution/patches/70-*.yml`、`80-*.yml` 一起提交。生成的补丁不要手改。
 - 启动 DSH 一律经 `distribution/bin/jx-dsh` 或桌面壳。它们会显式设 `DSH_HOME`、`DSH_AGENTS_HOME`，并用补丁把默认工作区放进状态目录。直接跑 `dsh` 时这三样缺一不可，不然会读写这台机器上别人自己的 DSH 状态（`~/.dsh`、`~/.agents`、`~/Documents/deepseek-harness`）。
 - 本机试用走假模型（`tools/mock-model/`），不用真的模型密钥，不登录任何上游账号。
-- CI 现在只构建文档站，组合体代码的检查在本机跑（上表最后一列）。
+- CI 现在只构建文档站，产品代码的检查在本机跑（上表最后一列）。
 - 仓库里的 shell 脚本，变量后面紧跟中文或全角标点时写 `${名字}`，不写 `$名字`。macOS 上的 bash 在 UTF-8 的语言环境下会把后面那个字的第一个字节读进变量名，脚本报变量未定义就退出；没设语言的环境里看不出来。改了 shell 脚本跑 `node tools/check-shell-vars.mjs`，启动用的脚本再在 `LANG=zh_CN.UTF-8` 下跑一遍。
 - 代码里的标识符用英文，注释和说明用中文。
 
