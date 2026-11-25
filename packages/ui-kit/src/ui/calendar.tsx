@@ -14,6 +14,9 @@ import "../styles/jx.tailwind.css"
 /*
  * 内部件：日期选择里的日历。shadcn 4.23.0（base-nova）生成，适配脚本处理过（forwardRef）。不从包里导出。
  * 手调：格子 32px、圆角 sm；选中用主色（DSH 的主按钮色）；键盘焦点框 2px。
+ * 别的月份的日子，按钮上加了 jx:text-inherit，字色跟格子走：组件库的 Button 自带一个字色（照 DSH 的按钮），不盖掉的话，
+ * 格子给别的月份设的浅色传不到按钮上，看起来和本月的日子一样。只加在别的月份的日子上：禁用的日子格子也设了浅色，
+ * 但它们原来的样子（正常字色加半透明）不动。选中的日子另有字色，盖得过它。
  * 修了生成代码的一处毛病：CalendarDayButton 建了自己的 ref 想在方向键移动时把焦点挪过来，却没把它交给按钮，
  * 方向键挪的只是高亮、焦点不动。现在和转发进来的 ref 合并以后交给按钮。
  */
@@ -222,6 +225,7 @@ const CalendarDayButton = React.forwardRef(function CalendarDayButton({
       data-range-middle={modifiers.range_middle}
       className={cn(
         "jx:relative jx:isolate jx:z-10 jx:flex jx:aspect-square jx:size-auto jx:w-full jx:min-w-(--cell-size) jx:flex-col jx:gap-1 jx:border-0 jx:leading-none jx:font-normal jx:group-data-[focused=true]/day:relative jx:group-data-[focused=true]/day:z-10 jx:group-data-[focused=true]/day:ring-2 jx:group-data-[focused=true]/day:ring-ring jx:data-[range-end=true]:rounded-(--cell-radius) jx:data-[range-end=true]:rounded-r-(--cell-radius) jx:data-[range-end=true]:bg-primary jx:data-[range-end=true]:text-primary-foreground jx:data-[range-middle=true]:rounded-none jx:data-[range-middle=true]:bg-muted jx:data-[range-middle=true]:text-foreground jx:data-[range-start=true]:rounded-(--cell-radius) jx:data-[range-start=true]:rounded-l-(--cell-radius) jx:data-[range-start=true]:bg-primary jx:data-[range-start=true]:text-primary-foreground jx:data-[selected-single=true]:bg-primary jx:data-[selected-single=true]:text-primary-foreground jx:dark:hover:text-foreground jx:[&>span]:text-xs jx:[&>span]:opacity-70",
+        modifiers.outside && "jx:text-inherit",
         defaultClassNames.day,
         className
       )}
