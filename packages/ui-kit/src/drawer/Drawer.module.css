@@ -1,0 +1,93 @@
+/* 抽屉：DSH 的 Modal（headless）改成贴边的面板。
+   壳的遮罩、层级（1000）、淡入、Esc 和 Tab 都是 DSH 的；这里只改卡片的位置和形状。
+   DSH 给卡片的类（.dialog）也是一个类选择器，这里多带一个 [role='dialog']，不管样式表的先后都盖得住它。 */
+
+.drawer[role='dialog'] {
+  position: fixed;
+  /* 桌面版 macOS 顶上有隐藏式标题栏，DSH 的遮罩也从这个高度往下画。 */
+  inset: var(--dsh-frame-chrome-top, 0px) 0 0 auto;
+  width: auto;
+  max-width: 100vw;
+  padding: 0;
+  gap: 0;
+  border-radius: var(--dsw-radius-lg) 0 0 var(--dsw-radius-lg);
+}
+
+.left[role='dialog'] {
+  inset: var(--dsh-frame-chrome-top, 0px) auto 0 0;
+  border-radius: 0 var(--dsw-radius-lg) var(--dsw-radius-lg) 0;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: min(var(--jx-drawer-width, 420px), 100vw);
+  height: 100%;
+  min-height: 0;
+}
+
+/* 标题栏照 DSH 弹窗的标题栏（Modal.module.css 的 .header、.title、.close）。 */
+.header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 22px 14px 12px 24px;
+}
+
+.title {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: var(--dsw-alias-label-primary);
+}
+
+.close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: var(--dsw-radius-sm);
+  background: transparent;
+  cursor: pointer;
+  color: var(--dsw-alias-label-secondary);
+}
+
+@media (hover: hover) {
+  .close:hover {
+    background: var(--dsw-alias-interactive-bg-hover);
+  }
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 24px 24px;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--dsw-alias-label-primary);
+}
+
+.footer {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 24px;
+  border-top: 0.5px solid var(--dsw-alias-border-l2);
+}

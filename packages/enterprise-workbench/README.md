@@ -3,7 +3,7 @@
 企业界面插件的样板：一个在 DSH 仓库之外开发的插件，演示「自己的后端接口 + 自己的界面」怎么接进 DSH。数据是假的，正式发行前要从发行目录里拿掉（见下面「装进发行目录」）。
 
 - **宿主一半**（`src/index.ts`）：提供两个接口，数据是 18 台设备的假台账。
-- **浏览器一半**（`src/client/`）：侧栏里加一个「设备台账」入口，点开是一个整页面板，里面是状态筛选、刷新、导出和数据表格。面板用 DSH 的基础组件（`Button`、`Pill`、`Tag`、图标）和 `--dsw-*` 变量画，表格用 `@jx/ui-kit` 的数据表格。
+- **浏览器一半**（`src/client/`）：侧栏里加一个「设备台账」入口，点开是一个整页面板，里面是状态筛选、车间／类别／上次保养的快捷筛选、「更多筛选」抽屉、刷新、导出和数据表格。按钮、状态药丸、标签、图标和导出的弹窗用 DSH 的基础组件（`Button`、`Pill`、`Tag`、`Modal`），颜色只用 `--dsw-*` 变量；表格、下拉选择、带搜索的选择器、日期选择、单选组、多行输入和抽屉用 `@jx/ui-kit` 的。导出的弹窗和筛选的抽屉是「`@jx/ui-kit` 的组件放进 DSH 弹窗」的样例。
 
 入口和面板用的是 DSH 自己给「插件」「自动化任务」这类整页功能用的那一对插槽：`sidebar.panellist`（侧栏入口）和 `main`（主区域的页面），两处用同一个面板 id 对上。
 
@@ -13,8 +13,8 @@
 
 | 方法与路径 | 作用 |
 |---|---|
-| `POST /api/jx-workbench/equipment/list` | 查台账。请求体 `{ "sort"?: { "column", "direction" }, "status"?: "running" \| ... }`，返回 `{ rows, total, countByStatus, generatedAt }`；条件不合法回 400 `{ "error": { "code", "message" } }` |
-| `GET /api/jx-workbench/equipment.csv` | 导出 CSV（带 BOM，Excel 直接能开） |
+| `POST /api/jx-workbench/equipment/list` | 查台账。请求体 `{ "sort"?: { "columnId", "direction" }, "status"?, "workshop"?, "category"?, "maintainedBefore"?, "minRuntimeHours"?, "ids"? }`，条件之间是「并且」；`maintainedBefore` 是 `YYYY-MM-DD`，上次保养在这天或更早的（没保养过的也算）。返回 `{ rows, total, countByStatus, options, generatedAt }`，`options` 是台账里有的车间和类别，给筛选项用。条件不合法回 400 `{ "error": { "code", "message" } }` |
+| `GET /api/jx-workbench/equipment.csv` | 导出 CSV。查询参数和查台账的条件一一对应：`sort=列:方向`，`ids` 用逗号隔开，其余同名；不带参数就是全部。缺省带 BOM（Excel 直接能开），`bom=0` 不带。条件不合法回 400，和查台账一样 |
 
 类型定义在 `src/shared/protocol.ts`，宿主一半和浏览器一半共用。
 
@@ -118,7 +118,7 @@ pnpm run typecheck && pnpm run test && pnpm run build
 
 类型检查分两份配置：`tsconfig.host.json`（宿主一半，Node 环境）和 `tsconfig.client.json`（浏览器一半，DOM 环境）。合成一份会出错：两边都声明了 `ctx.connection`，类型不一样。
 
-单测（`tests/ledger.test.ts`，9 个）只测台账的筛选、排序、导出，不依赖 DSH。
+单测 19 个，都不依赖 DSH：`tests/ledger.test.ts`（15 个）测台账的查询条件、筛选、排序、导出；`tests/filters.test.ts`（4 个）测浏览器一半怎么把界面上的筛选拼成查询条件。
 
 ## 照着写一个新插件
 

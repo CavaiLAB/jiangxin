@@ -11,6 +11,12 @@ declare module '*.module.css' {
  */
 declare module '*.global.css'
 
+/**
+ * Tailwind 的入口（x.tailwind.css）：只为副作用导入。构建时 jx-dsh-plugin-build 先用 Tailwind 编译，再原样注入页面。
+ * @jx/ui-kit 自己的入口是 src/styles/jx.tailwind.css，组件文件各自引入它，插件不用管。
+ */
+declare module '*.tailwind.css'
+
 /** 浏览器一半里引用的图片：导入得到宿主 /plugins 路由下的地址。 */
 declare module '*.png' {
   const url: string

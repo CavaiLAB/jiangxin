@@ -1,4 +1,8 @@
 # 这个包单独安装依赖。统一的 pnpm 工作区以后再建（见仓库根的 AGENTS.md）。
-# esbuild 的安装脚本只是校验平台二进制，放行。
+# 依赖的安装脚本：pnpm 10 起默认不跑，11 起没表态的会让安装报错，所以逐个写明。
 allowBuilds:
+  # esbuild 的安装脚本只是校验平台二进制，放行。
   esbuild: true
+  # Tailwind 命令行带的文件监听库。它的安装脚本只在没有预编译产物时从源码编译；预编译产物是按平台的可选依赖
+  # （@parcel/watcher-darwin-arm64 这类），装得上，所以不跑。
+  '@parcel/watcher': false

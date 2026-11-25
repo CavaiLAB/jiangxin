@@ -4,7 +4,7 @@
  * 演示仓库外的插件怎样给自己的界面提供后端接口。用的是 DSH 的「精确路径 HTTP 路由」
  * （ctx.connection.fetch.register）：
  *   - POST /api/jx-workbench/equipment/list  查台账，JSON 进 JSON 出；
- *   - GET  /api/jx-workbench/equipment.csv   导出 CSV。
+ *   - GET  /api/jx-workbench/equipment.csv   导出 CSV，查询参数里带和查台账同样的条件。
  * 这类路由自带登录校验，只有实例的主人能访问，没登录的请求到不了这里。
  *
  * 另外两条路在 0.2.2-rc.5 上都走不通（详见本包 README.md）：
@@ -14,7 +14,7 @@
 import type { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
 import type {} from '@deepseek-ai/dsh-client-connection'
-import { InvalidQueryError, parseQuery, queryLedger, toCsv } from './host/ledger.ts'
+import { InvalidQueryError, parseExportParams, parseQuery, queryLedger, toCsv } from './host/ledger.ts'
 import { API, ERROR_CODE, type ApiError } from './shared/protocol.ts'
 
 /** Cordis 插件名。 */
@@ -96,19 +96,27 @@ export function apply(ctx: Context, config: Config): void {
     },
   }), 'jx-enterprise-workbench: equipment list')
 
-  // 2. 导出 CSV。浏览器直接打开这个地址就能下载。
+  // 2. 导出 CSV。浏览器直接打开这个地址就能下载；条件写在查询参数里（参数名见 EXPORT_PARAM）。
   ctx.effect(() => ctx.connection.fetch.register({
     path: API.exportCsv,
     methods: ['GET', 'HEAD'],
     requestBody: 'buffered',
     fetch: async (request) => {
+      let parsed
+      try {
+        // request.url 按理是完整地址；给个基准地址，万一只给了路径也解析得了。
+        parsed = parseExportParams(new URL(request.url, 'http://localhost').searchParams)
+      } catch (error) {
+        if (!(error instanceof InvalidQueryError)) throw error
+        return invalidQuery(error.message)
+      }
       const headers = {
         'content-type': 'text/csv; charset=utf-8',
         'content-disposition': 'attachment; filename="equipment-ledger.csv"',
         'cache-control': 'no-store',
       }
       if (request.method === 'HEAD') return new Response(null, { status: 200, headers })
-      return new Response(toCsv(queryLedger({}).rows), { status: 200, headers })
+      return new Response(toCsv(queryLedger(parsed.query).rows, { bom: parsed.bom }), { status: 200, headers })
     },
   }), 'jx-enterprise-workbench: csv export')
 }

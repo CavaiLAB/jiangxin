@@ -17,18 +17,22 @@
  *     return module.exports; } });
  *   - 共享模块（PLATFORM_MODULES）不打进包里，运行时通过工厂的 require 取。
  *   - x.module.css 编译成带哈希的类名表，工厂执行时往 <head> 注入 <style data-plugin="<包名>">。
+ *   - x.tailwind.css 是 Tailwind 的入口：先用这个包带的 Tailwind 命令行编译，再像下一条那样原样注入。
+ *     扫描范围是插件自己的 src/，加上入口里 @source 指的地方（@jx/ui-kit 的入口指它自己的 src/）。
  *   - 别的 .css（约定叫 x.global.css）不改类名，原样注入；只在必须盖住别人的样式时用。
  *   - src/client/assets/ 下的图片发到 lib/assets/<名字>-<内容摘要>.<扩展名>，
  *     代码里拿到的是 require.asset('plugins/<包名>/assets/<文件>')，由宿主的 /plugins 路由提供。
  *
  * 用法：在插件包目录里执行 `jx-dsh-plugin-build`（加 --watch 持续构建）。
  */
+import { execFile } from 'node:child_process'
 import { createHash } from 'node:crypto'
-import { existsSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises'
-import { builtinModules } from 'node:module'
+import { builtinModules, createRequire } from 'node:module'
 import { basename, dirname, extname, join, relative, resolve, sep } from 'node:path'
 import process from 'node:process'
+import { promisify } from 'node:util'
 import * as esbuild from 'esbuild'
 import { transform } from 'lightningcss'
 
@@ -60,6 +64,73 @@ async function readManifest() {
 
 function firstExisting(candidates) {
   return candidates.map(c => join(packageDir, c)).find(existsSync)
+}
+
+const stableNames = new Map()
+/**
+ * 一个样式文件在样式标签 id 和 CSS 模块类名哈希里用的名字。
+ * 本包的文件用包内的相对路径；别的包的文件（比如 @jx/ui-kit 里的）用「包名/包内路径」。这样不管 @jx/ui-kit 是
+ * 链接装的还是 tarball 装的（真实路径一个在 ../ui-kit，一个在 node_modules/.pnpm 下），打出来的产物都一样。
+ */
+function stableName(file) {
+  const cached = stableNames.get(file)
+  if (cached !== undefined) return cached
+  const rel = relative(packageDir, file)
+  let name = rel.split(sep).join('/')
+  if (rel.startsWith('..') || rel.split(sep).includes('node_modules')) {
+    for (let dir = dirname(file); dir !== dirname(dir); dir = dirname(dir)) {
+      const manifestPath = join(dir, 'package.json')
+      if (!existsSync(manifestPath)) continue
+      const owner = JSON.parse(readFileSync(manifestPath, 'utf8')).name
+      if (typeof owner === 'string') name = `${owner}/${relative(dir, file).split(sep).join('/')}`
+      break
+    }
+  }
+  stableNames.set(file, name)
+  return name
+}
+
+const execFileAsync = promisify(execFile)
+const requireFromHere = createRequire(import.meta.url)
+
+/** 这个包带的 Tailwind 命令行（@tailwindcss/cli）的入口文件。 */
+function tailwindCli() {
+  const manifestPath = requireFromHere.resolve('@tailwindcss/cli/package.json')
+  const { bin } = JSON.parse(readFileSync(manifestPath, 'utf8'))
+  return join(dirname(manifestPath), typeof bin === 'string' ? bin : bin.tailwindcss)
+}
+
+/** 最近的上级包目录。 */
+function owningPackageDir(file) {
+  for (let dir = dirname(file); dir !== dirname(dir); dir = dirname(dir)) {
+    if (existsSync(join(dir, 'package.json'))) return dir
+  }
+  return dirname(file)
+}
+
+/**
+ * 编译一个 Tailwind 入口（x.tailwind.css）。
+ * 自动扫描的起点（--cwd）是插件自己的 src/，所以插件代码里写的 jx: 类名也会编进来；入口里的 @source 再加上
+ * 别的地方（@jx/ui-kit 的入口用 @source 指它自己的 src/，它在 node_modules 里也照扫）。
+ * 不压缩：后面跟别的样式一样过一遍 lightningcss。
+ * @returns {Promise<{ css: string, watchFiles: string[] }>}
+ */
+async function compileTailwind(entry) {
+  const scanRoot = join(packageDir, 'src')
+  let stdout
+  try {
+    ({ stdout } = await execFileAsync(process.execPath, [tailwindCli(), '--input', entry, '--output', '-', '--cwd', scanRoot, '--silent'], {
+      cwd: packageDir,
+      encoding: 'utf8',
+      maxBuffer: 64 * 1024 * 1024,
+    }))
+  } catch (error) {
+    const stderr = typeof error?.stderr === 'string' ? error.stderr.trim() : ''
+    throw new Error(`Tailwind 编译 ${stableName(entry)} 失败${stderr === '' ? '' : `：\n${stderr}`}`)
+  }
+  // 监听模式下，插件和入口所在包的源码一改就重新编译（新写的类名要编进来）。
+  const watchFiles = [entry, ...await listFiles(scanRoot), ...await listFiles(join(owningPackageDir(entry), 'src'))]
+  return { css: stdout, watchFiles: [...new Set(watchFiles)] }
 }
 
 /** 与 DSH 的资源引用写法一致：逐段 encodeURIComponent，再转义 ! ' ( ) *，这样也能直接放进 CSS 的 url()。 */
@@ -97,8 +168,8 @@ function clientPlugins(manifest, externals, emittedAssets) {
 
   /** 把一段 CSS 包成「工厂执行时注入 <style>」的 JS 模块。 */
   function styleModule(file, css, classMap) {
-    // DSH 用「包名/文件名」当标签 id；我们用到包目录的相对路径，免得两个同名样式表互相顶掉。
-    const tagId = `${id}/${relative(packageDir, file).split(sep).join('/')}`
+    // DSH 用「包名/文件名」当标签 id；我们用到包目录的相对路径（别的包的文件用「包名/包内路径」），免得两个同名样式表互相顶掉。
+    const tagId = `${id}/${stableName(file)}`
     return [
       `const css = ${JSON.stringify(css)};`,
       `const tagId = ${JSON.stringify(tagId)};`,
@@ -119,11 +190,13 @@ function clientPlugins(manifest, externals, emittedAssets) {
     name: 'jx-dsh-css',
     setup(build) {
       build.onLoad({ filter: /\.css$/ }, async (args) => {
-        const source = await readFile(args.path)
+        const tailwind = args.path.endsWith('.tailwind.css') ? await compileTailwind(args.path) : undefined
+        const source = tailwind === undefined ? await readFile(args.path) : Buffer.from(tailwind.css)
         const isModule = args.path.endsWith('.module.css')
         const result = transform({
-          // 类名里的 [hash] 按这里给的文件名算。给包内的相对路径，换个目录构建，打出来的 tarball 也不变。
-          filename: relative(packageDir, args.path).split(sep).join('/'),
+          // 类名里的 [hash] 按这里给的文件名算。给包内的相对路径（别的包的文件给「包名/包内路径」），
+          // 换个目录构建、换种装法，打出来的 tarball 也不变。
+          filename: stableName(args.path),
           code: source,
           minify: true,
           ...(isModule ? { cssModules: { pattern: '[hash]_[local]' } } : {}),
@@ -136,7 +209,7 @@ function clientPlugins(manifest, externals, emittedAssets) {
             classMap[local] = [exported.name, ...exported.composes.map(c => c.name)].join(' ')
           }
         }
-        return { contents: styleModule(args.path, result.code.toString(), classMap), loader: 'js', watchFiles: [args.path] }
+        return { contents: styleModule(args.path, result.code.toString(), classMap), loader: 'js', watchFiles: tailwind?.watchFiles ?? [args.path] }
       })
     },
   }
