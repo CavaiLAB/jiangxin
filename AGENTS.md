@@ -6,7 +6,7 @@
 
 1. [README.md](README.md)：平台是什么，两种角色，三个框架各管什么，组合体里有什么。
 2. [docs/glossary.md](docs/glossary.md)：名字与术语各指什么。
-3. 平台级裁定：[docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)（P1 至 P21）与 [docs/decisions/2026-11-19-platform.md](docs/decisions/2026-11-19-platform.md)（P22 至 P33），以及 [2026-11-20 迁移与发布裁定](docs/decisions/2026-11-20-release.md)（P34 至 P36）和 [2026-11-20 产品裁定](docs/decisions/2026-11-20-product.md)（P37 至 P41）、[2026-11-21 旧应用外壳迁移裁定](docs/decisions/2026-11-21-shell-migration.md)（P42、P43）和 [2026-11-23 旧 npm 版本迁移裁定](docs/decisions/2026-11-23-legacy-npm.md)（P44）、[2026-11-24 平台级裁定](docs/decisions/2026-11-24-platform.md)（P45 至 P56）和 [2026-11-25 平台级裁定](docs/decisions/2026-11-25-platform.md)（P57 至 P75），记录产品负责人已定的事项。没列在里面的都不是已定。新的裁定接着编号。
+3. 平台级裁定：[docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)（P1 至 P21）与 [docs/decisions/2026-11-19-platform.md](docs/decisions/2026-11-19-platform.md)（P22 至 P33），以及 [2026-11-20 迁移与发布裁定](docs/decisions/2026-11-20-release.md)（P34 至 P36）和 [2026-11-20 产品裁定](docs/decisions/2026-11-20-product.md)（P37 至 P41）、[2026-11-21 旧应用外壳迁移裁定](docs/decisions/2026-11-21-shell-migration.md)（P42、P43）和 [2026-11-23 旧 npm 版本迁移裁定](docs/decisions/2026-11-23-legacy-npm.md)（P44）、[2026-11-24 平台级裁定](docs/decisions/2026-11-24-platform.md)（P45 至 P56）和 [2026-11-25 平台级裁定](docs/decisions/2026-11-25-platform.md)（P57 至 P77），记录产品负责人已定的事项。没列在里面的都不是已定。新的裁定接着编号。
 4. [docs/07-governance.md](docs/07-governance.md)：协作约定。
 5. 要改组合体的代码，再读下面「组合体的代码」和那个目录里的 README。
 
@@ -18,7 +18,7 @@
 - 说现状的时候写清是「已有」（在来源仓库里已经实现）还是「规划」，不把规划写成已经实现。
 - 本仓库是公开的。不放密钥和内部地址，不放还没修复的安全问题的细节，不放私有仓库的内部实现细节；不放产品清单与建设状态；对私有的来源产品只写可以承接的能力类别，不写功能盘点与差距，也不写它的名字。见[协作约定](docs/07-governance.md)第 11 节。这些对代码、注释、测试数据和提交说明一样适用，另外不留本机路径和用户名。
 - 只写现在的名字和位置：不写前端框架的旧名、旧仓库的地址，不用「原」加框架名指代来源，不讲改名的经过；讲位置写路径或现在的名字。决策记录与历史文档、给使用者的迁移指南、改名与导入工具除外。见[协作约定](docs/07-governance.md)第 11 节。
-- 框架的代码在各框架仓库：后端在 `CavaiLAB/kun`，.NET 项目在 `src/`，组件清单在 `plugins/`；前端框架库在 `CavaiLAB/qian`；Agent 引擎的核心在 `CavaiLAB/sanyuan-agent`，服务层与媒体适配层还在原来的私有仓库。要改框架的代码去对应的仓库，按那边的 `AGENTS.md` 办。各框架的历史文件与本仓库的平台级裁定（`docs/decisions/` 下）有出入时，以平台级裁定为准。组合体的代码在本仓库，见下一节。
+- 框架的代码在各框架仓库：后端在 `CavaiLAB/kun`，.NET 项目在 `src/`，组件清单在 `plugins/`；前端框架库在 `CavaiLAB/qian`（2026-11-25 起归档，只读，见 P77）；Agent 引擎的核心在 `CavaiLAB/sanyuan-agent`，服务层与媒体适配层还在原来的私有仓库。要改框架的代码去对应的仓库，按那边的 `AGENTS.md` 办。各框架的历史文件与本仓库的平台级裁定（`docs/decisions/` 下）有出入时，以平台级裁定为准。组合体的代码在本仓库，见下一节。
 - 改了一处口径，把引用它的其他文档一起改掉：三个框架仓库的 README 都引用这里的名称与分工。
 - 改动走分支和 PR，不直接推 `main`。建仓期间的初始文档除外，见[协作约定](docs/07-governance.md)第 2 节。
 
