@@ -1,8 +1,8 @@
 /** 设备台账的查询逻辑（宿主一半的纯函数部分）。 */
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { InvalidQueryError, LEDGER, parseQuery, queryLedger, toCsv } from '../src/host/ledger.ts'
-import { API, EQUIPMENT_STATUSES } from '../src/shared/protocol.ts'
+import { InvalidQueryError, LEDGER, parseExportParams, parseQuery, queryLedger, toCsv } from '../src/host/ledger.ts'
+import { API, EQUIPMENT_STATUSES, QUERY_LIMIT } from '../src/shared/protocol.ts'
 
 const NOW = new Date('2026-11-20T00:00:00.000Z')
 
@@ -81,4 +81,65 @@ test('导出的 CSV：带 BOM、表头、每台设备一行，特殊字符加引
   const tricky = toCsv([{ ...LEDGER[0]!, name: '带,逗号和"引号"的名字', lastMaintainedOn: null }])
   assert.match(tricky, /"带,逗号和""引号""的名字"/)
   assert.match(tricky, /running,,12840/)
+})
+
+test('按车间、类别、运行小时、编号筛选，条件之间是「并且」', () => {
+  const welding = queryLedger({ workshop: '焊装车间' }).rows
+  assert.deepEqual(welding.map(row => row.id), ['EQ-0006', 'EQ-0007', 'EQ-0008'])
+  assert.ok(queryLedger({ category: '动力设备' }).rows.every(row => row.category === '动力设备'))
+  assert.ok(queryLedger({ minRuntimeHours: 20000 }).rows.every(row => row.runtimeHours >= 20000))
+  assert.deepEqual(queryLedger({ ids: ['eq-0001', 'EQ-0013', 'EQ-9999'] }).rows.map(row => row.id), ['EQ-0001', 'EQ-0013'])
+  assert.deepEqual(queryLedger({ workshop: '焊装车间', minRuntimeHours: 19000 }).rows.map(row => row.id), ['EQ-0006', 'EQ-0007'])
+  // 筛选不影响总数和各状态的台数
+  assert.equal(queryLedger({ workshop: '焊装车间' }).total, LEDGER.length)
+})
+
+test('上次保养不晚于某天：含当天，从没保养过的也算', () => {
+  const rows = queryLedger({ maintainedBefore: '2026-10-05' }).rows
+  assert.ok(rows.length > 0)
+  assert.ok(rows.every(row => row.lastMaintainedOn === null || row.lastMaintainedOn <= '2026-10-05'))
+  assert.ok(rows.some(row => row.lastMaintainedOn === '2026-10-05'))
+  assert.ok(rows.some(row => row.lastMaintainedOn === null))
+})
+
+test('结果里带着车间和类别的全集（不受筛选影响），给筛选项用', () => {
+  const { options } = queryLedger({ workshop: '焊装车间' })
+  assert.equal(options.workshops.length, new Set(LEDGER.map(row => row.workshop)).size)
+  assert.equal(options.categories.length, new Set(LEDGER.map(row => row.category)).size)
+  assert.ok(options.workshops.includes('动力站'))
+})
+
+test('新加的条件也逐项校验', () => {
+  assert.deepEqual(
+    parseQuery({ workshop: ' 焊装车间 ', category: '动力设备', maintainedBefore: '2026-02-28', minRuntimeHours: 0, ids: ['EQ-0001'] }),
+    { workshop: '焊装车间', category: '动力设备', maintainedBefore: '2026-02-28', minRuntimeHours: 0, ids: ['EQ-0001'] },
+  )
+  for (const bad of [
+    { workshop: '' }, { workshop: 3 }, { category: 'x'.repeat(QUERY_LIMIT.textLength + 1) },
+    { maintainedBefore: '2026-02-30' }, { maintainedBefore: '2026/11/01' }, { minRuntimeHours: -1 }, { minRuntimeHours: '100' },
+    { ids: 'EQ-0001' }, { ids: [''] }, { ids: Array.from({ length: QUERY_LIMIT.ids + 1 }, (_, i) => `EQ-${i}`) },
+  ]) {
+    assert.throws(() => parseQuery(bad), InvalidQueryError, JSON.stringify(bad))
+  }
+})
+
+test('导出的查询参数：和查台账同一套条件，缺省带 BOM', () => {
+  const params = new URLSearchParams({
+    sort: 'runtimeHours:desc', status: 'running', workshop: '焊装车间', maintainedBefore: '2026-11-30', minRuntimeHours: '1000', ids: 'EQ-0006,EQ-0008',
+  })
+  assert.deepEqual(parseExportParams(params), {
+    query: {
+      sort: { columnId: 'runtimeHours', direction: 'desc' }, status: 'running', workshop: '焊装车间',
+      maintainedBefore: '2026-11-30', minRuntimeHours: 1000, ids: ['EQ-0006', 'EQ-0008'],
+    },
+    bom: true,
+  })
+  assert.deepEqual(parseExportParams(new URLSearchParams('bom=0')), { query: {}, bom: false })
+  for (const bad of ['bom=2', 'sort=name', 'minRuntimeHours=abc', 'minRuntimeHours=', 'status=broken']) {
+    assert.throws(() => parseExportParams(new URLSearchParams(bad)), InvalidQueryError, bad)
+  }
+})
+
+test('导出时可以不带 BOM', () => {
+  assert.ok(toCsv(LEDGER, { bom: false }).startsWith('设备编号,'))
 })

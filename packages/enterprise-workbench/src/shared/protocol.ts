@@ -11,7 +11,7 @@
 export const API = {
   /** 查设备台账：POST，请求体是 JSON（EquipmentQuery），返回 JSON（EquipmentPage）。 */
   listEquipment: '/api/jx-workbench/equipment/list',
-  /** 导出 CSV：GET，返回一个 CSV 文件。 */
+  /** 导出 CSV：GET，返回一个 CSV 文件。查询参数见 EXPORT_PARAM，和查台账用同一套条件。 */
   exportCsv: '/api/jx-workbench/equipment.csv',
 } as const
 
@@ -45,13 +45,41 @@ export const SORTABLE_COLUMNS = ['id', 'name', 'category', 'workshop', 'status',
 /** 可以排序的列。 */
 export type SortableColumn = (typeof SORTABLE_COLUMNS)[number]
 
-/** 查询条件。 */
+/** 查询条件。条件之间是「并且」。 */
 export interface EquipmentQuery {
   /** 按哪一列排序；不给就按编号。 */
   sort?: { columnId: SortableColumn; direction: 'asc' | 'desc' }
   /** 只看某个状态；不给就是全部。 */
   status?: EquipmentStatus
+  /** 只看某个车间。 */
+  workshop?: string
+  /** 只看某个类别。 */
+  category?: string
+  /** 只看上次保养在这一天或更早的，YYYY-MM-DD；从没保养过的也算在内。 */
+  maintainedBefore?: string
+  /** 只看累计运行不少于这么多小时的。 */
+  minRuntimeHours?: number
+  /** 只看这些编号的设备，不区分大小写。 */
+  ids?: string[]
 }
+
+/** 查询条件的上限：文字条件的长度、一次最多查多少个编号。 */
+export const QUERY_LIMIT = { textLength: 64, ids: 200 } as const
+
+/**
+ * 导出 CSV 的查询参数名。条件和 EquipmentQuery 一一对应：sort 写成「列:方向」，ids 用逗号隔开；
+ * 另外 bom=0 表示不带 BOM（缺省带，Excel 才认得出是 UTF-8）。
+ */
+export const EXPORT_PARAM = {
+  sort: 'sort',
+  status: 'status',
+  workshop: 'workshop',
+  category: 'category',
+  maintainedBefore: 'maintainedBefore',
+  minRuntimeHours: 'minRuntimeHours',
+  ids: 'ids',
+  bom: 'bom',
+} as const
 
 /** 查询结果。 */
 export interface EquipmentPage {
@@ -61,6 +89,8 @@ export interface EquipmentPage {
   total: number
   /** 各状态的台数（不受筛选影响）。 */
   countByStatus: Record<EquipmentStatus, number>
+  /** 台账里有哪些车间、哪些类别（不受筛选影响），给筛选项用。 */
+  options: { workshops: string[]; categories: string[] }
   /** 宿主生成这份结果的时间，ISO 格式。界面上显示它，方便看出数据确实来自宿主。 */
   generatedAt: string
 }

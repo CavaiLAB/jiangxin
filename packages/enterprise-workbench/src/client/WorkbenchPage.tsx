@@ -1,23 +1,26 @@
 /**
- * 设备台账面板。主区域里的一整页：标题、状态筛选、数据表格。
+ * 设备台账面板。主区域里的一整页：标题、状态筛选、快捷筛选、数据表格；「更多筛选」打开抽屉，「导出」打开弹窗。
  *
  * 画法照 DSH 自己的整页面板（自动化任务、插件）：一列居中的内容，标题 20px，
- * 控件用 DSH 的基础组件，颜色和圆角只用 --dsw-* 变量。表格是 @jx/ui-kit 的 DataTable。
+ * 按钮、标签用 DSH 的基础组件，颜色和圆角只用 --dsw-* 变量。表格是 @jx/ui-kit 的 DataTable，
+ * 筛选用的下拉、选择器、日期、单选、多行输入和抽屉也是 @jx/ui-kit 的（见 WorkbenchFilters.tsx）。
  *
  * 组件拿不到插件上下文：查数据的函数是注册时通过 inject 交进来的（见 index.tsx）。
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import {
-  Button, IconDownloadOutlineRegular, IconRefreshOutlineRegular, Pill, Tag, type TagTone,
+  Button, IconDownloadOutlineRegular, IconSlidersTwoOutlineRegular, IconRefreshOutlineRegular, Pill, Tag, type TagTone,
 } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { InjectFace, PropsLocale, PropsRuntime } from '@deepseek-ai/dsh-client-ui-slots'
 import type {} from '@deepseek-ai/dsh-client-ui-layout/client'
-import { DataTable, type DataTableColumn, type DataTableLabels, type DataTableSort } from '@jx/ui-kit'
+import { DataTable, enUS, zhCN, type DataTableColumn, type DataTableLabels, type DataTableSort } from '@jx/ui-kit'
 import {
   API, EQUIPMENT_STATUSES,
-  type Equipment, type EquipmentPage, type EquipmentQuery, type EquipmentStatus, type SortableColumn,
+  type Equipment, type EquipmentPage, type EquipmentQuery, type EquipmentStatus,
 } from '../shared/protocol.ts'
+import { activeFilterCount, toQuery, type Filters } from './filters.ts'
+import { ExportDialog, FilterDrawer, QuickFilters, type DateFormat, type FilterOptions } from './WorkbenchFilters.tsx'
 import css from './WorkbenchPage.module.css'
 
 /** 查台账的结果：成功带数据，失败带一句能给用户看的说明。 */
@@ -29,8 +32,8 @@ export type LoadResult =
 export interface WorkbenchInjected {
   /** 向宿主一半查台账。 */
   listEquipment: (query: EquipmentQuery, signal: AbortSignal) => Promise<LoadResult>
-  /** 导出 CSV 的地址。 */
-  exportUrl: string
+  /** 导出 CSV 的地址：条件写在查询参数里。 */
+  exportUrl: (query: EquipmentQuery, options: { bom: boolean }) => string
 }
 
 /** 面板的全部属性。 */
@@ -67,21 +70,22 @@ interface LoadState {
 export function WorkbenchPage({ t, listEquipment, exportUrl }: WorkbenchPageProps): ReactNode {
   const [sort, setSort] = useState<DataTableSort | null>(null)
   const [status, setStatus] = useState<EquipmentStatus | undefined>(undefined)
+  const [filters, setFilters] = useState<Filters>({})
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [exportOpen, setExportOpen] = useState(false)
   const [selected, setSelected] = useState<string[]>([])
   const [state, setState] = useState<LoadState>({ page: undefined, loading: true, error: undefined })
   // 每点一次「刷新」加一，用来触发重新取数。
   const [reloadToken, setReloadToken] = useState(0)
   // 只认最后一次请求的结果：排序点得快的时候，先发的请求可能后回来。
   const latest = useRef(0)
+  // 发给宿主的查询条件：排序、状态和其余的筛选条件。
+  const query = useMemo(() => toQuery(sort, status, filters), [sort, status, filters])
 
   useEffect(() => {
     const request = ++latest.current
     const abort = new AbortController()
     setState(previous => ({ ...previous, loading: true, error: undefined }))
-    const query: EquipmentQuery = {
-      ...(sort === null ? {} : { sort: { columnId: sort.columnId as SortableColumn, direction: sort.direction } }),
-      ...(status === undefined ? {} : { status }),
-    }
     void listEquipment(query, abort.signal).then((result) => {
       if (request !== latest.current) return
       setState(previous => result.ok
@@ -89,9 +93,25 @@ export function WorkbenchPage({ t, listEquipment, exportUrl }: WorkbenchPageProp
         : { page: previous.page, loading: false, error: result.message })
     })
     return () => { abort.abort() }
-  }, [listEquipment, sort, status, reloadToken])
+  }, [listEquipment, query, reloadToken])
 
   const reload = useCallback(() => { setReloadToken(token => token + 1) }, [])
+
+  // 日期选择的语言跟着 DSH 的界面语言走：词典里的 date.locale 是 zh-CN 还是 en-US。
+  const date = useMemo((): DateFormat => {
+    const tag = t('date.locale')
+    return { locale: tag === 'zh-CN' ? zhCN : enUS, format: value => value.toLocaleDateString(tag) }
+  }, [t])
+
+  // 导出：按当前的条件（或者全部设备）拼出地址，让浏览器下载。
+  const exportCsv = useCallback(({ filtered, bom }: { filtered: boolean; bom: boolean }) => {
+    const link = document.createElement('a')
+    link.href = exportUrl(filtered ? query : (query.sort === undefined ? {} : { sort: query.sort }), { bom })
+    link.download = ''
+    document.body.append(link)
+    link.click()
+    link.remove()
+  }, [exportUrl, query])
 
   const columns = useMemo((): DataTableColumn<Equipment>[] => [
     { id: 'id', title: t('column.id'), sortable: true, width: 112 },
@@ -122,6 +142,8 @@ export function WorkbenchPage({ t, listEquipment, exportUrl }: WorkbenchPageProp
 
   const { page, loading, error } = state
   const rows = page?.rows ?? []
+  const options: FilterOptions = page?.options ?? NO_OPTIONS
+  const activeCount = activeFilterCount(filters)
   // 筛选或刷新以后，已经不在当前结果里的行不再算作选中。
   const selectedShown = useMemo(() => {
     const shown = new Set(rows.map(row => row.id))
@@ -141,10 +163,9 @@ export function WorkbenchPage({ t, listEquipment, exportUrl }: WorkbenchPageProp
               <Button variant="outline" size="sm" icon={<IconRefreshOutlineRegular size={16} />} disabled={loading} onClick={reload}>
                 {t('refresh')}
               </Button>
-              <a className={css.exportLink} href={exportUrl} download>
-                <IconDownloadOutlineRegular size={16} />
-                <span>{t('export')}</span>
-              </a>
+              <Button variant="outline" size="sm" icon={<IconDownloadOutlineRegular size={16} />} onClick={() => { setExportOpen(true) }}>
+                {t('export')}
+              </Button>
             </div>
           </header>
 
@@ -159,6 +180,16 @@ export function WorkbenchPage({ t, listEquipment, exportUrl }: WorkbenchPageProp
                 {page === undefined ? null : <span className={css.count}>{page.countByStatus[item]}</span>}
               </Pill>
             ))}
+          </div>
+
+          <div className={css.quickFilters}>
+            <QuickFilters t={t} options={options} filters={filters} onChange={setFilters} date={date} />
+            <Button variant="outline" icon={<IconSlidersTwoOutlineRegular size={16} />} onClick={() => { setDrawerOpen(true) }}>
+              {activeCount === 0 ? t('filter.more') : t('filter.moreActive', { count: activeCount })}
+            </Button>
+            {activeCount === 0 ? null : (
+              <Button variant="ghost" onClick={() => { setFilters({}) }}>{t('filter.clear')}</Button>
+            )}
           </div>
 
           {error === undefined ? null : (
@@ -198,9 +229,29 @@ export function WorkbenchPage({ t, listEquipment, exportUrl }: WorkbenchPageProp
           />
         </div>
       </div>
+      <FilterDrawer
+        t={t}
+        open={drawerOpen}
+        onClose={() => { setDrawerOpen(false) }}
+        options={options}
+        filters={filters}
+        onApply={setFilters}
+        date={date}
+      />
+      <ExportDialog
+        t={t}
+        open={exportOpen}
+        onClose={() => { setExportOpen(false) }}
+        filteredCount={page?.rows.length}
+        total={page?.total}
+        onExport={exportCsv}
+      />
     </div>
   )
 }
+
+/** 还没拿到数据时的筛选项。 */
+const NO_OPTIONS: FilterOptions = { workshops: [], categories: [] }
 
 /** 行的标识。写在组件外面，引用才稳定，表格不用每次重算。 */
 function getEquipmentId(row: Equipment): string {

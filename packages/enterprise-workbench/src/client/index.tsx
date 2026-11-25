@@ -11,7 +11,7 @@ import type {} from '@deepseek-ai/dsh-client-locale/client'
 import type { MainPanelId } from '@deepseek-ai/dsh-client-ui-layout/client'
 import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
-import { API, type ApiError, type EquipmentPage, type EquipmentQuery } from '../shared/protocol.ts'
+import { API, EXPORT_PARAM, type ApiError, type EquipmentPage, type EquipmentQuery } from '../shared/protocol.ts'
 import { NS, en, zh } from './locales.ts'
 import { WorkbenchIcon } from './WorkbenchIcon.tsx'
 import { WorkbenchPage, type LoadResult, type WorkbenchInjected } from './WorkbenchPage.tsx'
@@ -34,6 +34,25 @@ const PANEL_ORDER = 20
  */
 function apiUrl(path: string): string {
   return new URL(path.slice(1), document.baseURI).href
+}
+
+/**
+ * 导出 CSV 的地址：条件写进查询参数（参数名见 EXPORT_PARAM，宿主那边按同一套规则解析）。
+ * @param query 要导出哪些设备、怎么排。
+ * @param options.bom 要不要 BOM。
+ */
+function exportUrl(query: EquipmentQuery, options: { bom: boolean }): string {
+  const params = new URLSearchParams()
+  if (query.sort !== undefined) params.set(EXPORT_PARAM.sort, `${query.sort.columnId}:${query.sort.direction}`)
+  if (query.status !== undefined) params.set(EXPORT_PARAM.status, query.status)
+  if (query.workshop !== undefined) params.set(EXPORT_PARAM.workshop, query.workshop)
+  if (query.category !== undefined) params.set(EXPORT_PARAM.category, query.category)
+  if (query.maintainedBefore !== undefined) params.set(EXPORT_PARAM.maintainedBefore, query.maintainedBefore)
+  if (query.minRuntimeHours !== undefined) params.set(EXPORT_PARAM.minRuntimeHours, String(query.minRuntimeHours))
+  if (query.ids !== undefined) params.set(EXPORT_PARAM.ids, query.ids.join(','))
+  if (!options.bom) params.set(EXPORT_PARAM.bom, '0')
+  const search = params.toString()
+  return search === '' ? apiUrl(API.exportCsv) : `${apiUrl(API.exportCsv)}?${search}`
 }
 
 /** 宿主返回的东西看起来像不像一页台账。接口是我们自己的，这里只防两边版本对不上。 */
@@ -77,7 +96,7 @@ export function apply(ctx: ClientContext): void {
     }
   }
 
-  const injected: WorkbenchInjected = { listEquipment, exportUrl: apiUrl(API.exportCsv) }
+  const injected: WorkbenchInjected = { listEquipment, exportUrl }
 
   // 入口和面板是一对，放在一个生成器里一起装：其中一个装不上，另一个也不留。
   ctx.slots.inject('main', () => ctx.slots.inject('sidebar.panellist', function* () {

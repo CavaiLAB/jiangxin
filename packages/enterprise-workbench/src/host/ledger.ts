@@ -3,7 +3,7 @@
  * 这里都是纯函数，不依赖 DSH，方便单测。
  */
 import {
-  EQUIPMENT_STATUSES, SORTABLE_COLUMNS,
+  EQUIPMENT_STATUSES, EXPORT_PARAM, QUERY_LIMIT, SORTABLE_COLUMNS,
   type Equipment, type EquipmentPage, type EquipmentQuery, type EquipmentStatus, type SortableColumn,
 } from '../shared/protocol.ts'
 
@@ -44,7 +44,7 @@ export class InvalidQueryError extends Error {
 export function parseQuery(payload: unknown): EquipmentQuery {
   if (payload === undefined || payload === null) return {}
   if (typeof payload !== 'object' || Array.isArray(payload)) throw new InvalidQueryError('查询条件必须是一个对象')
-  const { sort, status } = payload as { sort?: unknown; status?: unknown }
+  const { sort, status, workshop, category, maintainedBefore, minRuntimeHours, ids } = payload as Record<string, unknown>
   const query: EquipmentQuery = {}
   if (status !== undefined) {
     if (!EQUIPMENT_STATUSES.includes(status as EquipmentStatus)) {
@@ -63,7 +63,66 @@ export function parseQuery(payload: unknown): EquipmentQuery {
     }
     query.sort = { columnId: columnId as SortableColumn, direction }
   }
+  if (workshop !== undefined) query.workshop = parseText(workshop, '车间')
+  if (category !== undefined) query.category = parseText(category, '类别')
+  if (maintainedBefore !== undefined) {
+    if (typeof maintainedBefore !== 'string' || !isCalendarDate(maintainedBefore)) {
+      throw new InvalidQueryError(`保养日期要写成 YYYY-MM-DD：${JSON.stringify(maintainedBefore)}`)
+    }
+    query.maintainedBefore = maintainedBefore
+  }
+  if (minRuntimeHours !== undefined) {
+    if (typeof minRuntimeHours !== 'number' || !Number.isFinite(minRuntimeHours) || minRuntimeHours < 0) {
+      throw new InvalidQueryError(`运行小时数要是不小于 0 的数：${JSON.stringify(minRuntimeHours)}`)
+    }
+    query.minRuntimeHours = minRuntimeHours
+  }
+  if (ids !== undefined) {
+    if (!Array.isArray(ids)) throw new InvalidQueryError('设备编号要是一个数组')
+    if (ids.length > QUERY_LIMIT.ids) throw new InvalidQueryError(`一次最多查 ${QUERY_LIMIT.ids} 个编号`)
+    query.ids = ids.map(id => parseText(id, '设备编号'))
+  }
   return query
+}
+
+/** 文字条件：不能是空的，不能太长。 */
+function parseText(value: unknown, label: string): string {
+  if (typeof value !== 'string' || value.trim() === '') throw new InvalidQueryError(`${label}要是不空的文字`)
+  if (value.length > QUERY_LIMIT.textLength) throw new InvalidQueryError(`${label}太长了，最多 ${QUERY_LIMIT.textLength} 个字`)
+  return value.trim()
+}
+
+/** YYYY-MM-DD，而且是日历上真有的一天。 */
+function isCalendarDate(text: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) return false
+  const date = new Date(`${text}T00:00:00.000Z`)
+  return !Number.isNaN(date.getTime()) && date.toISOString().startsWith(text)
+}
+
+/**
+ * 导出 CSV 的查询参数 → 查询条件和要不要 BOM。参数名见 EXPORT_PARAM。
+ * @param params 地址里的查询参数。
+ * @returns 合法的查询条件；bom 缺省是 true。
+ * @throws InvalidQueryError 条件不合法时。
+ */
+export function parseExportParams(params: URLSearchParams): { query: EquipmentQuery; bom: boolean } {
+  const payload: Record<string, unknown> = {}
+  const sort = params.get(EXPORT_PARAM.sort)
+  if (sort !== null) {
+    const [columnId, direction] = sort.split(':')
+    payload.sort = { columnId, direction }
+  }
+  for (const key of [EXPORT_PARAM.status, EXPORT_PARAM.workshop, EXPORT_PARAM.category, EXPORT_PARAM.maintainedBefore] as const) {
+    const value = params.get(key)
+    if (value !== null) payload[key] = value
+  }
+  const minRuntimeHours = params.get(EXPORT_PARAM.minRuntimeHours)
+  if (minRuntimeHours !== null) payload.minRuntimeHours = minRuntimeHours.trim() === '' ? Number.NaN : Number(minRuntimeHours)
+  const ids = params.get(EXPORT_PARAM.ids)
+  if (ids !== null) payload.ids = ids.split(',')
+  const bom = params.get(EXPORT_PARAM.bom)
+  if (bom !== null && bom !== '0' && bom !== '1') throw new InvalidQueryError(`bom 只能是 0 或 1：${JSON.stringify(bom)}`)
+  return { query: parseQuery(payload), bom: bom !== '0' }
 }
 
 /** 比较两个单元格的值：数字按大小，文字按中文排序规则（数字段按数值比）。 */
@@ -84,7 +143,15 @@ export function queryLedger(
 ): EquipmentPage {
   const countByStatus = Object.fromEntries(EQUIPMENT_STATUSES.map(status => [status, 0])) as Record<EquipmentStatus, number>
   for (const item of ledger) countByStatus[item.status]++
-  const rows = ledger.filter(item => query.status === undefined || item.status === query.status)
+  const ids = query.ids === undefined ? undefined : new Set(query.ids.map(id => id.toUpperCase()))
+  const { maintainedBefore, minRuntimeHours } = query
+  const rows = ledger.filter(item => (query.status === undefined || item.status === query.status)
+    && (query.workshop === undefined || item.workshop === query.workshop)
+    && (query.category === undefined || item.category === query.category)
+    // 从没保养过的也算「早于」：它最该保养。日期都是 YYYY-MM-DD，按字面比就是按日期比。
+    && (maintainedBefore === undefined || item.lastMaintainedOn === null || item.lastMaintainedOn <= maintainedBefore)
+    && (minRuntimeHours === undefined || item.runtimeHours >= minRuntimeHours)
+    && (ids === undefined || ids.has(item.id.toUpperCase())))
   const { columnId, direction } = query.sort ?? { columnId: 'id', direction: 'asc' as const }
   rows.sort((a, b) => {
     const left = a[columnId]
@@ -95,7 +162,9 @@ export function queryLedger(
     // 值相同就按编号排，结果才稳定。
     return (direction === 'asc' ? order : -order) || a.id.localeCompare(b.id)
   })
-  return { rows, total: ledger.length, countByStatus, generatedAt: now.toISOString() }
+  const distinct = (values: string[]): string[] => [...new Set(values)].sort((a, b) => compare(a, b))
+  const options = { workshops: distinct(ledger.map(item => item.workshop)), categories: distinct(ledger.map(item => item.category)) }
+  return { rows, total: ledger.length, countByStatus, options, generatedAt: now.toISOString() }
 }
 
 /** CSV 里的一个字段：有逗号、引号、换行就用引号包起来。 */
@@ -105,14 +174,15 @@ function csvField(value: string | number | null): string {
 }
 
 /**
- * 把台账导出成 CSV。开头带 BOM，Excel 才能认出是 UTF-8。
+ * 把台账导出成 CSV。缺省开头带 BOM，Excel 才能认出是 UTF-8。
  * @param rows 要导出的设备。
+ * @param options.bom 要不要 BOM，缺省要。
  * @returns CSV 文本。
  */
-export function toCsv(rows: readonly Equipment[]): string {
+export function toCsv(rows: readonly Equipment[], options: { bom?: boolean } = {}): string {
   const header = ['设备编号', '设备名称', '类别', '车间', '状态', '上次保养', '累计运行小时']
   const lines = rows.map(item => [
     item.id, item.name, item.category, item.workshop, item.status, item.lastMaintainedOn, item.runtimeHours,
   ].map(csvField).join(','))
-  return `﻿${[header.join(','), ...lines].join('\r\n')}\r\n`
+  return `${options.bom === false ? '' : '﻿'}${[header.join(','), ...lines].join('\r\n')}\r\n`
 }
