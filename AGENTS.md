@@ -6,7 +6,7 @@
 
 1. [README.md](README.md)：平台是什么，两种角色，三个框架各管什么，组合体里有什么。
 2. [docs/glossary.md](docs/glossary.md)：名字与术语各指什么。
-3. 平台级裁定：[docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)（P1 至 P21）与 [docs/decisions/2026-11-19-platform.md](docs/decisions/2026-11-19-platform.md)（P22 至 P33），以及 [2026-11-20 迁移与发布裁定](docs/decisions/2026-11-20-release.md)（P34 至 P36）和 [2026-11-20 产品裁定](docs/decisions/2026-11-20-product.md)（P37 至 P41）、[2026-11-21 旧应用外壳迁移裁定](docs/decisions/2026-11-21-shell-migration.md)（P42、P43）和 [2026-11-23 旧 npm 版本迁移裁定](docs/decisions/2026-11-23-legacy-npm.md)（P44）、[2026-11-24 平台级裁定](docs/decisions/2026-11-24-platform.md)（P45 至 P56）和 [2026-11-25 平台级裁定](docs/decisions/2026-11-25-platform.md)（P57 至 P74），记录产品负责人已定的事项。没列在里面的都不是已定。新的裁定接着编号。
+3. 平台级裁定：[docs/decisions/2026-11-17-platform.md](docs/decisions/2026-11-17-platform.md)（P1 至 P21）与 [docs/decisions/2026-11-19-platform.md](docs/decisions/2026-11-19-platform.md)（P22 至 P33），以及 [2026-11-20 迁移与发布裁定](docs/decisions/2026-11-20-release.md)（P34 至 P36）和 [2026-11-20 产品裁定](docs/decisions/2026-11-20-product.md)（P37 至 P41）、[2026-11-21 旧应用外壳迁移裁定](docs/decisions/2026-11-21-shell-migration.md)（P42、P43）和 [2026-11-23 旧 npm 版本迁移裁定](docs/decisions/2026-11-23-legacy-npm.md)（P44）、[2026-11-24 平台级裁定](docs/decisions/2026-11-24-platform.md)（P45 至 P56）和 [2026-11-25 平台级裁定](docs/decisions/2026-11-25-platform.md)（P57 至 P75），记录产品负责人已定的事项。没列在里面的都不是已定。新的裁定接着编号。
 4. [docs/07-governance.md](docs/07-governance.md)：协作约定。
 5. 要改组合体的代码，再读下面「组合体的代码」和那个目录里的 README。
 
