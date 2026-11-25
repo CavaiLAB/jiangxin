@@ -1,15 +1,13 @@
-# 文档站的生成物：首页取自 README.md，frameworks/ 取自各框架仓库钉住的版本。见 website/README.md
+# 文档站的生成物：首页取自 README.md。见 website/README.md
 /docs/index.md
-/docs/frameworks/
 
-# 依赖：各项目各自安装（website/ 用 pnpm；组合体的代码见 AGENTS.md）
+# 依赖：各项目各自安装（website/ 用 pnpm；产品的代码见 AGENTS.md）
 node_modules/
 
-# 文档站的缓存与构建产物
-/website/.cache/
+# 文档站的构建产物
 /website/doc_build/
 
-# 组合体代码的构建产物
+# 产品代码的构建产物
 /packages/*/lib/
 /apps/desktop/release/
 *.tsbuildinfo

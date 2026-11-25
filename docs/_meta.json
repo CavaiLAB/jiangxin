@@ -13,6 +13,5 @@
   "07-governance",
   "08-industrial-forms",
   "glossary",
-  { "type": "dir-section-header", "name": "decisions", "label": "决策记录" },
-  { "type": "dir-section-header", "name": "frameworks", "label": "三个框架" }
+  { "type": "dir-section-header", "name": "decisions", "label": "决策记录" }
 ]

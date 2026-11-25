@@ -1,8 +1,7 @@
 name: docs-site
 
 # 文档站：PR 上构建并检查；合并到 main 后把构建产物发布到 docs-site 分支，部署环境从这个分支取站点内容。
-# 构建要读 kun、qian、sanyuan-agent 三个仓库，各用一把只读 deploy key，私钥存在本仓库的 Actions 密钥里，
-# 见 website/README.md 的「CI」一节。
+# 站点只收本仓库的文档，构建不读别的仓库。见 website/README.md。
 
 on:
   pull_request:
@@ -28,42 +27,6 @@ jobs:
         working-directory: website
     steps:
       - uses: actions/checkout@v4
-
-      - name: 配置读取三个框架仓库的只读钥匙
-        env:
-          GH_TOKEN: ${{ github.token }}
-          KEY_KUN: ${{ secrets.SOURCES_KEY_KUN }}
-          KEY_QIAN: ${{ secrets.SOURCES_KEY_QIAN }}
-          KEY_SANYUAN_AGENT: ${{ secrets.SOURCES_KEY_SANYUAN_AGENT }}
-        run: |
-          set -euo pipefail
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          # GitHub 的 SSH 主机密钥从它的 API 取（经 TLS 校验），不用 ssh-keyscan
-          gh api meta --jq '.ssh_keys[] | "github.com " + .' >> ~/.ssh/known_hosts
-
-          # 每个仓库一把钥匙：给它起一个主机别名，再让 git 把这个仓库的地址改到别名上
-          configure() {
-            local repo="$1" key="$2"
-            if [ -z "$key" ]; then
-              echo "::error::缺 Actions 密钥：读 CavaiLAB/$repo 的只读 deploy key。配置办法见 website/README.md 的「CI」一节"
-              exit 1
-            fi
-            printf '%s\n' "$key" > ~/.ssh/sources_"$repo"
-            chmod 600 ~/.ssh/sources_"$repo"
-            {
-              echo "Host sources-$repo"
-              echo "  HostName github.com"
-              echo "  User git"
-              echo "  IdentityFile ~/.ssh/sources_$repo"
-              echo "  IdentitiesOnly yes"
-              echo "  HostKeyAlias github.com"
-            } >> ~/.ssh/config
-            git config --global url."git@sources-$repo:CavaiLAB/$repo".insteadOf "git@github.com:CavaiLAB/$repo"
-          }
-          configure kun "$KEY_KUN"
-          configure qian "$KEY_QIAN"
-          configure sanyuan-agent "$KEY_SANYUAN_AGENT"
 
       # 先装 Node 再装 pnpm：pnpm 的版本取自 website/package.json 的 packageManager
       - uses: actions/setup-node@v4
@@ -91,9 +54,6 @@ jobs:
         run: pnpm test
 
       - name: 构建站点（含死链与失效锚点检查）
-        env:
-          # 检出用的是 HTTPS，取三个框架仓库要显式指定走 SSH
-          SOURCES_GIT_BASE: "git@github.com:CavaiLAB/"
         run: pnpm build
 
       - uses: actions/upload-artifact@v4
