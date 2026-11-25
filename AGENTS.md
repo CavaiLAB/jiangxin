@@ -59,10 +59,10 @@
 
 ## 文档站
 
-`website/` 是用 Rspress 搭的文档站，把本仓库与三个框架仓库的文档聚到一起。用法与约束见 [website/README.md](website/README.md)。
+`website/` 是用 Rspress 搭的文档站，只放本仓库的文档。用法与约束见 [website/README.md](website/README.md)。
 
-- 进站点的只有根目录的 `README.md` 和 `docs/`。组合体代码旁边的 README 不进站点；`docs/` 里要指向它们（或仓库里任何 `docs/` 以外的文件）时，写完整的 GitHub 地址（`https://github.com/CavaiLAB/jiangxin/blob/main/<路径>`），写相对路径会被当成死链。根目录的 `README.md` 里照常写相对路径。`docs/` 里只放平台层面的内容：裁定、组合体里有什么、术语；工程上的说明写在代码旁边。
-- `docs/index.md` 与 `docs/frameworks/` 是生成物，不进 git，不要手改。首页改根目录的 `README.md`，框架的文档去各框架仓库改。
+- 进站点的只有根目录的 `README.md` 和 `docs/`。代码旁边的 README 不进站点；`docs/` 里要指向它们（或仓库里任何 `docs/` 以外的文件）时，写完整的 GitHub 地址（`https://github.com/CavaiLAB/jiangxin/blob/main/<路径>`），写相对路径会被当成死链。根目录的 `README.md` 里照常写相对路径。`docs/` 里只放平台层面的内容：裁定、产品里有什么、术语；工程上的说明写在代码旁边。
+- `docs/index.md` 是生成物，不进 git，不要手改。首页改根目录的 `README.md`。Kun 的文档在 Kun 的仓库里，站点导航里的「Kun」链到那里。
 - 改了 `README.md` 或 `docs/` 下的文档，在 `website/` 下跑 `pnpm build`：死链和失效的锚点会让构建失败。PR 上 CI 跑的是同样的检查。
 - 图用 Mermaid 语法写在 `` ```mermaid `` 代码块里。站点在构建时把它渲染成静态图，画不出来构建会失败；站点上的排版和 GitHub 上不一样。
 - 合并到 `main` 后 CI 把站点发布到 `docs-site` 分支。那个分支是发布产物，不要在上面提交。

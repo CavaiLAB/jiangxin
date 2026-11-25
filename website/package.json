@@ -6,7 +6,6 @@
   "packageManager": "pnpm@12.9.1",
   "scripts": {
     "sync": "node scripts/sync.ts",
-    "sync:update": "node scripts/sync.ts --update",
     "dev": "node scripts/sync.ts && rspress dev",
     "build": "node scripts/sync.ts && rspress build",
     "preview": "rspress preview",

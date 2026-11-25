@@ -16,6 +16,5 @@
   "06-roadmap",
   "07-governance",
   "glossary",
-  { "type": "dir-section-header", "name": "decisions", "label": "决策记录" },
-  { "type": "dir-section-header", "name": "frameworks", "label": "三个框架" }
+  { "type": "dir-section-header", "name": "decisions", "label": "决策记录" }
 ]
