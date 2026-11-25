@@ -80,12 +80,13 @@ const items = [{ value: 'all', label: '全部车间' }, { value: 'weld', label: 
   </SelectContent>
 </Select>
 
-<DatePicker value={date} onValueChange={setDate} locale={zhCN} placeholder="选择日期" aria-label="上次保养" />
+<DatePicker value={date} onValueChange={setDate} locale={zhCN} placeholder="不限" aria-label="上次保养" />
 ```
 
 要点：
 
 - **用法和 shadcn 的文档一样**，属性就是 Base UI 对应组件的属性。`Select`、`Combobox` 给了 `items`，选中的值才会显示成对应的 `label`。`DatePicker` 是这里自己包的：`value` 是 `Date` 或 `null`；`locale` 决定日历的语言（本包导出 `zhCN`、`enUS`）；`formatDate` 决定按钮上怎么写日期。
+- **日期选择的名字。** `aria-label` 给的是字段名，组件把按钮上显示的字接在后面，拼好放到按钮的 `aria-label` 上：上面的例子读屏听到的是「上次保养 2026/11/18」，没选时是「上次保养 不限」。所以占位文字要写成接在字段名后面读得通的样子。按钮上显示的字已经带着字段名时（比如页面上没有标签的筛选，按钮上写「上次保养：不限」），不用给 `aria-label`，名字就是按钮上的字。用 `<label htmlFor>` 关联的，也要把标签的文字传给 `aria-label`：只靠 label 关联，名字里只有标签、听不到日期。也可以给 `aria-labelledby`（写着字段名的元素的 id），组件同样把日期接在后面，但有的检查工具不认 `aria-labelledby`。
 - **调宽度、间距，给组件传 `jx:` 开头的类名**（`className="jx:w-52"`）。组件内部用 `cn` 合并类名，传进去的会替换掉组件自己的同类类名。用 CSS Modules 的类名改同一个属性，谁赢要看两份样式表注入的先后，靠不住。插件自己的布局照旧用 CSS Modules，`jx:` 类名只写在传给本包组件的 `className` 上。
 - **放进 DSH 的弹窗或抽屉时**，照下面「放进 DSH 弹窗的两条规矩」做。
 - 文字都由调用方给：占位文字、读屏用的名字、空列表的提示。

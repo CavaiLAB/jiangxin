@@ -50,6 +50,8 @@ export const zh = {
   'filter.category.empty': '没有匹配的类别',
   'filter.maintainedBefore': '上次保养不晚于',
   'filter.maintainedBefore.placeholder': '上次保养：不限',
+  /** 抽屉里没选日期时按钮上的字：标签就在上面，读屏会读成「上次保养不晚于 不限」。 */
+  'filter.maintainedBefore.any': '不限',
   'filter.runtime': '累计运行',
   'filter.runtime.any': '不限',
   'filter.runtime.atLeast': '{hours} 小时以上',
@@ -123,6 +125,7 @@ export const en: Record<WorkbenchKey, string> = {
   'filter.category.empty': 'No matching category',
   'filter.maintainedBefore': 'Last maintained on or before',
   'filter.maintainedBefore.placeholder': 'Last maintained: any',
+  'filter.maintainedBefore.any': 'Any',
   'filter.runtime': 'Runtime',
   'filter.runtime.any': 'Any',
   'filter.runtime.atLeast': '{hours} hours or more',

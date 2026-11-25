@@ -83,14 +83,16 @@ function MaintenanceDate({ t, date, value, onChange, className, id }: {
   t: Translate; date: DateFormat; value: string | undefined; onChange: (value: string | undefined) => void
   className?: string; id?: string
 }): ReactNode {
-  // 给了 id 的（抽屉里）旁边有写着「上次保养不晚于」的标签，按钮上只写日期；页面上没有标签，按钮上带着这几个字。
+  // 给了 id 的（抽屉里）旁边有写着「上次保养不晚于」的标签：按钮上只写日期或「不限」，标签的文字也传给 aria-label，
+  // 读屏听到的名字由日期选择拼成「上次保养不晚于 2026/11/19」。页面上没有标签：按钮上的字自己带着字段名，不另给
+  // aria-label（给了会把字段名读两遍），名字就是按钮上的字。
   const labelled = id !== undefined
   return (
     <DatePicker
-      {...(labelled ? { id } : { 'aria-label': t('filter.maintainedBefore') })}
+      {...(labelled ? { id, 'aria-label': t('filter.maintainedBefore') } : {})}
       value={value === undefined ? null : fromDateString(value)}
       onValueChange={(next) => { onChange(next === null ? undefined : toDateString(next)) }}
-      placeholder={t('filter.maintainedBefore.placeholder')}
+      placeholder={labelled ? t('filter.maintainedBefore.any') : t('filter.maintainedBefore.placeholder')}
       formatDate={(next) => labelled ? date.format(next) : `${t('filter.maintainedBefore')} ${date.format(next)}`}
       locale={date.locale}
       className={className}
