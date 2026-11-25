@@ -10,7 +10,8 @@
  * 判定规则：一个组件把自己的 props（剩余参数 ...props，或者整个 props 参数）展开交给某个元素，而那个元素按类型
  * 接受 ref（原生标签，或者属性里有 ref 的组件），那么这个组件必须
  *   1. 用 forwardRef 包起来，
- *   2. 在那个元素上写 ref（直接写 ref={ref}，或者合并以后再给），并且用到 forwardRef 给的 ref 参数；
+ *   2. 在那个元素上写 ref（直接写 ref={ref}，或者合并以后再给），并且用到 forwardRef 给的 ref 参数
+ *      （按符号认：参数叫 ref 时，元素上写的 ref={自己的 ref} 里那个属性名不算用到）；
  * 另外，任何组件都不能从 props 里解构 ref（React 19 的写法，在 18 上永远是 undefined）。
  *
  * 只看文件最外层定义的组件（名字大写开头的函数声明、箭头函数、forwardRef(…) 调用）。
@@ -197,12 +198,23 @@ function refInstanceType(checker, element) {
   return /^[A-Z][A-Za-z0-9]*$/.test(text) ? text : undefined
 }
 
-/** 函数里有没有用到名为 name 的标识符（不算参数声明本身）。 */
-function usesIdentifier(fn, name, declaration) {
+/**
+ * 函数体里有没有用到 declaration 声明的那个参数（含嵌套的回调里）。
+ * 按类型检查器的符号认，不按名字认：参数恰好叫 ref 时，元素上的属性名 ref（ref={自己的 ref}）、对象的属性名 ref
+ * 都不是这个参数，不能算用到。简写属性 { ref } 取的是参数的值，算用到。
+ */
+function usesParameter(checker, fn, declaration) {
+  const target = checker.getSymbolAtLocation(declaration.name)
+  if (target === undefined) return false
   let used = false
   const visit = (node) => {
     if (used) return
-    if (ts.isIdentifier(node) && node.text === name && node.parent !== declaration) used = true
+    if (ts.isIdentifier(node) && node !== declaration.name) {
+      const symbol = ts.isShorthandPropertyAssignment(node.parent) && node.parent.name === node
+        ? checker.getShorthandAssignmentValueSymbol(node.parent)
+        : checker.getSymbolAtLocation(node)
+      if (symbol === target) used = true
+    }
     ts.forEachChild(node, visit)
   }
   if (fn.body) visit(fn.body)
@@ -275,8 +287,8 @@ export function findMissingRefs(program, options = {}) {
           continue
         }
         const refParam = fn.parameters[1]
-        const refName = refParam !== undefined && ts.isIdentifier(refParam.name) ? refParam.name.text : undefined
-        const passed = refAttribute(target) !== undefined && refName !== undefined && usesIdentifier(fn, refName, refParam)
+        const passed = refAttribute(target) !== undefined && refParam !== undefined && ts.isIdentifier(refParam.name)
+          && usesParameter(checker, fn, refParam)
         if (!passed) {
           findings.push({
             file: sourceFile.fileName, line: lineOf(target), component: name, kind: 'ref-not-passed', target: targetName,

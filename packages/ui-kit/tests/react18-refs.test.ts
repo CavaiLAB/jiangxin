@@ -34,6 +34,7 @@ test('检查本身：认得出收不到 ref 的几种写法', () => {
     'Destructured not-forwarded',
     'Destructured ref-in-props',
     'Forgot ref-not-passed',
+    'OwnRef ref-not-passed',
     'PlainInput not-forwarded',
     'Wrapper not-forwarded',
   ])
@@ -58,7 +59,7 @@ test('适配脚本的改法：改完以后不再报，元素类型写得出来',
     assert.match(fixed, /<input ref=\{ref\} className=\{className\} \{\.\.\.props\} \/>/)
     assert.match(fixed, /export const ArrowButton = React\.forwardRef\(\(\{ children, \.\.\.props \}: React\.ComponentProps<'button'>, ref: React\.ForwardedRef<HTMLButtonElement>\) =>/)
     // 解构了 ref 的、已经 forwardRef 但没交出去的，脚本不改，留给人。
-    assert.deepEqual(summarize([file]), ['Destructured not-forwarded', 'Destructured ref-in-props', 'Forgot ref-not-passed'])
+    assert.deepEqual(summarize([file]), ['Destructured not-forwarded', 'Destructured ref-in-props', 'Forgot ref-not-passed', 'OwnRef ref-not-passed'])
   } finally {
     rmSync(dir, { recursive: true, force: true })
   }
