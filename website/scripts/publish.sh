@@ -5,7 +5,7 @@
 #   website/scripts/publish.sh <产物目录>
 #
 # 只发布主干：检出要是干净的，并且就是 origin/main 的头提交，不满足就拒绝。
-# 分支只有一个提交：每次把产物作为无父提交强推，构建产物不在仓库里累积历史。
+# 分支只有一个提交：每次把产物作为无父提交强推，构建产物不在仓库里累积历史，上一次有、这次没有的文件也不会留下。
 set -euo pipefail
 
 BRANCH="${DOCS_BRANCH:-docs-site}"
@@ -21,7 +21,6 @@ if [[ ! -f "$src/index.html" ]]; then
   exit 1
 fi
 
-root="$(git rev-parse --show-toplevel)"
 git_dir="$(git rev-parse --absolute-git-dir)"
 source_sha="$(git rev-parse HEAD)"
 
@@ -42,18 +41,12 @@ trap 'rm -rf "$work" "$index"' EXIT
 
 cp -R "$src"/. "$work"/
 
-# 站点上留一份记录：取自哪个提交，三个框架仓库各钉在哪个提交
+# 站点上留一份记录：取自哪个提交，什么时候发布的
 node -e '
   const fs = require("node:fs");
-  const [out, commit, sourcesFile] = process.argv.slice(1);
-  const { frameworks } = JSON.parse(fs.readFileSync(sourcesFile, "utf8"));
-  const info = {
-    commit,
-    frameworks: frameworks.map((fw) => ({ repo: fw.repo, commit: fw.commit })),
-    publishedAt: new Date().toISOString(),
-  };
-  fs.writeFileSync(out, JSON.stringify(info) + "\n");
-' "$work/build-info.json" "$source_sha" "$root/website/sources.json"
+  const [out, commit] = process.argv.slice(1);
+  fs.writeFileSync(out, JSON.stringify({ commit, publishedAt: new Date().toISOString() }) + "\n");
+' "$work/build-info.json" "$source_sha"
 
 # 分支当前的头提交。分支还不存在时，推送要求它仍然不存在
 if git fetch --quiet "$REMOTE" "+refs/heads/$BRANCH:refs/remotes/$REMOTE/$BRANCH" 2>/dev/null; then

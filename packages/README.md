@@ -10,7 +10,7 @@
 
 ## 怎么装、怎么检查
 
-各包各用 pnpm，有自己的 `package.json`、`pnpm-lock.yaml` 和 `pnpm-workspace.yaml`（只用来写明依赖的安装脚本跑不跑），仓库根没有统一的工作区（原因见 [AGENTS.md](../AGENTS.md)「组合体的代码」）。`brand-theme` 和 `enterprise-workbench` 用链接依赖 `link:../ui-kit` 引用 `ui-kit` 和它的构建脚本，所以先装 `ui-kit`：
+各包各用 pnpm，有自己的 `package.json`、`pnpm-lock.yaml` 和 `pnpm-workspace.yaml`（只用来写明依赖的安装脚本跑不跑），仓库根没有统一的工作区（原因见 [AGENTS.md](../AGENTS.md)「产品的代码」）。`brand-theme` 和 `enterprise-workbench` 用链接依赖 `link:../ui-kit` 引用 `ui-kit` 和它的构建脚本，所以先装 `ui-kit`：
 
 ```bash
 cd packages/ui-kit && pnpm install --frozen-lockfile && pnpm run typecheck && pnpm run test
@@ -46,4 +46,4 @@ cd packages/enterprise-workbench && pnpm install --frozen-lockfile && pnpm run c
 | `enterprise-policy` | 工具护栏与设置的统一管控 |
 | `enterprise-audit` | 审计 |
 
-后三个要等「登录、租户、策略、审计由哪个后端提供」定下来（同一份裁定第 3 节，待定）。
+后三个各接什么：登录接 Kun 的身份服务（已定，[2026-11-25 平台级裁定](../docs/decisions/2026-11-25-platform.md) P57、P64）；工具护栏只是实例里的补充，不代替平台的权限判定，权限都走 Kun 这一套（已定，2026-11-26，P86）；审计接到哪里还没有记成裁定。DSH 的实例怎么和企业级平台对接，见 [DSH 与企业级平台的对接](../docs/12-dsh-integration.md)。

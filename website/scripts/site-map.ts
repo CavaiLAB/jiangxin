@@ -1,93 +1,70 @@
 // 仓库里的文件与站点页面怎么对应，Markdown 里的链接怎么改写。
 //
-// 各仓库的文档是写给 GitHub 看的：同一个仓库里用相对路径，跨仓库用完整的 GitHub 地址。
-// 站点把几个仓库的文档聚到一个目录下，这里算出每个链接在站点里该指向哪里。
+// 文档是写给 GitHub 看的：根目录的 README.md 用相对路径，docs/ 里指向 docs/ 以外的文件写完整的 GitHub 地址。
+// 站点只收本仓库根目录的 README.md 与 docs/，这里算出这些链接在站点里该指向哪里。
 
 import path from 'node:path';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmFromMarkdown } from 'mdast-util-gfm';
 import { gfm } from 'micromark-extension-gfm';
 
-/** 各仓库所在的 GitHub 组织。 */
-export const ORG = 'CavaiLAB';
-
-/** 站点所在的仓库。它的 README 是站点首页，它的 docs/ 就是站点的文档根目录。 */
-export const HOME_REPO = 'jiangxin';
-
-/** 某个仓库里的一个文件。路径相对仓库根目录，用正斜杠。 */
-export interface RepoFile {
-  repo: string;
-  path: string;
-}
+/** 本仓库在 GitHub 上的地址。 */
+export const REPO_URL = 'https://github.com/CavaiLAB/jiangxin';
 
 const PAGE = /\.mdx?$/;
 
 /**
- * 仓库里的文件在站点文档根目录下的相对路径；不进站点的返回 null。
+ * 仓库里的文件在站点文档根目录下的相对路径；不进站点的返回 null。路径相对仓库根目录，用正斜杠。
  *
- * 每个仓库进站点的只有 README.md 与 docs/ 下的文件：
- *
- *   jiangxin    README.md → index.md                     docs/x → x
- *   框架仓库     README.md → frameworks/<仓库>/index.md    docs/x → frameworks/<仓库>/x
+ * 进站点的只有根目录的 README.md 与 docs/ 下的文件：README.md → index.md，docs/x → x。
  */
-export function sitePathOf(file: RepoFile, frameworks: readonly string[]): string | null {
-  let prefix: string;
-  if (file.repo === HOME_REPO) prefix = '';
-  else if (frameworks.includes(file.repo)) prefix = `frameworks/${file.repo}/`;
-  else return null;
-
-  if (file.path === 'README.md') return `${prefix}index.md`;
-  if (file.path.startsWith('docs/') && !file.path.endsWith('/')) return prefix + file.path.slice('docs/'.length);
+export function sitePathOf(file: string): string | null {
+  if (file === 'README.md') return 'index.md';
+  if (file.startsWith('docs/') && !file.endsWith('/')) return file.slice('docs/'.length);
   return null;
 }
 
-const REPO_FILE_URL = new RegExp(`^https://github\\.com/${ORG}/([\\w.-]+)/blob/main/([^?#]+)(#.*)?$`);
+const REPO_FILE_URL = new RegExp(`^${REPO_URL.replaceAll('.', '\\.')}/blob/main/([^?#]+)(#.*)?$`);
 
 /**
- * 认出指向本组织某个仓库主干上某个文件的 GitHub 地址：.../blob/main/<路径>。别的地址返回 null。
+ * 认出指向本仓库主干上某个文件的 GitHub 地址：.../blob/main/<路径>，给出路径与锚点。别的地址返回 null。
  *
  * 只认 main：写了提交号的地址指的是那个版本的原文，不能换成站点里的这一份。
+ * 别的仓库的地址也返回 null，它们照常去 GitHub。
  */
-export function parseRepoFileUrl(url: string): (RepoFile & { hash: string }) | null {
+export function parseRepoFileUrl(url: string): { path: string; hash: string } | null {
   const match = REPO_FILE_URL.exec(url);
-  const repo = match?.[1];
-  const rawPath = match?.[2];
-  if (repo === undefined || rawPath === undefined) return null;
+  const rawPath = match?.[1];
+  if (rawPath === undefined) return null;
   try {
-    return { repo, path: decodeURIComponent(rawPath), hash: match?.[3] ?? '' };
+    return { path: decodeURIComponent(rawPath), hash: match?.[2] ?? '' };
   } catch {
     return null;
   }
 }
 
-export interface RewriteContext {
-  /** 聚合进站点的框架仓库名。 */
-  frameworks: readonly string[];
-  /** 站点文档根目录下有没有这个文件。 */
-  exists(sitePath: string): boolean;
-  /** 指向某个仓库里不进站点的文件时用哪个版本：框架仓库用钉住的提交，本仓库用 main。 */
-  refOf(repo: string): string;
-}
-
 /**
- * 算出文档里的一个链接在站点里该写成什么。返回 null 表示不动。
+ * 算出根目录的 README.md 里的一个链接在首页里该写成什么。返回 null 表示不动。
+ *
+ * exists 回答站点文档根目录下有没有某个文件。
  *
  * - 指向进了站点的页面：改成站内的相对路径，交给 Rspress 去规整和查死链。
  * - 相对路径指向仓库里不进站点的文件（比如 AGENTS.md）：改成 GitHub 上的完整地址。
  * - 完整的 GitHub 地址指向的文档不在站点里：不动，仍然去 GitHub。
  * - 图片只能放在 docs/ 下，放在别处的带不进站点，直接报错。
  */
-export function rewriteUrl(url: string, from: RepoFile, ctx: RewriteContext, kind: 'link' | 'image' = 'link'): string | null {
+export function rewriteReadmeUrl(
+  url: string,
+  exists: (sitePath: string) => boolean,
+  kind: 'link' | 'image' = 'link',
+): string | null {
   if (url === '' || url.startsWith('#')) return null;
 
-  const fromSite = sitePathOf(from, ctx.frameworks);
-  if (fromSite === null) throw new Error(`${from.repo} 的 ${from.path} 不进站点，不该改写它里面的链接`);
-
   const absolute = parseRepoFileUrl(url);
-  let target: RepoFile;
+  let target: string;
   let hash: string;
   if (absolute) {
-    target = absolute;
+    target = absolute.path;
     hash = absolute.hash;
   } else {
     if (/^[a-z][a-z0-9+.-]*:/i.test(url) || url.startsWith('//')) return null;
@@ -101,28 +78,24 @@ export function rewriteUrl(url: string, from: RepoFile, ctx: RewriteContext, kin
     } catch {
       return null;
     }
-    // 在 GitHub 上，以 / 开头的链接相对仓库根目录
-    const resolved = decoded.startsWith('/')
-      ? path.posix.normalize(decoded.slice(1))
-      : path.posix.normalize(path.posix.join(path.posix.dirname(from.path), decoded));
+    // README.md 在仓库根目录：相对路径和以 / 开头的路径都从根目录算起
+    target = path.posix.normalize(decoded.startsWith('/') ? decoded.slice(1) : decoded);
     // 指到仓库外面去了，原样留着
-    if (resolved === '..' || resolved.startsWith('../')) return null;
-    target = { repo: from.repo, path: resolved };
+    if (target === '..' || target.startsWith('../')) return null;
   }
 
-  const site = sitePathOf(target, ctx.frameworks);
-  const relative = site === null ? null : path.posix.relative(path.posix.dirname(fromSite), site);
+  const site = sitePathOf(target);
 
   if (kind === 'image') {
     if (absolute) return null;
-    if (relative === null) throw new Error(`图片 ${url} 不在 docs/ 下，带不进站点`);
+    if (site === null) throw new Error(`图片 ${url} 不在 docs/ 下，带不进站点`);
     // 图片是当模块引入的：不带 ./ 的路径会被打包器当成包名，到 node_modules 里去找
-    return (relative.startsWith('../') ? relative : `./${relative}`) + hash;
+    return `./${site}${hash}`;
   }
 
-  if (relative !== null && site !== null && PAGE.test(site) && (!absolute || ctx.exists(site))) return relative + hash;
+  if (site !== null && PAGE.test(site) && (!absolute || exists(site))) return site + hash;
   if (absolute) return null;
-  return `https://github.com/${ORG}/${target.repo}/blob/${ctx.refOf(target.repo)}/${encodeURI(target.path)}${hash}`;
+  return `${REPO_URL}/blob/main/${encodeURI(target)}${hash}`;
 }
 
 /**

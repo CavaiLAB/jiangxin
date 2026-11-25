@@ -3,14 +3,12 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from '@rspress/core';
 import { remarkDiagrams } from './scripts/remark-diagrams.ts';
 import { remarkRepoLinks } from './scripts/remark-repo-links.ts';
-import { HOME_REPO, ORG } from './scripts/site-map.ts';
-import { readSources } from './scripts/sources.ts';
+import { REPO_URL } from './scripts/site-map.ts';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
-// 文档只有一份，就是仓库根目录的 docs/。首页与 frameworks/ 由 scripts/sync.ts 生成进去。
+// 文档只有一份，就是仓库根目录的 docs/。首页由 scripts/sync.ts 生成进去。
 const docsDir = path.join(here, '..', 'docs');
-const frameworks = readSources(path.join(here, 'sources.json')).map((fw) => fw.repo);
 
 // 部署在子路径下时用 DOCS_BASE 指定，例如 /jiangxin/
 const base = process.env.DOCS_BASE ?? '/';
@@ -22,7 +20,7 @@ export default defineConfig({
   base,
   lang: 'zh',
   title: '匠心工业智能体平台',
-  description: '匠心工业智能体平台的框架级文档：平台总览，以及 Kun、Qian、SanYuanAgent 三个框架',
+  description: '匠心工业智能体平台的文档',
   logoText: '匠心工业智能体平台',
   // 产物里的链接带 .html，任何静态服务器都能直接打开
   route: { cleanUrls: false },
@@ -30,7 +28,7 @@ export default defineConfig({
     // 死链与失效的锚点在构建时报错
     link: { checkDeadLinks: true, checkAnchors: true },
     remarkPlugins: [
-      [remarkRepoLinks, { docsDir, frameworks }],
+      [remarkRepoLinks, { docsDir }],
       // ```mermaid 代码块在构建时渲染成静态 SVG，页面不带图表脚本
       [remarkDiagrams, { docsDir }],
     ],
@@ -41,7 +39,7 @@ export default defineConfig({
   // 站点很小，每次全量构建只要一两秒。
   builderConfig: { performance: { buildCache: false } },
   themeConfig: {
-    socialLinks: [{ icon: 'github', mode: 'link', content: `https://github.com/${ORG}/${HOME_REPO}` }],
+    socialLinks: [{ icon: 'github', mode: 'link', content: REPO_URL }],
     enableScrollToTop: true,
   },
 });
