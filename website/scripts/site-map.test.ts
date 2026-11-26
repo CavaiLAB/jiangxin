@@ -49,7 +49,7 @@ test('认出指向本仓库主干上文件的 GitHub 地址', () => {
 
 test('别的仓库的地址认不出，照常去 GitHub', () => {
   assert.equal(parseRepoFileUrl('https://github.com/CavaiLAB/kun/blob/main/README.md'), null);
-  assert.equal(parseRepoFileUrl('https://github.com/CavaiLAB/kun/blob/main/docs/migration.md'), null);
+  assert.equal(parseRepoFileUrl('https://github.com/CavaiLAB/kun/blob/main/docs/architecture.md'), null);
   assert.equal(parseRepoFileUrl('https://github.com/CavaiLAB/qian/blob/main/docs/migration.md'), null);
   assert.equal(parseRepoFileUrl('https://github.com/example/jiangxin/blob/main/README.md'), null);
 });
@@ -87,7 +87,7 @@ test('不动的链接', () => {
   assert.equal(rewriteReadmeUrl('https://github.com/CavaiLAB/jiangxin', exists), null, '指向仓库本身的地址');
   assert.equal(rewriteReadmeUrl('https://github.com/CavaiLAB/kun/blob/main/README.md', exists), null, '别的仓库的 README');
   assert.equal(
-    rewriteReadmeUrl('https://github.com/CavaiLAB/kun/blob/main/docs/migration.md', exists),
+    rewriteReadmeUrl('https://github.com/CavaiLAB/kun/blob/main/docs/architecture.md', exists),
     null,
     '别的仓库的文档，站点里有同名的页面也不改',
   );
@@ -196,7 +196,7 @@ test('docs/ 里指向本仓库文档的完整地址改成站内的，别的仓�
       [`https://github.com/CavaiLAB/jiangxin/blob/${PIN}/README.md`, `https://github.com/CavaiLAB/jiangxin/blob/${PIN}/README.md`],
       // 站点里就算有同名的文件，别的仓库的地址也不改
       ['https://github.com/CavaiLAB/kun/blob/main/README.md', 'https://github.com/CavaiLAB/kun/blob/main/README.md'],
-      ['https://github.com/CavaiLAB/kun/blob/main/docs/migration.md', 'https://github.com/CavaiLAB/kun/blob/main/docs/migration.md'],
+      ['https://github.com/CavaiLAB/kun/blob/main/docs/architecture.md', 'https://github.com/CavaiLAB/kun/blob/main/docs/architecture.md'],
       ['https://github.com/CavaiLAB/sanyuan-agent/blob/main/docs/sdk.md', 'https://github.com/CavaiLAB/sanyuan-agent/blob/main/docs/sdk.md'],
     ];
     interface Node {
