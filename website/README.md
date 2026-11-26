@@ -31,7 +31,7 @@ pnpm preview
 | 站点里的页面 | 来源 | 在 git 里 |
 |---|---|---|
 | 首页 | 根目录的 `README.md` | 生成到 `docs/index.md`，不进 git |
-| 平台文档、决策记录 | `docs/` | 就是原文件 |
+| 平台文档 | `docs/` | 就是原文件 |
 
 `pnpm dev` 与 `pnpm build` 开头都会先同步一次，生成首页。单独同步用 `pnpm sync`。
 
@@ -43,7 +43,7 @@ pnpm preview
 
 | 文档里的写法 | 在站点里 |
 |---|---|
-| 相对路径，如 `docs/02-architecture.md` | 站内对应的页面 |
+| 相对路径，如 `docs/04-architecture.md` | 站内对应的页面 |
 | 本仓库主干上的文档的完整地址，如 `https://github.com/CavaiLAB/jiangxin/blob/main/README.md` | 站内那一份；站点里没有这一页就仍去 GitHub |
 | 根目录的 `README.md` 里用相对路径指向不进站点的文件，如 `AGENTS.md` | GitHub 上的地址 |
 | 别的仓库的地址、指向仓库本身的地址、写了提交号的地址 | 不动 |
@@ -76,8 +76,8 @@ pnpm preview
 ## 导航与侧栏
 
 - 顶部导航在 `docs/_nav.json`，侧栏在 `docs/_meta.json`。
-- `docs/` 顶层新增页面或目录，要在 `docs/_meta.json` 里登记，没登记的同步时会报错。`decisions/` 下新增的文件自动出现在侧栏里。
-- 导航里的「Kun」是站外链接，指向 Kun 的仓库。Kun 会有自己对外的文档站（已定，2026-11-26，P82），地址还没有定；定了以后把这一项换成那个地址。
+- `docs/` 顶层新增页面或目录，要在 `docs/_meta.json` 里登记，没登记的同步时会报错。
+- 导航里的「Kun」是站外链接，指向 Kun 的仓库。Kun 会有自己对外的文档站（已定），地址还没有定；定了以后把这一项换成那个地址。
 
 ## 部署
 

@@ -164,7 +164,7 @@ node bin/jx-preflight.mjs [--dist <发行目录>] [--profile <名字>] [--quiet]
 
 ## 版本号
 
-产品版本号的规则见 [2026-11-20 产品裁定](../docs/decisions/2026-11-20-product.md) P40：`vYYYY.M.D`、`vYYYY.M.D-N`、`vYYYY.M.D-beta.N`，月和日不补零。在启动时注入：
+产品版本号的规则见[协作约定](../docs/14-governance.md)第 7 节：`vYYYY.M.D`、`vYYYY.M.D-N`、`vYYYY.M.D-beta.N`，月和日不补零。在启动时注入：
 
 ```bash
 JX_PRODUCT_VERSION=v2026.11.20 JX_PRODUCT_COMMIT=abc1234 apps/web/start.sh

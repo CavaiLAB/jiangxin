@@ -1,6 +1,6 @@
 # 遵循的标准
 
-> 状态：提议，范围待定（2026-11-26）。「代码要符合 ISO 等国际相关标准」已定（2026-11-26，P84）。对着哪些标准，产品负责人还没有裁定；下面的清单和每一条的做法都是提议。标准的编号、名称与版本，2026-11-26 在各标准组织自己的目录上核对过，见第 5 节。「现在做到哪一步」只写在仓库里核对过的事实。
+> 状态：提议，范围待定（2026-11-26）。「代码要符合 ISO 等国际相关标准」已定。对着哪些标准，产品负责人还没有裁定；下面的清单和每一条的做法都是提议。标准的编号、名称与版本，2026-11-26 在各标准组织自己的目录上核对过，见第 5 节。「现在做到哪一步」只写在仓库里核对过的事实。
 
 ## 1 这一篇说什么
 
@@ -46,7 +46,7 @@
 
 ### 3.3 过程与测试
 
-- **已有，过程。** 两个仓库的改动都走分支和 PR，裁定写成决策记录，见[协作约定](07-governance.md)。Kun 另有任务文件与看板，见 [pm/](https://github.com/CavaiLAB/kun/blob/main/pm/README.md)。
+- **已有，过程。** 两个仓库的改动都走分支和 PR，见[协作约定](14-governance.md)。Kun 另有任务文件与看板，见 [pm/](https://github.com/CavaiLAB/kun/blob/main/pm/README.md)。
 - **已有，Kun 的测试。** 单元测试；集成测试，用容器起真实的依赖；运行时语义的一致性测试，见 [tck/runtime](https://github.com/CavaiLAB/kun/blob/main/tck/runtime/README.md)；冻结契约的正例与反例，见 [contracts/v0](https://github.com/CavaiLAB/kun/blob/main/contracts/v0/README.md)；NativeAOT 的发布与冒烟。覆盖率每次收集并上传。
 - **已有，匠心的测试。** 各包的单测、桌面壳的单测、发行目录的启动前检查。都在本机跑。
 - **还缺。** 覆盖率没有设阈值。测试文档没有照 ISO/IEC/IEEE 29119-3 的结构整理过。匠心的测试没有进 CI。
@@ -66,7 +66,7 @@
 
 ### 3.5 物料清单与许可
 
-- **已有，Kun。** 镜像的物料清单用 SPDX 的 JSON 格式生成，签名时一起附上证明，现在只在自检镜像上，见 [scripts/images.py](https://github.com/CavaiLAB/kun/blob/main/scripts/images.py)。.NET 包、命令行与前端包的许可是 MIT，见[协作约定](07-governance.md)。
+- **已有，Kun。** 镜像的物料清单用 SPDX 的 JSON 格式生成，签名时一起附上证明，现在只在自检镜像上，见 [scripts/images.py](https://github.com/CavaiLAB/kun/blob/main/scripts/images.py)。.NET 包、命令行与前端包的许可是 MIT，见[协作约定](14-governance.md)。
 - **已有，匠心。** 打进插件包的第三方代码与各自的许可，列在界面包的 [NOTICE.md](https://github.com/CavaiLAB/jiangxin/blob/main/packages/ui-kit/NOTICE.md) 和品牌包的 [NOTICE.md](https://github.com/CavaiLAB/jiangxin/blob/main/packages/brand-theme/NOTICE.md) 里。
 - **还缺。** 许可白名单的检查。匠心的发布物没有物料清单。匠心自己的代码用什么许可，待定。生成的物料清单是 SPDX 的哪一版，没有核对；ISO/IEC 5962:2021 写的是 SPDX 2.2.1。
 - **怎么验证。** 镜像自检把物料清单、扫描报告、验签结果上传成证据。
@@ -74,7 +74,7 @@
 ### 3.6 AI
 
 - **已有。** 审计：Kun 的审计记录与业务写入在同一个事务里，串成哈希链，事后可以核验，见[审计的说明](https://github.com/CavaiLAB/kun/blob/main/docs/security/audit-log.md)。
-- **已定，还没有实现。** Agent 发出去的内容要由人审核，起步出站、入站两道都必审（[2026-11-19 平台级裁定](decisions/2026-11-19-platform.md) P28）。等人点头的事记在平台；标了要人确认的能力，由平台自己停下来等人点；审批时模型默认不参与（[2026-11-25 平台级裁定](decisions/2026-11-25-platform.md) P68、P73、P69）。
+- **已定，还没有实现。** Agent 发出去的内容要由人审核，起步出站、入站两道都必审。等人点头的事记在平台；标了要人确认的能力，由平台自己停下来等人点；审批时模型默认不参与。
 - **还缺。** 没有 AI 风险的清单。术语没有对着 ISO/IEC 22989 核过。
 - **怎么验证。** 没有定。
 
@@ -84,7 +84,7 @@
 - **还缺。** 数据模型、指标、设备接入各对着哪一份、对到哪一层，没有定。
 - **怎么验证。** 没有定。
 
-工业场景见[工业智能制造](08-industrial-forms.md)，历史系统怎么接见[历史系统接入](11-legacy-systems.md)。
+工业场景见[工业智能制造](02-industrial-forms.md)，历史系统怎么接见[历史系统接入](07-legacy-systems.md)。
 
 ### 3.8 数据的写法
 
@@ -101,7 +101,7 @@
 
 ### 3.10 身份与访问
 
-- **已有，Kun。** 身份服务按 OAuth 2.0 与 OpenID Connect 做，浏览器登录用授权码加 PKCE，见[身份服务](https://github.com/CavaiLAB/kun/blob/main/src/Kun.Identity.Server/README.md)与[登录组件](https://github.com/CavaiLAB/kun/blob/main/src/Kun.Identity.Client/README.md)的说明。SCIM 的核心 Schema（RFC 7643）已经冻结成契约；SCIM 的服务端（RFC 7644）是规划，见 [contracts/scim/v2](https://github.com/CavaiLAB/kun/blob/main/contracts/scim/v2/README.md)。权限怎么判，见[在平台上做开发](14-development.md)。
+- **已有，Kun。** 身份服务按 OAuth 2.0 与 OpenID Connect 做，浏览器登录用授权码加 PKCE，见[身份服务](https://github.com/CavaiLAB/kun/blob/main/src/Kun.Identity.Server/README.md)与[登录组件](https://github.com/CavaiLAB/kun/blob/main/src/Kun.Identity.Client/README.md)的说明。SCIM 的核心 Schema（RFC 7643）已经冻结成契约；SCIM 的服务端（RFC 7644）是规划，见 [contracts/scim/v2](https://github.com/CavaiLAB/kun/blob/main/contracts/scim/v2/README.md)。权限怎么判，见[在平台上做开发](11-development.md)。
 - **还缺。** 概念和术语没有对着 ISO/IEC 24760、ISO/IEC 29146 核过。
 - **怎么验证。** 身份与授权的测试在 Kun 的 CI 里。
 
@@ -182,7 +182,7 @@ Kun 的需求文档[第 14 章](https://github.com/CavaiLAB/kun/blob/main/docs/p
 |---|---|
 | 对着哪些标准 | 提议，见第 2 节。产品负责人没有裁定 |
 | 缺的检查先补哪些 | 没有定，清单见第 4 节 |
-| 匠心的代码检查什么时候进 CI | 待定，见[协作约定](07-governance.md) |
+| 匠心的代码检查什么时候进 CI | 待定，见[协作约定](14-governance.md) |
 | 各方面怎么验证 | 标着「没有定」的几项，见第 3 节 |
 | 标准换版以后谁来重新核对、多久核一次 | 没有定 |
 | 要不要做某一项认证 | 没有问过。本文的读法是不做认证，见第 1 节 |

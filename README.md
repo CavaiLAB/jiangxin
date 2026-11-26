@@ -17,7 +17,7 @@
 
 过去企业搭业务系统的省力办法是低代码或无代码平台：把系统拆成表单、列表、流程这些可配置的元数据，由人在设计器里拖拽出来。匠心保留「系统由声明式元数据描述」这一点，把写元数据的人换成智能体。人负责提出要求、判断结果对不对，智能体负责理解、生成和执行。按设计，每一步都受权限、审计和人工审核约束。
 
-展开见[平台做什么与设计理念](docs/01-vision.md)；工业这一块见[工业智能制造](docs/08-industrial-forms.md)。
+展开见[平台做什么与设计理念](docs/01-vision.md)；工业这一块见[工业智能制造](docs/02-industrial-forms.md)。
 
 ## 各部分管什么
 
@@ -27,10 +27,10 @@
 | Kun | 企业级框架，.NET 10：登录、权限、多租户、数据、事件、审计、模型服务的接口，以插件的形式装配 | [CavaiLAB/kun](https://github.com/CavaiLAB/kun) |
 | DSH | 上游的 Agent 运行时，界面外壳也用它自己的客户端。我们钉死版本，不改它的源码 | 以 npm 包装进本仓库的发行目录 |
 
-- 人用平台，入口是 Agent 工作区；管理端是另一块，给很多人用，不需要 DSH 实例。见[产品形态](docs/09-product.md)。
-- 平台上不论做什么系统，权限都走 Kun 这一套；模型服务由 Kun 提供，留一套标准的接口。见[总体架构](docs/02-architecture.md)。
-- Kun 的文档在它自己的仓库里。Kun 要有单独的网站，放使用文档和给大模型用的文档（已定，2026-11-26，P82）。
-- 现在只剩两个项目：匠心与 Kun（已定，2026-11-26，P78）。前端框架 [Qian](https://github.com/CavaiLAB/qian) 的仓库已归档，已发布的包留着；[SanYuanAgent](https://github.com/CavaiLAB/sanyuan-agent) 的仓库保留，暂不维护。
+- 人用平台，入口是 Agent 工作区；管理端是另一块，给很多人用，不需要 DSH 实例。见[产品形态](docs/03-product.md)。
+- 平台上不论做什么系统，权限都走 Kun 这一套；模型服务由 Kun 提供，留一套标准的接口。见[总体架构](docs/04-architecture.md)。
+- Kun 的文档在它自己的仓库里。Kun 要有单独的网站，放使用文档和给大模型用的文档（已定）。
+- 现在只剩两个项目：匠心与 Kun（已定）。前端框架 [Qian](https://github.com/CavaiLAB/qian) 的仓库已归档，已发布的包留着；[SanYuanAgent](https://github.com/CavaiLAB/sanyuan-agent) 的仓库保留，暂不维护。
 
 ## 现状
 
@@ -50,7 +50,7 @@
 | [`brand/`](brand/README.md) | 匠心 logo 的原图，不在任何代码许可之内 | 已有 |
 | `deploy/` | 产品的部署清单 | 规划。目录还没有建 |
 | [`website/`](website/README.md) | 文档站 | 已有 |
-| `docs/` | 平台的文档与决策记录，见下面的[文档](#文档) | — |
+| `docs/` | 平台的文档，见下面的[文档](#文档) | — |
 
 还没有的，都是规划：
 
@@ -60,61 +60,45 @@
 - Kun 一侧的模型服务的接口、远程的授权接口、智能体主体。
 - 两种形态、两个版本各自的装配，和产品的部署清单。
 
-先做什么、后做什么，见[路线](docs/06-roadmap.md)。Kun 的发布情况与安装入口，见 [Kun 的仓库](https://github.com/CavaiLAB/kun)。
+先做什么、后做什么，见[路线](docs/13-roadmap.md)。Kun 的发布情况与安装入口，见 [Kun 的仓库](https://github.com/CavaiLAB/kun)。
 
 DSH 按 MIT 许可使用，产品里带着它的版权与许可声明。
 
 ## 文档
 
-产品负责人要求文档写清楚四件事（已定，2026-11-26，P85）。各写在哪一篇、题目叫什么，是整理时的安排：
+产品负责人要求文档写清楚四件事（已定）。各写在哪一篇、题目叫什么，是整理时的安排：
 
 | 要写清楚的事 | 在哪一篇 |
 |---|---|
-| 平台是做什么的，设计理念是什么；不只面向通用办公，重点是工业智能制造 | [平台做什么与设计理念](docs/01-vision.md)、[工业智能制造](docs/08-industrial-forms.md) |
-| DSH 更新之后要做哪些工作 | [DSH 更新之后做什么](docs/13-dsh-upgrade.md) |
-| 别人怎么在这个平台上做开发 | [在平台上做开发](docs/14-development.md) |
-| DSH 怎么与企业级平台交互：登录、模型服务这些由企业级平台提供 | [DSH 与企业级平台的对接](docs/12-dsh-integration.md) |
+| 平台是做什么的，设计理念是什么；不只面向通用办公，重点是工业智能制造 | [平台做什么与设计理念](docs/01-vision.md)、[工业智能制造](docs/02-industrial-forms.md) |
+| DSH 更新之后要做哪些工作 | [DSH 更新之后做什么](docs/10-dsh-upgrade.md) |
+| 别人怎么在这个平台上做开发 | [在平台上做开发](docs/11-development.md) |
+| DSH 怎么与企业级平台交互：登录、模型服务这些由企业级平台提供 | [DSH 与企业级平台的对接](docs/09-dsh-integration.md) |
 
 全部文档：
 
 | 文档 | 回答什么 |
 |---|---|
 | [平台做什么与设计理念](docs/01-vision.md) | 平台做什么，面向谁，设计理念是哪几条，为什么重点是工业 |
-| [工业智能制造](docs/08-industrial-forms.md) | 车间里的系统在平台上怎么做；工站、产线、工厂三级；设备与历史系统怎么接 |
-| [产品形态](docs/09-product.md) | Web 端、桌面端、管理端各是什么；Agent 工作区怎么用；确认卡与「待确认」在哪里 |
-| [总体架构](docs/02-architecture.md) | 匠心、Kun、DSH 各管什么；请求怎么走；权限与模型服务；部署的三条线 |
-| [一切皆插件](docs/03-plugin-model.md) | 组件模型、表面、目录与安装；两种扩展；怎么用现成的生态组件；让智能体写插件 |
-| [应用互通](docs/10-app-interop.md) | 应用之间怎么往来，在哪里声明，谁来批准 |
-| [历史系统接入](docs/11-legacy-systems.md) | 企业里已有的系统怎么接进来，接到多深，怎么让 Agent 用上 |
-| [Agent 协同](docs/04-agent-collaboration.md) | 每人有一个或多个 Agent 时，Agent 之间怎么沟通，人在哪里审核 |
-| [DSH 与企业级平台的对接](docs/12-dsh-integration.md) | 登录、模型服务、权限、审计这些，谁提供、DSH 怎么用、现在到哪一步 |
-| [DSH 更新之后做什么](docs/13-dsh-upgrade.md) | 上游的 DSH 出了新版，什么时候升、改哪几处、过哪些检查 |
-| [在平台上做开发](docs/14-development.md) | 插件、页面、Kun 的组件、数据描述的应用各怎么做 |
-| [遵循的标准](docs/15-standards.md) | 代码对着哪些国际标准，各做到哪一步 |
-| [路线](docs/06-roadmap.md) | 里程碑与工作线，先做什么 |
-| [协作约定](docs/07-governance.md) | 多人和编码代理一起干活的规则；决策记录的编号各在哪一份 |
+| [工业智能制造](docs/02-industrial-forms.md) | 车间里的系统在平台上怎么做；工站、产线、工厂三级；设备与历史系统怎么接 |
+| [产品形态](docs/03-product.md) | Web 端、桌面端、管理端各是什么；Agent 工作区怎么用；确认卡与「待确认」在哪里 |
+| [总体架构](docs/04-architecture.md) | 匠心、Kun、DSH 各管什么；请求怎么走；权限与模型服务；部署的三条线 |
+| [一切皆插件](docs/05-plugin-model.md) | 组件模型、表面、目录与安装；两种扩展；怎么用现成的生态组件；让智能体写插件 |
+| [应用互通](docs/06-app-interop.md) | 应用之间怎么往来，在哪里声明，谁来批准 |
+| [历史系统接入](docs/07-legacy-systems.md) | 企业里已有的系统怎么接进来，接到多深，怎么让 Agent 用上 |
+| [Agent 协同](docs/08-agent-collaboration.md) | 每人有一个或多个 Agent 时，Agent 之间怎么沟通，人在哪里审核 |
+| [DSH 与企业级平台的对接](docs/09-dsh-integration.md) | 登录、模型服务、权限、审计这些，谁提供、DSH 怎么用、现在到哪一步 |
+| [DSH 更新之后做什么](docs/10-dsh-upgrade.md) | 上游的 DSH 出了新版，什么时候升、改哪几处、过哪些检查 |
+| [在平台上做开发](docs/11-development.md) | 插件、页面、Kun 的组件、数据描述的应用各怎么做 |
+| [遵循的标准](docs/12-standards.md) | 代码对着哪些国际标准，各做到哪一步 |
+| [路线](docs/13-roadmap.md) | 里程碑与工作线，先做什么 |
+| [协作约定](docs/14-governance.md) | 多人和编码代理一起干活的规则；方向怎么定；还有哪些事待定 |
 | [术语表](docs/glossary.md) | 名字与常用术语各指什么 |
-
-决策记录在 `docs/decisions/` 下，记录产品负责人已定的事，编号跨文件接着编：
-
-| 记录 | 编号 |
-|---|---|
-| [2026-11-17 平台级裁定](docs/decisions/2026-11-17-platform.md) | P1 至 P21 |
-| [2026-11-19 平台级裁定](docs/decisions/2026-11-19-platform.md) | P22 至 P33 |
-| [2026-11-20 迁移与发布裁定](docs/decisions/2026-11-20-release.md) | P34 至 P36 |
-| [2026-11-20 产品裁定](docs/decisions/2026-11-20-product.md) | P37 至 P41 |
-| [2026-11-21 旧应用外壳迁移裁定](docs/decisions/2026-11-21-shell-migration.md) | P42、P43 |
-| [2026-11-23 旧 npm 版本迁移裁定](docs/decisions/2026-11-23-legacy-npm.md) | P44 |
-| [2026-11-24 平台级裁定](docs/decisions/2026-11-24-platform.md) | P45 至 P56 |
-| [2026-11-25 平台级裁定](docs/decisions/2026-11-25-platform.md) | P57 至 P77 |
-| [2026-11-26 平台级裁定](docs/decisions/2026-11-26-platform.md) | P78 至 P87 |
-
-旧的记录写于方向收拢之前，里面有后来被取代的说法；有出入时以编号靠后的裁定为准。
 
 这些文档聚成了一个站点，在本机跑起来的办法见 [website/README.md](website/README.md)。
 
 ## 参与
 
-先读[协作约定](docs/07-governance.md)。用编码代理（Codex、Claude Code 等）干活时，让它先读 [AGENTS.md](AGENTS.md)。
+先读[协作约定](docs/14-governance.md)。用编码代理（Codex、Claude Code 等）干活时，让它先读 [AGENTS.md](AGENTS.md)。
 
 产品的代码和平台的文档在本仓库，企业级框架的代码去 [Kun 的仓库](https://github.com/CavaiLAB/kun)提 PR。

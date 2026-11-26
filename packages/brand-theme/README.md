@@ -60,7 +60,7 @@ DSH 把它记成链接，并自动套用包里的补丁。改了浏览器一半�
 
 这种装法下品牌包会出现在插件页的「已安装插件」里，**带一个开关，用户能把它关掉**。所以只用于开发。
 
-开发用的实例要用自己的状态目录：同时设 `DSH_HOME`、`DSH_AGENTS_HOME`，并把 `workspace-controller.documentsDirectory` 指到自己的目录，不要用 `~/.dsh`（原因见 [AGENTS.md](../../AGENTS.md)「组合体的代码」）。最省事的是直接用 `distribution/bin/jx-dsh`，它已经这样做了。
+开发用的实例要用自己的状态目录：同时设 `DSH_HOME`、`DSH_AGENTS_HOME`，并把 `workspace-controller.documentsDirectory` 指到自己的目录，不要用 `~/.dsh`（原因见 [AGENTS.md](../../AGENTS.md)「产品的代码」）。最省事的是直接用 `distribution/bin/jx-dsh`，它已经这样做了。
 
 ## 语言
 
@@ -86,7 +86,7 @@ DSH 自带八种语言的词典，里面有带 DSH 字样的句子。我们只�
 
 | 变量 | 含义 |
 |---|---|
-| `JX_PRODUCT_VERSION` | 形如 `v2026.11.20`、`v2026.11.20-2`、`v2026.11.20-beta.1`，月和日不补零（规则见 [2026-11-20 产品裁定](../../docs/decisions/2026-11-20-product.md) P40） |
+| `JX_PRODUCT_VERSION` | 形如 `v2026.11.20`、`v2026.11.20-2`、`v2026.11.20-beta.1`，月和日不补零（规则见[协作约定](../../docs/14-governance.md)第 7 节） |
 | `JX_PRODUCT_COMMIT` | 构建对应的提交，可选 |
 
 不给版本号，界面显示「本地开发」。格式不对时按没给处理，并在标准错误里留一句告警；不会让 DSH 起不来。变量名和 `distribution/bin/jx-dsh`、桌面壳用的是同一对。

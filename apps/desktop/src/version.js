@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * 产品版本号的规则（docs/decisions/2026-11-20-product.md 的 P40；细节见 apps/desktop/README.md「版本号」）。
+ * 产品版本号的规则（见 docs/14-governance.md 第 7 节；细节见 apps/desktop/README.md「版本号」）。
  *
  *   YYYY.M.D          正式版
  *   YYYY.M.D-N        当天正式版之后的补丁版
