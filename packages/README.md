@@ -46,4 +46,4 @@ cd packages/enterprise-workbench && pnpm install --frozen-lockfile && pnpm run c
 | `enterprise-policy` | 工具护栏与设置的统一管控 |
 | `enterprise-audit` | 审计 |
 
-后三个各接什么：登录接 Kun 的身份服务（已定，[2026-11-25 平台级裁定](../docs/decisions/2026-11-25-platform.md) P57、P64）；工具护栏只是实例里的补充，不代替平台的权限判定，权限都走 Kun 这一套（已定，2026-11-26，P86）；审计接到哪里还没有记成裁定。DSH 的实例怎么和企业级平台对接，见 [DSH 与企业级平台的对接](../docs/12-dsh-integration.md)。
+后三个各接什么：登录接 Kun 的身份服务（已定，[2026-11-25 平台级裁定](../docs/decisions/2026-11-25-platform.md) P57、P64）；工具护栏只是实例里的补充，不代替平台的权限判定，权限都走 Kun 这一套（已定，2026-11-26，P86）；审计接到哪里还没有记成裁定。DSH 的实例怎么和企业级平台对接，见 [DSH 与企业级平台的对接](../docs/09-dsh-integration.md)。

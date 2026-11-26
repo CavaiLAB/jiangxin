@@ -15,7 +15,7 @@ function existing(files: string[] = []): (sitePath: string) => boolean {
 
 test('仓库里的文件对应到站点里的路径', () => {
   assert.equal(sitePathOf('README.md'), 'index.md');
-  assert.equal(sitePathOf('docs/02-architecture.md'), '02-architecture.md');
+  assert.equal(sitePathOf('docs/04-architecture.md'), '04-architecture.md');
   assert.equal(sitePathOf('docs/decisions/2026-11-17-platform.md'), 'decisions/2026-11-17-platform.md');
   assert.equal(sitePathOf('docs/_images/office.png'), '_images/office.png');
 });
@@ -28,8 +28,8 @@ test('不进站点的文件没有站点路径', () => {
 
 test('认出指向本仓库主干上文件的 GitHub 地址', () => {
   assert.deepEqual(parseRepoFileUrl('https://github.com/CavaiLAB/jiangxin/blob/main/README.md'), { path: 'README.md', hash: '' });
-  assert.deepEqual(parseRepoFileUrl('https://github.com/CavaiLAB/jiangxin/blob/main/docs/02-architecture.md#7-契约'), {
-    path: 'docs/02-architecture.md',
+  assert.deepEqual(parseRepoFileUrl('https://github.com/CavaiLAB/jiangxin/blob/main/docs/04-architecture.md#7-契约'), {
+    path: 'docs/04-architecture.md',
     hash: '#7-契约',
   });
   assert.deepEqual(parseRepoFileUrl('https://github.com/CavaiLAB/jiangxin/blob/main/docs/%E6%9C%AF%E8%AF%AD.md'), {
@@ -56,7 +56,7 @@ test('别的仓库的地址认不出，照常去 GitHub', () => {
 
 test('README 里的链接', () => {
   const exists = existing();
-  assert.equal(rewriteReadmeUrl('docs/02-architecture.md#7-契约', exists), '02-architecture.md#7-契约');
+  assert.equal(rewriteReadmeUrl('docs/04-architecture.md#7-契约', exists), '04-architecture.md#7-契约');
   assert.equal(rewriteReadmeUrl('docs/decisions/2026-11-17-platform.md', exists), 'decisions/2026-11-17-platform.md');
   assert.equal(rewriteReadmeUrl('./docs/glossary.md', exists), 'glossary.md');
   assert.equal(rewriteReadmeUrl('/docs/glossary.md', exists), 'glossary.md', '以 / 开头的相对仓库根目录');
@@ -113,7 +113,7 @@ test('只改链接地址，其余原样', () => {
   const source = [
     '# 标题',
     '',
-    '见[术语](docs/glossary.md "名字与术语")与 [架构](docs/02-architecture.md#7-契约)。',
+    '见[术语](docs/glossary.md "名字与术语")与 [架构](docs/04-architecture.md#7-契约)。',
     '',
     '| 文档 | 说明 |',
     '|---|---|',
@@ -127,7 +127,7 @@ test('只改链接地址，其余原样', () => {
     '',
     '![办公](docs/_images/office.png)',
     '',
-    '[![办公](docs/_images/office.png)](docs/02-architecture.md)',
+    '[![办公](docs/_images/office.png)](docs/04-architecture.md)',
     '',
     '直接写出来的地址不动：<https://github.com/CavaiLAB/jiangxin/blob/main/docs/glossary.md>',
     '',
@@ -146,7 +146,7 @@ test('只改链接地址，其余原样', () => {
     [
       '# 标题',
       '',
-      '见[术语](glossary.md "名字与术语")与 [架构](02-architecture.md#7-契约)。',
+      '见[术语](glossary.md "名字与术语")与 [架构](04-architecture.md#7-契约)。',
       '',
       '| 文档 | 说明 |',
       '|---|---|',
@@ -160,7 +160,7 @@ test('只改链接地址，其余原样', () => {
       '',
       '![办公](./_images/office.png)',
       '',
-      '[![办公](./_images/office.png)](02-architecture.md)',
+      '[![办公](./_images/office.png)](04-architecture.md)',
       '',
       '直接写出来的地址不动：<https://github.com/CavaiLAB/jiangxin/blob/main/docs/glossary.md>',
       '',
@@ -184,13 +184,13 @@ test('没有要改的链接时原文不变', () => {
 test('docs/ 里指向本仓库文档的完整地址改成站内的，别的仓库的地址不动', () => {
   const docsDir = fs.mkdtempSync(path.join(os.tmpdir(), 'repo-links-'));
   try {
-    for (const file of ['index.md', '02-architecture.md', 'frameworks/kun/index.md', 'frameworks/kun/migration.md']) {
+    for (const file of ['index.md', '04-architecture.md', 'frameworks/kun/index.md', 'frameworks/kun/migration.md']) {
       fs.mkdirSync(path.dirname(path.join(docsDir, file)), { recursive: true });
       fs.writeFileSync(path.join(docsDir, file), '# 标题\n');
     }
     const cases: [string, string][] = [
       ['https://github.com/CavaiLAB/jiangxin/blob/main/README.md', '/index.html'],
-      ['https://github.com/CavaiLAB/jiangxin/blob/main/docs/02-architecture.md#2-分工', '/02-architecture.html#2-分工'],
+      ['https://github.com/CavaiLAB/jiangxin/blob/main/docs/04-architecture.md#2-分工', '/04-architecture.html#2-分工'],
       ['https://github.com/CavaiLAB/jiangxin/blob/main/docs/99-missing.md', 'https://github.com/CavaiLAB/jiangxin/blob/main/docs/99-missing.md'],
       ['https://github.com/CavaiLAB/jiangxin/blob/main/distribution/README.md', 'https://github.com/CavaiLAB/jiangxin/blob/main/distribution/README.md'],
       [`https://github.com/CavaiLAB/jiangxin/blob/${PIN}/README.md`, `https://github.com/CavaiLAB/jiangxin/blob/${PIN}/README.md`],
@@ -228,7 +228,7 @@ test('_meta.json 里漏列的条目', () => {
     { type: 'dir-section-header', name: 'decisions', label: '决策记录' },
   ];
   assert.deepEqual(missingFromMeta(meta, ['index', '01-vision', 'glossary', 'decisions']), []);
-  assert.deepEqual(missingFromMeta(meta, ['index', '01-vision', '02-architecture', 'decisions', 'frameworks']), ['02-architecture', 'frameworks']);
+  assert.deepEqual(missingFromMeta(meta, ['index', '01-vision', '04-architecture', 'decisions', 'frameworks']), ['04-architecture', 'frameworks']);
   assert.deepEqual(missingFromMeta([], ['01-vision']), ['01-vision']);
 });
 

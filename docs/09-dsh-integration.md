@@ -23,7 +23,7 @@
 | 审计 | Kun 的审计 | 经平台办的事由平台自己记；实例里面的事现在不出实例 | Kun 的审计已有。实例里面的事送不送到平台待定 |
 | 等人点头的任务与确认卡 | 平台上的一条任务；标了要人确认的能力，平台自己停下来等人点 | 对话里出确认卡，点击由浏览器直接交给平台；「待确认」的页面两边装同一份 | 已定，没有实现 |
 | 品牌 | 现在没有。以后在管理端里维护是提议 | 品牌包换掉界面上的名称、标志、主题色 | 品牌包已有 |
-| 升级 | 不涉及 | DSH 的版本钉死，升级时把上面各项逐项重验 | 见 [DSH 更新之后做什么](13-dsh-upgrade.md) |
+| 升级 | 不涉及 | DSH 的版本钉死，升级时把上面各项逐项重验 | 见 [DSH 更新之后做什么](10-dsh-upgrade.md) |
 
 ## 2 匠心、Kun 与 DSH
 
@@ -90,7 +90,7 @@ flowchart LR
 - **部署上有三条线。** 带不带模型推理，这是两种形态；跑在集群上还是一台服务器上，这是企业版与单机版；多租户还是单租户，这是两个版本。把它们当成三条不同的线，是登记 2026-11-26 的裁定时的读法，产品负责人没有逐句确认；哪几种组合要交付，没有问。不管哪一种，统一由管理端管理（已定，2026-11-26，P83）。
 - **网页和桌面的会话通不通**没有定。现在两边的状态各在各处，互相看不到。
 - **现在能跑的。** Web 端是在本机起一个实例，不是托管实例，见 [apps/web 的说明](https://github.com/CavaiLAB/jiangxin/blob/main/apps/web/README.md)。桌面端是薄壳的原型，没有发布过；走薄壳还是从源码构建上游的桌面壳没有定，提议走薄壳，见 [apps/desktop 的说明](https://github.com/CavaiLAB/jiangxin/blob/main/apps/desktop/README.md)。
-- **管理端。** 先不做，目录已建（已定，P39）；它以后是 Web 端的两块之一，界面是浏览器里的 Cordis 应用（已定，P63、P65、P66）。它管 DSH 的哪些事是提议：实例的开通与回收、模型接入、工具与插件的策略，见 [apps/console 的说明](https://github.com/CavaiLAB/jiangxin/blob/main/apps/console/README.md)。产品是什么样子，见[产品形态](09-product.md)。
+- **管理端。** 先不做，目录已建（已定，P39）；它以后是 Web 端的两块之一，界面是浏览器里的 Cordis 应用（已定，P63、P65、P66）。它管 DSH 的哪些事是提议：实例的开通与回收、模型接入、工具与插件的策略，见 [apps/console 的说明](https://github.com/CavaiLAB/jiangxin/blob/main/apps/console/README.md)。产品是什么样子，见[产品形态](03-product.md)。
 
 ## 4 登录
 
@@ -235,7 +235,7 @@ Kun 的需求文档已经给适配留了名字（扩展点 `qian.model-gateway.p
 |---|---|---|
 | 谁能进哪个实例 | 工作区服务按登录的人找实例，把人送进他自己的那一个。进不了别人的实例，是这一段要保证的事；实例之间怎么隔离是提议 | 已定，没有实现 |
 | 谁能用 Agent 工作区、名额多少 | 问 Kun；管理员在管理端里定 | 提议 |
-| 实例里的 Agent 调平台的能力 | 一律经 MCP 路由，以智能体主体、带委托链调用，权限判定在 Kun，见[总体架构](02-architecture.md) | 能力目录已有；智能体主体没有启用；MCP 路由是规划 |
+| 实例里的 Agent 调平台的能力 | 一律经 MCP 路由，以智能体主体、带委托链调用，权限判定在 Kun，见[总体架构](04-architecture.md) | 能力目录已有；智能体主体没有启用；MCP 路由是规划 |
 | 智能体主体启用之前 | 确认卡的最小一圈先用替身：实例里的工具调工作区服务，工作区服务用自己的服务身份调平台，写明代谁提出。它演示不了「Agent 以谁的名义」和权限取交集 | 已定，P75；没有实现 |
 | 只许人做的能力 | 标了的能力不会变成 Agent 看得见的工具，Agent 来调也会被拒绝 | 契约里已有；强制执行随智能体主体一起启用 |
 | 实例里的插件 | 只当护栏，不当权限的边界。统一管控工具护栏与设置的插件包（提议名 `enterprise-policy`）没有建 | 提议 |
@@ -264,7 +264,7 @@ Kun 的审计（已有）：每次权限判定、每次能力调用都留记录�
 
 ## 8 等人点头的任务与确认卡
 
-这一节里带 P 编号的条目都已定，都没有实现。裁定的原文、理由和范围在 2026-11-25 平台级裁定第 3.7 至 3.9 节；与 Agent 之间协同的关系见 [Agent 协同](04-agent-collaboration.md)。
+这一节里带 P 编号的条目都已定，都没有实现。裁定的原文、理由和范围在 2026-11-25 平台级裁定第 3.7 至 3.9 节；与 Agent 之间协同的关系见 [Agent 协同](08-agent-collaboration.md)。
 
 ### 8.1 企业级平台提供什么
 
@@ -315,13 +315,13 @@ Kun 的审计（已有）：每次权限判定、每次能力调用都留记录�
 - 桌面端：应用名、图标、窗口归桌面壳；界面里面的归品牌包，和 Web 端是同一份。
 - 上游的名字是它的商标，不进我们的产品名；说明关系时写「基于 DSH 构建」。DSH 按 MIT 许可使用，许可全文随产品带着。
 
-品牌包换了哪些位置、哪几处是靠 DSH 的内部结构换掉的，见[品牌包的说明](https://github.com/CavaiLAB/jiangxin/blob/main/packages/brand-theme/README.md)。靠内部结构的那几处，DSH 升级以后可能悄悄失效，见 [DSH 更新之后做什么](13-dsh-upgrade.md)。
+品牌包换了哪些位置、哪几处是靠 DSH 的内部结构换掉的，见[品牌包的说明](https://github.com/CavaiLAB/jiangxin/blob/main/packages/brand-theme/README.md)。靠内部结构的那几处，DSH 升级以后可能悄悄失效，见 [DSH 更新之后做什么](10-dsh-upgrade.md)。
 
 ## 10 升级
 
 DSH 的版本钉死在发行目录里。上面每一项对接都贴着 DSH 的某些接口、配置行或界面结构，这些地方记在[接触面清单](https://github.com/CavaiLAB/jiangxin/blob/main/distribution/docs/touchpoints.md)里。DSH 升一次，就要照清单把它们重验一遍。
 
-什么时候升、改哪几处、过哪些检查、怎么送到托管实例和桌面端、出了问题怎么退，见 [DSH 更新之后做什么](13-dsh-upgrade.md)。
+什么时候升、改哪几处、过哪些检查、怎么送到托管实例和桌面端、出了问题怎么退，见 [DSH 更新之后做什么](10-dsh-upgrade.md)。
 
 工作区服务做出来以后，它和实例之间的对接点要补进接触面清单：用令牌换 cookie、界面用的长连接、怎么判断实例已经就绪。这一条是提议。
 
@@ -330,9 +330,9 @@ DSH 的版本钉死在发行目录里。上面每一项对接都贴着 DSH 的�
 | 主题 | 在哪里 |
 |---|---|
 | 裁定的原文、理由与范围 | [2026-11-20 产品裁定](decisions/2026-11-20-product.md)（P37 至 P41）；[2026-11-25 平台级裁定](decisions/2026-11-25-platform.md)（P57 至 P77） |
-| 请求怎么走、怎么部署 | [总体架构](02-architecture.md) |
-| Web 端、桌面端、管理端各是什么 | [产品形态](09-product.md) |
-| 在平台上怎么做开发，页面插件怎么写 | [在平台上做开发](14-development.md) |
+| 请求怎么走、怎么部署 | [总体架构](04-architecture.md) |
+| Web 端、桌面端、管理端各是什么 | [产品形态](03-product.md) |
+| 在平台上怎么做开发，页面插件怎么写 | [在平台上做开发](11-development.md) |
 | 发行目录、配置补丁、启动前检查、外联 | [distribution 的说明](https://github.com/CavaiLAB/jiangxin/blob/main/distribution/README.md) |
 | 核对过的 DSH 事实；接触面清单 | [dsh-facts](https://github.com/CavaiLAB/jiangxin/blob/main/distribution/docs/dsh-facts.md)；[touchpoints](https://github.com/CavaiLAB/jiangxin/blob/main/distribution/docs/touchpoints.md) |
 | Web 端的启动、反向代理、门户的提议 | [apps/web 的说明](https://github.com/CavaiLAB/jiangxin/blob/main/apps/web/README.md) |

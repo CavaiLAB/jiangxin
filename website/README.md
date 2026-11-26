@@ -43,7 +43,7 @@ pnpm preview
 
 | 文档里的写法 | 在站点里 |
 |---|---|
-| 相对路径，如 `docs/02-architecture.md` | 站内对应的页面 |
+| 相对路径，如 `docs/04-architecture.md` | 站内对应的页面 |
 | 本仓库主干上的文档的完整地址，如 `https://github.com/CavaiLAB/jiangxin/blob/main/README.md` | 站内那一份；站点里没有这一页就仍去 GitHub |
 | 根目录的 `README.md` 里用相对路径指向不进站点的文件，如 `AGENTS.md` | GitHub 上的地址 |
 | 别的仓库的地址、指向仓库本身的地址、写了提交号的地址 | 不动 |

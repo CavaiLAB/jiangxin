@@ -8,7 +8,7 @@
 - **Kun** 是企业级框架，代码在 [CavaiLAB/kun](https://github.com/CavaiLAB/kun)，.NET 10：登录、权限、多租户、数据、事件、审计、模型服务的接口，以插件的形式装配。
 - **DSH** 是上游的 Agent 运行时。版本钉死，不改它的源码；我们加的东西只有自己写的插件和叠在它配置上的补丁。
 
-三者各管什么，见[总体架构](02-architecture.md)。
+三者各管什么，见[总体架构](04-architecture.md)。
 
 ## 2 能在哪几层做东西
 
@@ -37,7 +37,7 @@
 **要知道的几条。**
 
 - 界面上 DSH 自带的控件直接用 DSH 的。DSH 没有的基础组件用 shadcn 加 Tailwind 这一套（已定，[2026-11-25 平台级裁定](decisions/2026-11-25-platform.md) P76），放在界面包里，缺哪个补哪个。
-- 插件对着发行目录里钉死的那个 DSH 版本写。升级 DSH 时插件要一起核对，见 [DSH 更新之后做什么](13-dsh-upgrade.md)。
+- 插件对着发行目录里钉死的那个 DSH 版本写。升级 DSH 时插件要一起核对，见 [DSH 更新之后做什么](10-dsh-upgrade.md)。
 - 插件除了加界面和接口，还能挂在 DSH 的别的接缝上：工具执行前后、人工确认、技能、子智能体、主题等。清单见[核对过的 DSH 事实](https://github.com/CavaiLAB/jiangxin/blob/main/distribution/docs/dsh-facts.md)的「可以挂东西的接缝」。
 - 本机开发用假模型和自己的状态目录，启动一律经发行目录的启动器。这几条规矩写在匠心的 [AGENTS.md](https://github.com/CavaiLAB/jiangxin/blob/main/AGENTS.md) 里。
 
@@ -57,7 +57,7 @@
 
 **现状。** 没有实现。管理端还没有开始做，[`apps/console/`](https://github.com/CavaiLAB/jiangxin/blob/main/apps/console/README.md) 是占位；两边的适配都没有，所以还没有可以照着写的样板。试验里走通过两件事，用的都是假的平台接口：把现有的插件样板和品牌包原样装进一个不带对话的 Cordis 应用；在 DSH 的右侧登记自己的页签。
 
-管理端在产品里的位置，见[产品形态](09-product.md)。
+管理端在产品里的位置，见[产品形态](03-product.md)。
 
 ## 5 Kun 的组件
 
@@ -136,13 +136,13 @@ Kun 现行规格里另有两条规则：Agent 生成的组件和人写的组件�
 
 照这个提议，做应用的人只面向调用面；要接一种新的模型服务的人只写接入面的适配；两种形态的差别落在装哪个适配上。
 
-**现状。** 都没有实现。Kun 里的模型服务组件现在只有清单与配置的骨架，见 [`plugins/qian.model-gateway`](https://github.com/CavaiLAB/kun/blob/main/plugins/qian.model-gateway/README.md)；此前的设计在 Kun 的 [ADR-015](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-015-model-gateway.md) 与需求文档[第 7 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/07-s1-foundation.md)的第 7.16 节、[第 10 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/10-s4-agent.md)的第 10.5 节。匠心这边，DSH 的实例现在用一个环境变量指向一个 OpenAI 兼容的地址，本机默认指[假模型](https://github.com/CavaiLAB/jiangxin/blob/main/tools/mock-model/README.md)。以后怎么指到平台，见 [DSH 与企业级平台的对接](12-dsh-integration.md)。
+**现状。** 都没有实现。Kun 里的模型服务组件现在只有清单与配置的骨架，见 [`plugins/qian.model-gateway`](https://github.com/CavaiLAB/kun/blob/main/plugins/qian.model-gateway/README.md)；此前的设计在 Kun 的 [ADR-015](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-015-model-gateway.md) 与需求文档[第 7 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/07-s1-foundation.md)的第 7.16 节、[第 10 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/10-s4-agent.md)的第 10.5 节。匠心这边，DSH 的实例现在用一个环境变量指向一个 OpenAI 兼容的地址，本机默认指[假模型](https://github.com/CavaiLAB/jiangxin/blob/main/tools/mock-model/README.md)。以后怎么指到平台，见 [DSH 与企业级平台的对接](09-dsh-integration.md)。
 
 ## 9 动手之前
 
 - 两个仓库各有一份入口说明，人和编码代理用同一份，先读：匠心的 [AGENTS.md](https://github.com/CavaiLAB/jiangxin/blob/main/AGENTS.md)，Kun 的 [AGENTS.md](https://github.com/CavaiLAB/kun/blob/main/AGENTS.md)。
-- 改动走分支和 PR，见[协作约定](07-governance.md)。
-- 匠心的代码检查现在在本机跑，CI 只构建文档站；Kun 的检查在 CI 里。对着哪些标准、有哪些检查、还缺什么，见[遵循的标准](15-standards.md)。
+- 改动走分支和 PR，见[协作约定](14-governance.md)。
+- 匠心的代码检查现在在本机跑，CI 只构建文档站；Kun 的检查在 CI 里。对着哪些标准、有哪些检查、还缺什么，见[遵循的标准](12-standards.md)。
 - 名字与术语见[术语表](glossary.md)。
 
 ## 10 待定

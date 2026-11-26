@@ -65,10 +65,10 @@ test('不是图的内容报错', () => {
 });
 
 test('id 前缀稳定，不同的图互不相同', () => {
-  assert.match(diagramId('02-architecture.md', 1), /^d[0-9a-f]{8}$/);
-  assert.equal(diagramId('02-architecture.md', 1), diagramId('02-architecture.md', 1));
-  assert.notEqual(diagramId('02-architecture.md', 1), diagramId('02-architecture.md', 2));
-  assert.notEqual(diagramId('02-architecture.md', 1), diagramId('03-plugin-model.md', 1));
+  assert.match(diagramId('04-architecture.md', 1), /^d[0-9a-f]{8}$/);
+  assert.equal(diagramId('04-architecture.md', 1), diagramId('04-architecture.md', 1));
+  assert.notEqual(diagramId('04-architecture.md', 1), diagramId('04-architecture.md', 2));
+  assert.notEqual(diagramId('04-architecture.md', 1), diagramId('05-plugin-model.md', 1));
 });
 
 // ---------- remark 插件 ----------
