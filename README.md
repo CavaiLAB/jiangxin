@@ -29,8 +29,8 @@
 
 - 人用平台，入口是 Agent 工作区；管理端是另一块，给很多人用，不需要 DSH 实例。见[产品形态](docs/03-product.md)。
 - 平台上不论做什么系统，权限都走 Kun 这一套；模型服务由 Kun 提供，留一套标准的接口。见[总体架构](docs/04-architecture.md)。
-- Kun 的文档在它自己的仓库里。Kun 要有单独的网站，放使用文档和给大模型用的文档（已定，2026-11-26，P82）。
-- 现在只剩两个项目：匠心与 Kun（已定，2026-11-26，P78）。前端框架 [Qian](https://github.com/CavaiLAB/qian) 的仓库已归档，已发布的包留着；[SanYuanAgent](https://github.com/CavaiLAB/sanyuan-agent) 的仓库保留，暂不维护。
+- Kun 的文档在它自己的仓库里。Kun 要有单独的网站，放使用文档和给大模型用的文档（已定）。
+- 现在只剩两个项目：匠心与 Kun（已定）。前端框架 [Qian](https://github.com/CavaiLAB/qian) 的仓库已归档，已发布的包留着；[SanYuanAgent](https://github.com/CavaiLAB/sanyuan-agent) 的仓库保留，暂不维护。
 
 ## 现状
 
@@ -50,7 +50,7 @@
 | [`brand/`](brand/README.md) | 匠心 logo 的原图，不在任何代码许可之内 | 已有 |
 | `deploy/` | 产品的部署清单 | 规划。目录还没有建 |
 | [`website/`](website/README.md) | 文档站 | 已有 |
-| `docs/` | 平台的文档与决策记录，见下面的[文档](#文档) | — |
+| `docs/` | 平台的文档，见下面的[文档](#文档) | — |
 
 还没有的，都是规划：
 
@@ -66,7 +66,7 @@ DSH 按 MIT 许可使用，产品里带着它的版权与许可声明。
 
 ## 文档
 
-产品负责人要求文档写清楚四件事（已定，2026-11-26，P85）。各写在哪一篇、题目叫什么，是整理时的安排：
+产品负责人要求文档写清楚四件事（已定）。各写在哪一篇、题目叫什么，是整理时的安排：
 
 | 要写清楚的事 | 在哪一篇 |
 |---|---|
@@ -92,24 +92,8 @@ DSH 按 MIT 许可使用，产品里带着它的版权与许可声明。
 | [在平台上做开发](docs/11-development.md) | 插件、页面、Kun 的组件、数据描述的应用各怎么做 |
 | [遵循的标准](docs/12-standards.md) | 代码对着哪些国际标准，各做到哪一步 |
 | [路线](docs/13-roadmap.md) | 里程碑与工作线，先做什么 |
-| [协作约定](docs/14-governance.md) | 多人和编码代理一起干活的规则；决策记录的编号各在哪一份 |
+| [协作约定](docs/14-governance.md) | 多人和编码代理一起干活的规则；方向怎么定；还有哪些事待定 |
 | [术语表](docs/glossary.md) | 名字与常用术语各指什么 |
-
-决策记录在 `docs/decisions/` 下，记录产品负责人已定的事，编号跨文件接着编：
-
-| 记录 | 编号 |
-|---|---|
-| [2026-11-17 平台级裁定](docs/decisions/2026-11-17-platform.md) | P1 至 P21 |
-| [2026-11-19 平台级裁定](docs/decisions/2026-11-19-platform.md) | P22 至 P33 |
-| [2026-11-20 迁移与发布裁定](docs/decisions/2026-11-20-release.md) | P34 至 P36 |
-| [2026-11-20 产品裁定](docs/decisions/2026-11-20-product.md) | P37 至 P41 |
-| [2026-11-21 旧应用外壳迁移裁定](docs/decisions/2026-11-21-shell-migration.md) | P42、P43 |
-| [2026-11-23 旧 npm 版本迁移裁定](docs/decisions/2026-11-23-legacy-npm.md) | P44 |
-| [2026-11-24 平台级裁定](docs/decisions/2026-11-24-platform.md) | P45 至 P56 |
-| [2026-11-25 平台级裁定](docs/decisions/2026-11-25-platform.md) | P57 至 P77 |
-| [2026-11-26 平台级裁定](docs/decisions/2026-11-26-platform.md) | P78 至 P87 |
-
-旧的记录写于方向收拢之前，里面有后来被取代的说法；有出入时以编号靠后的裁定为准。
 
 这些文档聚成了一个站点，在本机跑起来的办法见 [website/README.md](website/README.md)。
 
