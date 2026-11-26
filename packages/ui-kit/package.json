@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "匠心自己的界面组件包：DSH 没有的基础组件（shadcn 命令行生成，底下是 Base UI，样式是带 jx: 前缀的 Tailwind）和手写组件，外加在 DSH 仓库之外构建插件的脚本。",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "type": "module",
   "sideEffects": [
     "*.css"

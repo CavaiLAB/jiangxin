@@ -1,6 +1,6 @@
 # 第三方代码与许可
 
-`@jx/ui-kit` 自己的代码不对外授权（`package.json` 的 `license` 是 `UNLICENSED`）。下面这些是别人的代码，各按各的许可。
+`@jx/ui-kit` 自己的代码用 MIT 许可，全文见仓库根目录的 `LICENSE`。下面这些是别人的代码，各按各的许可。
 
 ## 源码里的
 

@@ -1,16 +1,24 @@
 # 遵循的标准
 
-> 状态：提议，范围待定（2026-11-26）。「代码要符合 ISO 等国际相关标准」已定。对着哪些标准，产品负责人还没有裁定；下面的清单和每一条的做法都是提议。标准的编号、名称与版本，2026-11-26 在各标准组织自己的目录上核对过，见第 5 节。「现在做到哪一步」只写在仓库里核对过的事实。
+> 状态：已定（2026-11-27）。「代码要符合 ISO 等国际相关标准」已定；第 2 节的十个方面做标准对照和工程检查，先补密钥扫描、静态安全扫描、许可白名单、覆盖率阈值四项检查，产品负责人 2026-11-27 定了。以等保二级为建设目标并纳入国密要求，单独跟踪，见第 1 节。第 3 节「怎么验证」里标「没有定」的几项和写着「提议」的做法，还没有定。标准的编号、名称与版本，2026-11-26 在各标准组织自己的目录上核对过，见第 5 节。「现在做到哪一步」只写在仓库里核对过的事实。
 
 ## 1 这一篇说什么
 
-产品负责人的原话是「代码要符合 ISO 等国际相关标准」。整理时的读法：
+产品负责人的原话是「代码要符合 ISO 等国际相关标准」。怎么做已定（2026-11-27）：
 
-- 定一份标准对照和相应的检查，写明对着哪些标准、各用来做什么、现在做到哪一步、还缺什么、怎么验证。
-- 不是去做认证。ISO/IEC 27001、ISO/IEC 42001 这一类管理体系标准，要求是提给一个组织的管理体系的；认证是组织层面的事，不在代码里。代码这边能做的，是把标准里和开发有关的内容落成做法与检查。
+- 第 2 节的十个方面，做标准对照和工程检查：写明对着哪些标准、各用来做什么、现在做到哪一步、还缺什么、怎么验证。
+- 这十个方面不去做认证。ISO/IEC 27001、ISO/IEC 42001 这一类管理体系标准，要求是提给一个组织的管理体系的；认证是组织层面的事，不在代码里。代码这边能做的，是把标准里和开发有关的内容落成做法与检查。
 - 所以本文不下「符合某标准」这样的结论，只写对着什么、做了什么、还缺什么。
+- 缺的检查先补四项：全仓库的密钥扫描、静态安全扫描、许可白名单、覆盖率阈值，见第 4 节。
+- 标准换版每半年核一次，见第 5 节。
 
-范围是匠心与 Kun 两个仓库的代码和发布物。国内的合规要求（等级保护、商用密码、个人信息保护）不在本文里；Kun 的需求文档[第 13 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/13-security.md)的第 13.12 节有一张占位表。
+等保二级和国密单独跟踪，不在这十个方面里（已定）：
+
+- 以等保二级为建设目标，并纳入国密要求。
+- 系统边界、哪些场景使用国密、怎么验收，列入安全设计。Kun 一侧的安全设计在需求文档[第 13 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/13-security.md)，国内的合规要求在它的第 13.12 节。
+- 对外的材料按实际的测评进度表述。
+
+范围是匠心与 Kun 两个仓库的代码和发布物。个人信息保护等别的国内合规要求，不在本文里。
 
 ## 2 对照表
 
@@ -41,7 +49,7 @@
 
 - **已有，Kun。** 警告即错误、代码分析的推荐规则、构建时强制代码风格，见 [Directory.Build.props](https://github.com/CavaiLAB/kun/blob/main/Directory.Build.props)。公共 API 清单、包的档位声明、禁用符号、平台自己的分析器，见 [Directory.Build.targets](https://github.com/CavaiLAB/kun/blob/main/Directory.Build.targets)。格式核对与依赖方向检查在 [ci.yml](https://github.com/CavaiLAB/kun/blob/main/.github/workflows/ci.yml) 里。界面包有代码规则、类型检查、单元测试、依赖边界、循环依赖几道门禁，见 [qian-ui.yml](https://github.com/CavaiLAB/kun/blob/main/.github/workflows/qian-ui.yml)。
 - **已有，匠心。** 各包的类型检查与单测；shell 脚本的变量写法检查，见 [tools/check-shell-vars.mjs](https://github.com/CavaiLAB/jiangxin/blob/main/tools/check-shell-vars.mjs)。都在本机跑。
-- **还缺。** 静态分析的规则没有对着这份标准归类，也没有按它出度量。匠心的检查没有进 CI。
+- **还缺。** 静态分析的规则没有对着这份标准归类，也没有按它出度量。匠心的检查没有进 CI，要接进去（已定）。
 - **怎么验证。** Kun 看 PR 上的「CI 汇总」。匠心现在只能在本机照 AGENTS.md 里的命令跑一遍。
 
 ### 3.3 过程与测试
@@ -49,7 +57,7 @@
 - **已有，过程。** 两个仓库的改动都走分支和 PR，见[协作约定](14-governance.md)。Kun 另有任务文件与看板，见 [pm/](https://github.com/CavaiLAB/kun/blob/main/pm/README.md)。
 - **已有，Kun 的测试。** 单元测试；集成测试，用容器起真实的依赖；运行时语义的一致性测试，见 [tck/runtime](https://github.com/CavaiLAB/kun/blob/main/tck/runtime/README.md)；冻结契约的正例与反例，见 [contracts/v0](https://github.com/CavaiLAB/kun/blob/main/contracts/v0/README.md)；NativeAOT 的发布与冒烟。覆盖率每次收集并上传。
 - **已有，匠心的测试。** 各包的单测、桌面壳的单测、发行目录的启动前检查。都在本机跑。
-- **还缺。** 覆盖率没有设阈值。测试文档没有照 ISO/IEC/IEEE 29119-3 的结构整理过。匠心的测试没有进 CI。
+- **还缺。** 覆盖率没有设阈值，先补（已定）。测试文档没有照 ISO/IEC/IEEE 29119-3 的结构整理过。匠心的测试没有进 CI，要接进去（已定）。
 - **怎么验证。** Kun 的测试结果、覆盖率与证据随每次 CI 运行上传。
 
 ### 3.4 安全开发
@@ -61,14 +69,15 @@
   - 发版要审批，用可信发布换短期凭据，见 [release.yml](https://github.com/CavaiLAB/kun/blob/main/.github/workflows/release.yml)。
   - 权限、令牌、审计、密钥的设计，写在需求文档[第 13 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/13-security.md)。
 - **已有，匠心。** 外联检查：在不通外网的容器网络里，看实例想连哪些地址，见 [tests/egress](https://github.com/CavaiLAB/jiangxin/blob/main/tests/egress/README.md)。发行目录的启动前检查与设置锁定验证，见[发行目录的说明](https://github.com/CavaiLAB/jiangxin/blob/main/distribution/README.md)。都在本机跑。
-- **还缺。** 全仓库的密钥扫描。静态安全扫描。依赖的自动更新。匠心的依赖没有漏洞审计。两个仓库都没有写明安全问题怎么报告。
+- **还缺。** 全仓库的密钥扫描。静态安全扫描。依赖的自动更新。匠心的依赖没有漏洞审计。两个仓库都没有写明安全问题怎么报告。前两项先补（已定）。
+- **单独跟踪。** 等保二级与国密，见第 1 节。
 - **怎么验证。** 已有的几项看 CI 的结果和镜像自检上传的证据。提议：缺的检查补上以后，各自成为 PR 的必需检查。
 
 ### 3.5 物料清单与许可
 
 - **已有，Kun。** 镜像的物料清单用 SPDX 的 JSON 格式生成，签名时一起附上证明，现在只在自检镜像上，见 [scripts/images.py](https://github.com/CavaiLAB/kun/blob/main/scripts/images.py)。.NET 包、命令行与前端包的许可是 MIT，见[协作约定](14-governance.md)。
-- **已有，匠心。** 打进插件包的第三方代码与各自的许可，列在界面包的 [NOTICE.md](https://github.com/CavaiLAB/jiangxin/blob/main/packages/ui-kit/NOTICE.md) 和品牌包的 [NOTICE.md](https://github.com/CavaiLAB/jiangxin/blob/main/packages/brand-theme/NOTICE.md) 里。
-- **还缺。** 许可白名单的检查。匠心的发布物没有物料清单。匠心自己的代码用什么许可，待定。生成的物料清单是 SPDX 的哪一版，没有核对；ISO/IEC 5962:2021 写的是 SPDX 2.2.1。
+- **已有，匠心。** 匠心自有的代码用 MIT 许可，全文在仓库根目录的 [LICENSE](https://github.com/CavaiLAB/jiangxin/blob/main/LICENSE)；第三方组件保留各自的许可和版权声明（已定），见[协作约定](14-governance.md)第 8 节。打进插件包的第三方代码与各自的许可，列在界面包的 [NOTICE.md](https://github.com/CavaiLAB/jiangxin/blob/main/packages/ui-kit/NOTICE.md) 和品牌包的 [NOTICE.md](https://github.com/CavaiLAB/jiangxin/blob/main/packages/brand-theme/NOTICE.md) 里。
+- **还缺。** 许可白名单的检查，先补（已定）。匠心的发布物没有物料清单。插件样板的构建产物里打进了界面包用到的第三方代码，样板却没有自己的 `NOTICE.md`。桌面端的安装包里带了 DSH、Electron、Chromium 的许可，没有带匠心自己的 `LICENSE`。生成的物料清单是 SPDX 的哪一版，没有核对；ISO/IEC 5962:2021 写的是 SPDX 2.2.1。
 - **怎么验证。** 镜像自检把物料清单、扫描报告、验签结果上传成证据。
 
 ### 3.6 AI
@@ -81,7 +90,7 @@
 ### 3.7 工业
 
 - **已有。** 没有对着这些标准做的内容。仓库里和工业有关的，是一个设备台账的插件样板，数据是假的，见[样板的说明](https://github.com/CavaiLAB/jiangxin/blob/main/packages/enterprise-workbench/README.md)。
-- **还缺。** 数据模型、指标、设备接入各对着哪一份、对到哪一层，没有定。
+- **还缺。** 数据模型、指标、设备接入各对着哪一份，见第 2 节的表；各对到哪一层，还没有做对照。
 - **怎么验证。** 没有定。
 
 工业场景见[工业智能制造](02-industrial-forms.md)，历史系统怎么接见[历史系统接入](07-legacy-systems.md)。
@@ -107,17 +116,17 @@
 
 ## 4 还缺的检查
 
-把上一节的「还缺」里属于检查的汇在一起：
+把上一节的「还缺」里属于检查的汇在一起。先补的四项已定：全仓库的密钥扫描、静态安全扫描、许可白名单、覆盖率阈值；其余几项排在这四项之后。匠心的代码检查要接进 CI，也已定。
 
 | 缺什么 | 哪边 | 现在的情况 |
 |---|---|---|
-| 代码的检查进 CI | 匠心 | CI 只构建文档站，代码的检查在本机跑 |
-| 全仓库的密钥扫描 | 两边 | Kun 只扫 profile 生效配置里的明文密钥 |
-| 静态安全扫描 | 两边 | 没有 |
+| 代码的检查进 CI | 匠心 | CI 只构建文档站，代码的检查在本机跑。要接进 CI（已定） |
+| 全仓库的密钥扫描 | 两边 | Kun 只扫 profile 生效配置里的明文密钥。先补（已定） |
+| 静态安全扫描 | 两边 | 没有。先补（已定） |
 | 依赖的漏洞审计 | 匠心 | 没有。Kun 有 |
 | 依赖的自动更新 | 两边 | 没有 |
-| 许可白名单 | 两边 | 没有 |
-| 覆盖率阈值 | Kun | 覆盖率有收集，没有阈值 |
+| 许可白名单 | 两边 | 没有。先补（已定） |
+| 覆盖率阈值 | Kun | 覆盖率有收集，没有阈值。先补（已定） |
 | 产品镜像的物料清单、扫描与签名 | Kun | 门禁已有，只在自检镜像上跑通 |
 | 自动的无障碍检查 | 匠心 | 没有 |
 | 安全问题的报告入口 | 两边 | 没有 |
@@ -174,15 +183,10 @@ Kun 的需求文档[第 14 章](https://github.com/CavaiLAB/kun/blob/main/docs/p
 | OpenID Connect Core 1.0 | OpenID Connect Core 1.0 incorporating errata set 2 | 2023 年 12 月 15 日。ISO 的编号是 ISO/IEC 26131:2024 | |
 | RFC 7643、RFC 7644 | System for Cross-domain Identity Management: Core Schema；System for Cross-domain Identity Management: Protocol | 2015 年 9 月 | |
 
-有几份国家标准采用的是国际标准的上一版，表里写明了是哪一版。标准会换版：表里标着「即将被新版取代」「在修订」的，换版以后要重新核对。
+有几份国家标准采用的是国际标准的上一版，表里写明了是哪一版。标准会换版：表里的编号、版本与采标情况每半年核一次（已定）；由整理者核、结果报给产品负责人，是整理时的做法；标着「即将被新版取代」「在修订」的，换版以后要重新核对。
 
 ## 6 待定
 
 | 事项 | 现在的情况 |
 |---|---|
-| 对着哪些标准 | 提议，见第 2 节。产品负责人没有裁定 |
-| 缺的检查先补哪些 | 没有定，清单见第 4 节 |
-| 匠心的代码检查什么时候进 CI | 待定，见[协作约定](14-governance.md) |
-| 各方面怎么验证 | 标着「没有定」的几项，见第 3 节 |
-| 标准换版以后谁来重新核对、多久核一次 | 没有定 |
-| 要不要做某一项认证 | 没有问过。本文的读法是不做认证，见第 1 节 |
+| 各方面怎么验证 | 第 3 节里标着「没有定」的几项。2026-11-27 的答复没有涉及这一件 |

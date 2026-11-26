@@ -11,7 +11,7 @@ DSH 的源码不改（[AGENTS.md](../AGENTS.md)「产品的代码」）。实在
 
 这两个是评估桌面客户端的路线乙（从钉死的源码构建上游桌面壳）时写的样例，各代表一类改动：写死的品牌文字，和会跟用户自己装的上游桌面版冲突的行为。路线乙一共要改多少，见 [apps/desktop/README.md](../apps/desktop/README.md) 的「两条路线」和[换品牌的改动面](../apps/desktop/docs/upstream-rebrand-surface.md)。
 
-提议第一版走路线甲（薄壳，`apps/desktop/`），那样这个目录里一个启用的补丁都不需要。两条路线选哪条没有定。
+桌面端走路线甲（薄壳，`apps/desktop/`），2026-11-27 定了；这个目录里一个启用的补丁都不需要。
 
 ## 写法约定
 

@@ -1,6 +1,6 @@
 # 在平台上做开发
 
-> 状态：2026-11-26。本文是一张地图：能在哪几层做东西、各从哪开始、现在哪些能用。步骤写在代码旁边的说明和 Kun 的文档里，这里只指路，不抄。「已有」指现在就能照着做；「规划」指还没有实现；产品负责人没有裁定的做法标「提议」。
+> 状态：2026-11-26，2026-11-27 跟上产品负责人对待定事项的答复。本文是一张地图：能在哪几层做东西、各从哪开始、现在哪些能用。步骤写在代码旁边的说明和 Kun 的文档里，这里只指路，不抄。「已有」指现在就能照着做；「规划」指还没有实现；产品负责人没有裁定的做法标「提议」，定了先放着的标「延期」。
 
 ## 1 先认三样东西
 
@@ -15,7 +15,7 @@
 | 层 | 做出来的是什么 | 在哪里运行 | 现状 | 看哪一节 |
 |---|---|---|---|---|
 | DSH 的插件 | Agent 工作区里的入口和页面，可以带自己的后端接口 | 各人的 DSH 实例 | 已有 | 第 3 节 |
-| 页面插件 | 只有浏览器一半的页面。管理端的页面是这一种（已定）；同一份装进工作区的右侧是提议，「待确认」这一页已定这样做 | 浏览器 | 没有实现 | 第 4 节 |
+| 页面插件 | 只有浏览器一半的页面。管理端的页面是这一种（已定）；同一份装进工作区的右侧是提议，两边的适配延期，「待确认」这一页已定这样做 | 浏览器 | 没有实现 | 第 4 节 |
 | Kun 的组件 | 平台上的一项能力，或一个业务应用的后端：数据、命令、事件、权限点 | Kun 的宿主，.NET | 运行时、开发包、命令行已有 | 第 5 节 |
 | 用数据描述的应用 | 数据模型、表单、列表、流程、菜单、角色，没有界面代码 | Kun 存储与校验，平台的渲染器画界面 | 做法已定，没有实现 | 第 7 节 |
 | 模型服务的适配 | 把一种模型服务接到平台的标准接口上 | Kun 的组件 | 规划 | 第 8 节 |
@@ -53,7 +53,7 @@
 - 管理端只要浏览器一侧：它的页面是只有浏览器一半的 Cordis 插件。带宿主一半的插件只在各人的 DSH 实例里跑。
 - 「待确认」这一页做成页面插件，两边装同一份。
 
-**提议的**（没有裁定）：DSH 的右侧和管理端各有一个很小的适配，把页面挂进去；页面的数据走平台的接口，不经过 DSH 实例。
+**提议的**：DSH 的右侧和管理端各有一个很小的适配，把页面挂进去；页面的数据走平台的接口，不经过 DSH 实例。两边的适配怎么写、页面的数据走哪条路，延期，要先有设计，先做出适配的样板。
 
 **现状。** 没有实现。管理端还没有开始做，[`apps/console/`](https://github.com/CavaiLAB/jiangxin/blob/main/apps/console/README.md) 是占位；两边的适配都没有，所以还没有可以照着写的样板。试验里走通过两件事，用的都是假的平台接口：把现有的插件样板和品牌包原样装进一个不带对话的 Cordis 应用；在 DSH 的右侧登记自己的页签。
 
@@ -67,7 +67,7 @@ Kun 里名字带 `qian` 的地方，比如组件 id 的前缀 `qian.`、清单�
 
 **谁的代码能进平台的进程。** 组件有信任等级。只有平台自己的和官方的组件，代码可以装进平台的共享进程；其余来源的代码只能隔离着跑，隔离运行的办法在规格里排在后面的阶段，是规划。没有代码的组件，各个等级都可以发布。规则见[组件模型规格](https://github.com/CavaiLAB/kun/blob/main/docs/prd/specs/component-model.md)的第 11 节。
 
-**从哪开始。** 都在 Kun 的仓库里。Kun 自己的网站对外的地址还没有定，下面先链到 GitHub 上的文件。
+**从哪开始。** 都在 Kun 的仓库里。Kun 自己的网站，域名定为 `kun.2017601.xyz`（已定）；等公网入口、证书和站点内容验收通过，再把下面的链接切到网站上，现在先链到 GitHub 上的文件。
 
 | 要看什么 | 在哪里 |
 |---|---|
@@ -81,7 +81,7 @@ Kun 里名字带 `qian` 的地方，比如组件 id 的前缀 `qian.`、清单�
 | 框架怎么上手（英文） | [Getting Started](https://github.com/CavaiLAB/kun/blob/main/docs/getting-started.md) |
 | 构建、测试与代码约定 | Kun 的 [AGENTS.md](https://github.com/CavaiLAB/kun/blob/main/AGENTS.md) |
 
-**现状。** 已有：组件的运行时，清单与声明式内容的校验，命令行的安装、升级、移除、列出；组件开发包，参考组件就是用它写的。规划：目录市场现在只有清单格式与校验，官方市场与目录网站没有做。成篇的上手文档还没有；Kun 要有自己的网站和使用文档（已定），网站对外的地址没有定。
+**现状。** 已有：组件的运行时，清单与声明式内容的校验，命令行的安装、升级、移除、列出；组件开发包，参考组件就是用它写的。规划：目录市场现在只有清单格式与校验，官方市场与目录网站没有做。成篇的上手文档还没有；Kun 要有自己的网站和使用文档（已定），网站的域名是 `kun.2017601.xyz`（已定），这里的链接还没有切过去。
 
 ## 6 能力与权限
 
@@ -92,14 +92,14 @@ Kun 里名字带 `qian` 的地方，比如组件 id 的前缀 `qian.`、清单�
 
 **权限点。** 权限点写成 `<组件 id>:<资源>:<动作>`，例如 `qian.sample.crm:customer:read`。组件在 `metadata/permissions.json` 里声明自己的权限点，在 `metadata/roles.json` 里写默认角色各拿到哪些；.NET 里可以用 `[Permission]` 声明，再派生出前一个文件。例子见[客户参考应用](https://github.com/CavaiLAB/kun/blob/main/samples/Kun.Sample.Crm/README.md)，规则见[权限组件的说明](https://github.com/CavaiLAB/kun/blob/main/src/Kun.Authorization.Rbac/README.md)。
 
-**判权限只问 Kun。** 平台上不论做什么系统，权限都走 Kun 这一套（已定）。整理时的读法：系统不自己判权限，只问 Kun，管理端、应用、插件、Agent 一侧的服务都一样。Kun 现行的做法是权限不进令牌，也不从令牌里的角色推导，每次都问权限引擎。界面可以按当前的人有哪些权限决定显示什么，但这不算判权限：判定在后端的入口上做。
+**判权限只问 Kun。** 平台上不论做什么系统，权限都走 Kun 这一套（已定）。系统不自己判权限，只问 Kun，管理端、应用、插件、Agent 一侧的服务都一样（已定）。Kun 现行的做法是权限不进令牌，也不从令牌里的角色推导，每次都问权限引擎。界面可以按当前的人有哪些权限决定显示什么，但这不算判权限：判定在后端的入口上做。
 
 怎么问，看代码跑在哪里：
 
 | 代码跑在哪里 | 怎么接 | 现状 |
 |---|---|---|
 | Kun 的宿主里，.NET | HTTP 端点写 `.RequireKunPermission(…)`，命令实现 `IPermissionProtectedRequest`，gRPC 方法标 `[RequiresPermission(…)]`。三种入口都在业务代码之前判定，缺了权限引擎就拒绝 | 已有。见 [Kun.Authorization](https://github.com/CavaiLAB/kun/blob/main/src/Kun.Authorization/README.md) 与 [Kun.Authorization.AspNetCore](https://github.com/CavaiLAB/kun/blob/main/src/Kun.Authorization.AspNetCore/README.md) |
-| Kun 的宿主以外：管理端、工作区服务、页面插件、DSH 插件的宿主一半 | 远程的授权接口，加客户端包 | 规划。HTTP 上现在只有两个只读的端点：一个列出当前已验证的主体自己持有的权限点；一个发布数据权限的元数据（有哪些数据范围、过滤条件、系统变量），不返回实际的授予。先做哪几种问法、令牌怎么带、多久生效已定，客户端包先出 TypeScript 与 .NET、.NET 的在前，见[总体架构](04-architecture.md)第 2.1 节 |
+| Kun 的宿主以外：管理端、工作区服务、页面插件、DSH 插件的宿主一半 | 远程的授权接口，加客户端包 | 规划。HTTP 上现在只有两个只读的端点：一个列出当前已验证的主体自己持有的权限点；一个发布数据权限的元数据（有哪些数据范围、过滤条件、系统变量），不返回实际的授予。先做哪几种问法、令牌怎么带、多久生效已定，客户端包先出 TypeScript 与 .NET、.NET 的在前，一做出来就公开，发到 nuget.org 与 npmjs（已定），见[总体架构](04-architecture.md)第 2.1 节。端点与字段的形状以 Kun 的契约草案为准，是提议 |
 
 还没有的（规划）：
 
@@ -120,13 +120,17 @@ Kun 现行规格里另有两条规则：Agent 生成的组件和人写的组件�
 - 设计：Kun 需求文档的[第 8 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/08-s2-lowcode.md)，以及[第 10 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/10-s4-agent.md)的第 10.4 节。
 - 已有的契约：字段类型与过滤条件，见[数据契约 v1](https://github.com/CavaiLAB/kun/blob/main/contracts/data/v1/README.md)。
 
-**现状。** 规划。按数据描述读写业务记录的后端、表单与列表的渲染器、流程、发布的审批与记录，都没有实现。先后已定：先做确认卡的最小一圈，再做生成应用的最小一圈。
+**现状。** 规划。按数据描述读写业务记录的后端、表单与列表的渲染器、流程、发布的审批与记录，都没有实现。先后已定：先做确认卡的最小一圈，再做生成应用的最小一圈。分工已定：界面与渲染器归匠心，按数据描述读写业务记录的后端、流程、等人输入归 Kun。
 
 ## 8 接模型服务（规划）
 
-**已定的。** 模型服务由 Kun 提供。部署分两种形态，一种是带模型推理服务的集群，一种不带；要有标准的接口对接后面的模型推理服务，只提供一套；尽量用插件的形式实现（已定）。额度的单位用积分，积分系统可以选择启用或不启用，周期可以选择（已定）。整理时的读法有两句：不带推理的那一种，通过 API 直接接第三方的模型服务；两种形态都接在这一套接口上。
+**已定的。** 模型服务由 Kun 提供。部署分两种形态，一种是带模型推理服务的集群，一种不带，通过 API 直接接第三方的模型服务；要有标准的接口对接后面的模型推理服务，只提供一套，两种形态都接在这一套接口上；尽量用插件的形式实现（已定）。
 
-**带条件的。** 平台不装 Higress。产品负责人说的是「评估一下，不需要就不安装了吧」；评估是整理时做的，结论是不需要，这个结论他没有逐句确认，见[总体架构](04-architecture.md)第 2.2 节。
+- 整个平台只有一个 Kun 模型服务，各种部署、各个端和应用都走同一套入口；增加上游、模型或服务的副本，都不另设面向用户的入口（已定）。
+- 模型由平台管理员统一配。做应用的人和应用都不能自带上游的密钥、自填地址或改路由；发给应用的凭据是长期的密钥，只用于调用平台（已定）。
+- 调用方第一版能用 OpenAI 兼容的对话、嵌入与模型列表，下一项优先加重排（已定）。
+- 平台不装 Higress，模型请求由平台自己的模型入口转发（已定）。推理服务用 GPUStack，适配由 Kun 维护（已定）。
+- 额度的单位用积分，应用单独一桶；规则见[总体架构](04-architecture.md)第 2.2 节（已定）。
 
 **提议的**（没有裁定）：接口分三个面。
 
@@ -138,7 +142,7 @@ Kun 现行规格里另有两条规则：Agent 生成的组件和人写的组件�
 
 照这个提议，做应用的人只面向调用面；要接一种新的模型服务的人只写接入面的适配；两种形态的差别落在装哪个适配上。
 
-**现状。** 都没有实现。Kun 里的模型服务组件现在只有清单与配置的骨架，见 [`plugins/qian.model-gateway`](https://github.com/CavaiLAB/kun/blob/main/plugins/qian.model-gateway/README.md)；现在的写法在 Kun 的 [ADR-024](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-024-model-entry-no-gateway.md) 与[契约草案](https://github.com/CavaiLAB/kun/blob/main/docs/prd/specs/model-service-interface.md)，草案是提议；此前照 Higress 写的设计在 [ADR-015](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-015-model-gateway.md)（已标部分取代）与需求文档[第 7 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/07-s1-foundation.md)的第 7.16 节、[第 10 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/10-s4-agent.md)的第 10.5 节。匠心这边，DSH 的实例现在用一个环境变量指向一个 OpenAI 兼容的地址，本机默认指[假模型](https://github.com/CavaiLAB/jiangxin/blob/main/tools/mock-model/README.md)。以后怎么指到平台，见 [DSH 与企业级平台的对接](09-dsh-integration.md)。
+**现状。** 都没有实现。Kun 里的模型服务组件现在只有清单与配置的骨架，见 [`plugins/qian.model-gateway`](https://github.com/CavaiLAB/kun/blob/main/plugins/qian.model-gateway/README.md)；现在的写法在 Kun 的 [ADR-024](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-024-model-entry-no-gateway.md) 与[契约草案](https://github.com/CavaiLAB/kun/blob/main/docs/prd/specs/model-service-interface.md)，草案是提议；此前照 Higress 写的设计在 [ADR-015](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-015-model-gateway.md)（已标部分取代）与需求文档[第 7 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/07-s1-foundation.md)的第 7.16 节、[第 10 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/10-s4-agent.md)的第 10.5 节；和本节已定的内容有出入时，以本节为准。匠心这边，DSH 的实例现在用一个环境变量指向一个 OpenAI 兼容的地址，本机默认指[假模型](https://github.com/CavaiLAB/jiangxin/blob/main/tools/mock-model/README.md)。以后怎么指到平台，见 [DSH 与企业级平台的对接](09-dsh-integration.md)。
 
 ## 9 动手之前
 
@@ -151,9 +155,4 @@ Kun 现行规格里另有两条规则：Agent 生成的组件和人写的组件�
 
 | 事项 | 现在的情况 |
 |---|---|
-| 「待确认」以外的页面是不是也两边装同一份，两边的适配怎么写，页面的数据走哪条路 | 提议，见第 4 节 |
-| 带业务的 Kun 组件放在哪个仓库 | 没有定。Kun 是通用的组件，不负责任何业务（已定） |
-| 远程的授权接口与客户端包长什么样 | 先做哪几种问法等几条已定，见[总体架构](04-architecture.md)第 2.1 节；端点与字段的形状是提议，等 Kun 的契约定稿 |
-| 模型服务的接口分哪几个面 | 提议，见第 8 节 |
-| 匠心的包名前缀 `@jx/` | 提议，没有确认 |
-| Kun 的网站对外的地址 | 已定：用产品负责人提供的域名，部署到 k3s。域名还没有给；给了以后，第 5 节的链接改指网站 |
+| 「待确认」以外的页面是不是也两边装同一份，两边的适配怎么写，页面的数据走哪条路 | 延期，要先有设计，先做出适配的样板。提议见第 4 节 |

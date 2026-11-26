@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "匠心工业智能体平台客户端：薄的 Electron 壳，里面跑已发布的 DSH，窗口里装它的 Web 界面。",
   "productName": "匠心工业智能体平台",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "author": "匠心",
   "main": "src/main.js",
   "scripts": {
