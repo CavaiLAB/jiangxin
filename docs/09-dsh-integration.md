@@ -156,9 +156,14 @@ flowchart LR
 
 - **模型服务由 Kun 提供**（已定）。
 - **模型服务留一套标准接口**（已定）。已定的内容里和模型有关的是：部署有两种形态，一种是带模型推理服务的集群，一种不带模型推理、通过 API 直接接第三方的模型服务；不管哪一种，统一由管理端管理；这些尽量用插件的形式实现；对接模型推理服务的标准接口只提供一套。照这一条的读法，后面接自己的推理服务，还是接第三方的 API，都接在这一套接口上，上面的产品不用跟着改。
-- **Kun 里已有的决定**（[ADR-015](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-015-model-gateway.md) 与[需求文档第 10 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/10-s4-agent.md)的 10.5 节）：Kun 不自己写模型代理，模型请求的转发由模型网关承担；Kun 的模型组件只做三件事，把推理后端登记成模型网关的上游、适配后端（发现模型、健康、上下线）、维护模型目录；租户、配额、计量在平台一侧。调用方只要两样东西，网关的地址和发给它的凭据；只用逻辑模型名，不知道后面是哪个模型。
+- **Kun 里的决定**（[ADR-024](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-024-model-entry-no-gateway.md) 与 [ADR-015](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-015-model-gateway.md)）：
+  - 已定：额度的单位用积分，积分系统可以选择启用或不启用，周期可以选择。
+  - 带条件：平台不装 Higress。产品负责人说的是「评估一下，不需要就不安装了吧」；评估是整理时做的，结论是不需要，这个结论他没有逐句确认。
+  - ADR-015 原来写的：Kun 不自己写模型代理，模型请求的转发由模型网关 Higress 承担；租户、配额、计量在平台一侧。其中写着 Higress 的部分随之不再成立；「不自己写模型代理」这一条放不放开，随下面的提议，没有裁定；租户、配额、计量在平台一侧不变。
+  - 提议：不装以后由平台自己的模型入口转发。它是 Kun 的模型组件里的一个服务，认调用方的凭据、查权限与额度、选上游、转发、记用量。
+  - 不管由谁转发，调用方只要两样东西：一个地址和发给它的凭据；只用逻辑模型名，不知道后面是哪个模型。
 - **现状**：Kun 里这个组件只有配置骨架，没有实现，见[它的说明](https://github.com/CavaiLAB/kun/blob/main/plugins/qian.model-gateway/README.md)。
-- **没有定的**：接口的形状；不带模型推理的那种形态，模型请求要不要也过模型网关。
+- **没有定的**：接口的形状；模型请求由谁转发（提议是平台自己的模型入口，两种形态走同一条路）；额度用完怎么办，周期有哪几种，积分怎么折算。
 
 这套接口怎么分，下面是提议，没有裁定：
 
@@ -166,7 +171,7 @@ flowchart LR
 |---|---|---|
 | 调用面 | DSH 的实例、应用、Agent | OpenAI 兼容的接口。调用方只认平台的地址和平台发的凭据，用逻辑模型名 |
 | 接入面 | 模型后端的适配，做成插件 | 一个适配要答：有哪些模型，各自能做什么，是否健康，怎么调。两种形态的差别落在装哪个适配上 |
-| 管理面 | 管理端 | 模型目录、凭据、配额与限流、计量 |
+| 管理面 | 管理端 | 模型目录、凭据、额度与限流、计量 |
 
 Kun 的需求文档已经给适配留了名字（扩展点 `qian.model-gateway.provider/v1`，接口 `IModelCatalog`、`IModelProviderAdapter`），都还没有代码，见[需求文档第 7 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/07-s1-foundation.md)的 7.16 节。
 
@@ -191,7 +196,7 @@ Kun 的需求文档已经给适配留了名字（扩展点 `qian.model-gateway.p
 | 地址指到平台 | 托管实例由工作区服务在启动时给，桌面端由壳传进去。平台的调用面还没有 | 规划 |
 | 模型列表由平台下发 | 现在模型的清单和显示名写死在补丁 10 里，只有一条本机测试用的假模型。补丁在实例启动时读，改清单要改补丁、重启实例。接上平台以后，清单应当来自平台的模型目录。怎么下发没有设计 | 提议 |
 | 凭据 | 给实例的凭据应当由平台签发，落在人头上，短期有效，只在模型服务上有效；模型供应方的密钥不进实例。现在是环境变量里的一把密钥，假模型不校验它 | 提议 |
-| 计量与配额 | 在平台一侧按人、按租户算，不靠实例自己报 | 规划 |
+| 计量与额度 | 在平台一侧按人、按租户算，不靠实例自己报。额度的单位用积分，积分系统可以选择启用或不启用，周期可以选择（已定）；其余没有定 | 规划 |
 | 出站策略 | 配置管不住全部外联。每个实例要有网络层的出站策略，只放行模型服务的地址；允许装插件的话，再加企业内部的 npm 源 | 部署时做，没有实现 |
 
 两种形态对 DSH 一侧没有差别。照上面的提议，带推理还是接第三方，变的是平台一侧装哪个适配；实例看到的都是同一个调用入口，发行目录不用为形态各出一份（提议）。
@@ -205,8 +210,9 @@ Kun 的需求文档已经给适配留了名字（扩展点 `qian.model-gateway.p
 | 项 | 状态 |
 |---|---|
 | 模型服务由 Kun 提供；对接模型推理服务的标准接口只提供一套 | 已定 |
+| 额度的单位用积分；积分系统可以选择启用或不启用；周期可以选择 | 已定 |
 | 接口的形状 | 没有定。分调用面、接入面、管理面是提议 |
-| 不带模型推理的那种形态，模型请求要不要也过模型网关 | 待定 |
+| 模型请求由谁转发 | 平台不装 Higress（带条件，见[总体架构](04-architecture.md)第 2.2 节）。由平台自己的模型入口转发是提议，没有定 |
 | Kun 的模型组件 | 只有骨架，是规划 |
 | 实例的模型地址由环境变量给，界面上锁住；默认指向本机的假模型 | 已有 |
 | 模型列表由平台下发；凭据由平台按人签发 | 提议 |
@@ -333,4 +339,4 @@ DSH 的版本钉死在发行目录里。上面每一项对接都贴着 DSH 的�
 | 核对过的 DSH 事实；接触面清单 | [dsh-facts](https://github.com/CavaiLAB/jiangxin/blob/main/distribution/docs/dsh-facts.md)；[touchpoints](https://github.com/CavaiLAB/jiangxin/blob/main/distribution/docs/touchpoints.md) |
 | Web 端的启动、反向代理、门户的提议 | [apps/web 的说明](https://github.com/CavaiLAB/jiangxin/blob/main/apps/web/README.md) |
 | 桌面壳、凭据交接、两条路线 | [apps/desktop 的说明](https://github.com/CavaiLAB/jiangxin/blob/main/apps/desktop/README.md) |
-| Kun 一侧：模型服务、与 Agent 运行时的边界、鉴权 | [ADR-015](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-015-model-gateway.md)；[ADR-016](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-016-agent-boundary.md)；[ADR-006](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-006-authorization-model.md)；[对智能体的支撑](https://github.com/CavaiLAB/kun/blob/main/docs/agent-support.md) |
+| Kun 一侧：模型服务、与 Agent 运行时的边界、鉴权 | [ADR-024](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-024-model-entry-no-gateway.md)；[ADR-015](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-015-model-gateway.md)（已标部分取代）；[ADR-016](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-016-agent-boundary.md)；[ADR-006](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-006-authorization-model.md)；[对智能体的支撑](https://github.com/CavaiLAB/kun/blob/main/docs/agent-support.md) |
