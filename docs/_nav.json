@@ -1,5 +1,5 @@
 [
   { "text": "总览", "link": "/", "activeMatch": "^/(index(\\.html)?)?$" },
-  { "text": "平台", "link": "/01-vision", "activeMatch": "^/(\\d\\d-|glossary|decisions/)" },
+  { "text": "平台", "link": "/01-vision", "activeMatch": "^/(\\d\\d-|glossary)" },
   { "text": "Kun", "link": "https://github.com/CavaiLAB/kun" }
 ]

@@ -4,17 +4,20 @@
   "01-vision",
   "02-industrial-forms",
   "03-product",
+  { "type": "section-header", "label": "架构" },
   "04-architecture",
   "05-plugin-model",
   "06-app-interop",
   "07-legacy-systems",
   "08-agent-collaboration",
+  { "type": "section-header", "label": "DSH" },
   "09-dsh-integration",
   "10-dsh-upgrade",
+  { "type": "section-header", "label": "开发" },
   "11-development",
   "12-standards",
+  { "type": "section-header", "label": "路线与约定" },
   "13-roadmap",
   "14-governance",
-  "glossary",
-  { "type": "dir-section-header", "name": "decisions", "label": "决策记录" }
+  "glossary"
 ]

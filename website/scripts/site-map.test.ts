@@ -16,7 +16,7 @@ function existing(files: string[] = []): (sitePath: string) => boolean {
 test('仓库里的文件对应到站点里的路径', () => {
   assert.equal(sitePathOf('README.md'), 'index.md');
   assert.equal(sitePathOf('docs/04-architecture.md'), '04-architecture.md');
-  assert.equal(sitePathOf('docs/decisions/2026-11-17-platform.md'), 'decisions/2026-11-17-platform.md');
+  assert.equal(sitePathOf('docs/guides/first-app.md'), 'guides/first-app.md');
   assert.equal(sitePathOf('docs/_images/office.png'), '_images/office.png');
 });
 
@@ -57,7 +57,7 @@ test('别的仓库的地址认不出，照常去 GitHub', () => {
 test('README 里的链接', () => {
   const exists = existing();
   assert.equal(rewriteReadmeUrl('docs/04-architecture.md#7-契约', exists), '04-architecture.md#7-契约');
-  assert.equal(rewriteReadmeUrl('docs/decisions/2026-11-17-platform.md', exists), 'decisions/2026-11-17-platform.md');
+  assert.equal(rewriteReadmeUrl('docs/guides/first-app.md', exists), 'guides/first-app.md');
   assert.equal(rewriteReadmeUrl('./docs/glossary.md', exists), 'glossary.md');
   assert.equal(rewriteReadmeUrl('/docs/glossary.md', exists), 'glossary.md', '以 / 开头的相对仓库根目录');
   assert.equal(rewriteReadmeUrl('AGENTS.md', exists), 'https://github.com/CavaiLAB/jiangxin/blob/main/AGENTS.md');
@@ -225,10 +225,10 @@ test('_meta.json 里漏列的条目', () => {
     { type: 'section-header', label: '平台' },
     '01-vision',
     'glossary.md',
-    { type: 'dir-section-header', name: 'decisions', label: '决策记录' },
+    { type: 'dir-section-header', name: 'guides', label: '指南' },
   ];
-  assert.deepEqual(missingFromMeta(meta, ['index', '01-vision', 'glossary', 'decisions']), []);
-  assert.deepEqual(missingFromMeta(meta, ['index', '01-vision', '04-architecture', 'decisions', 'frameworks']), ['04-architecture', 'frameworks']);
+  assert.deepEqual(missingFromMeta(meta, ['index', '01-vision', 'glossary', 'guides']), []);
+  assert.deepEqual(missingFromMeta(meta, ['index', '01-vision', '04-architecture', 'guides', 'frameworks']), ['04-architecture', 'frameworks']);
   assert.deepEqual(missingFromMeta([], ['01-vision']), ['01-vision']);
 });
 
