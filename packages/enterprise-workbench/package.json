@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "匠心的企业界面插件样板：侧栏入口加一个设备台账面板，数据由插件自己的后端接口提供。",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "type": "module",
   "main": "lib/index.js",
   "exports": {

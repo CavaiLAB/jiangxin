@@ -184,3 +184,5 @@ tests/               对比度、文案覆盖表、默认语言、首页替换
 ## 许可与商标
 
 上游项目的名字是它的商标（见 `NOTICE.md`），不出现在我们的产品名里。说明关系时写「基于 DSH 构建」。DSH 按 MIT 许可发布，许可全文在 `NOTICE.md`，界面上「设置 → 通用 → 开源许可」显示的是同一份。
+
+这个包自己的代码用 MIT 许可，全文见仓库根目录的 `LICENSE`。`assets/web/` 下的图标，和 `lib/assets/` 下的两张标志图（源文件在 `src/client/assets/`），都是从匠心的 logo 生成的，和 logo 一样不在代码许可之内，见 [brand 的说明](../../brand/README.md)。

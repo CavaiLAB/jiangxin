@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "description": "匠心工业智能体平台的发行目录，Web 端和客户端共用：钉死版本的 DSH、品牌包与插件包（vendor/ 里的 tarball），加上按文件名顺序叠加的补丁（patches/）。",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "engines": {
     "node": ">=24.9.0"
   },

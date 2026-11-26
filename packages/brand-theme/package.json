@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "匠心工业智能体平台的品牌包：名称、标志、主题色、界面文案。",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
