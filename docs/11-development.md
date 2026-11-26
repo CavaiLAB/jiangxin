@@ -124,7 +124,9 @@ Kun 现行规格里另有两条规则：Agent 生成的组件和人写的组件�
 
 ## 8 接模型服务（规划）
 
-**已定的。** 模型服务由 Kun 提供。部署分两种形态，一种是带模型推理服务的集群，一种不带；要有标准的接口对接后面的模型推理服务，只提供一套；尽量用插件的形式实现（已定）。整理时的读法有两句：不带推理的那一种，通过 API 直接接第三方的模型服务；两种形态都接在这一套接口上。
+**已定的。** 模型服务由 Kun 提供。部署分两种形态，一种是带模型推理服务的集群，一种不带；要有标准的接口对接后面的模型推理服务，只提供一套；尽量用插件的形式实现（已定）。额度的单位用积分，积分系统可以选择启用或不启用，周期可以选择（已定）。整理时的读法有两句：不带推理的那一种，通过 API 直接接第三方的模型服务；两种形态都接在这一套接口上。
+
+**带条件的。** 平台不装 Higress。产品负责人说的是「评估一下，不需要就不安装了吧」；评估是整理时做的，结论是不需要，这个结论他没有逐句确认，见[总体架构](04-architecture.md)第 2.2 节。
 
 **提议的**（没有裁定）：接口分三个面。
 
@@ -132,11 +134,11 @@ Kun 现行规格里另有两条规则：Agent 生成的组件和人写的组件�
 |---|---|---|
 | 调用面 | 应用、Agent、DSH 的实例 | OpenAI 兼容的接口。调用方只认平台的地址和平台发的凭据，用逻辑上的模型名，不知道后面是哪一种模型服务 |
 | 接入面 | 要接一种模型服务的人 | 一个适配，做成 Kun 的组件：有哪些模型，各自能做什么，是否健康，怎么调。换一种推理服务，就是再写一个适配 |
-| 管理面 | 管理端 | 模型目录、凭据、配额与限流、计量 |
+| 管理面 | 管理端 | 模型目录、凭据、额度与限流、计量 |
 
 照这个提议，做应用的人只面向调用面；要接一种新的模型服务的人只写接入面的适配；两种形态的差别落在装哪个适配上。
 
-**现状。** 都没有实现。Kun 里的模型服务组件现在只有清单与配置的骨架，见 [`plugins/qian.model-gateway`](https://github.com/CavaiLAB/kun/blob/main/plugins/qian.model-gateway/README.md)；此前的设计在 Kun 的 [ADR-015](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-015-model-gateway.md) 与需求文档[第 7 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/07-s1-foundation.md)的第 7.16 节、[第 10 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/10-s4-agent.md)的第 10.5 节。匠心这边，DSH 的实例现在用一个环境变量指向一个 OpenAI 兼容的地址，本机默认指[假模型](https://github.com/CavaiLAB/jiangxin/blob/main/tools/mock-model/README.md)。以后怎么指到平台，见 [DSH 与企业级平台的对接](09-dsh-integration.md)。
+**现状。** 都没有实现。Kun 里的模型服务组件现在只有清单与配置的骨架，见 [`plugins/qian.model-gateway`](https://github.com/CavaiLAB/kun/blob/main/plugins/qian.model-gateway/README.md)；现在的写法在 Kun 的 [ADR-024](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-024-model-entry-no-gateway.md) 与[契约草案](https://github.com/CavaiLAB/kun/blob/main/docs/prd/specs/model-service-interface.md)，草案是提议；此前照 Higress 写的设计在 [ADR-015](https://github.com/CavaiLAB/kun/blob/main/docs/adr/ADR-015-model-gateway.md)（已标部分取代）与需求文档[第 7 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/07-s1-foundation.md)的第 7.16 节、[第 10 章](https://github.com/CavaiLAB/kun/blob/main/docs/prd/10-s4-agent.md)的第 10.5 节。匠心这边，DSH 的实例现在用一个环境变量指向一个 OpenAI 兼容的地址，本机默认指[假模型](https://github.com/CavaiLAB/jiangxin/blob/main/tools/mock-model/README.md)。以后怎么指到平台，见 [DSH 与企业级平台的对接](09-dsh-integration.md)。
 
 ## 9 动手之前
 
