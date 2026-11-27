@@ -33,6 +33,7 @@ cd packages/enterprise-workbench && pnpm install --frozen-lockfile && pnpm run c
 - 不改 DSH 的源码，只用 DSH 公开的插件接口、插槽和配置。靠内部细节的地方在包的 README 里逐条写明（品牌包的「换不掉或靠取巧的位置」「升级 DSH 时」），升级 DSH 时核对。
 - 包名用 `@jx/` 开头，插件行的 id 用 `jx-` 开头。启动前检查和桌面壳按这两个前缀认「我们自己的插件」，没加载就不启动。包名前缀已定。
 - 一个插件包分宿主一半和浏览器一半，构建用 `jx-dsh-plugin-build`。写法照 [enterprise-workbench/README.md](enterprise-workbench/README.md) 的「照着写一个新插件」，构建产物的格式见 [ui-kit/README.md](ui-kit/README.md) 的「构建脚本」。
+- 界面照匠心的[设计规范](../docs/16-design.md)做；规范现在是底稿。
 - 界面上 DSH 自带的控件直接用 DSH 的。DSH 没有的基础组件用 shadcn 生成进 `ui-kit`，缺哪个补哪个；怎么加、怎么写、放进 DSH 的弹窗里要注意什么，见 [ui-kit/README.md](ui-kit/README.md)。
 
 ## 以后可能加的包（提议）
@@ -42,7 +43,7 @@ cd packages/enterprise-workbench && pnpm install --frozen-lockfile && pnpm run c
 | 包 | 放什么 |
 |---|---|
 | `dsh-compat` | 唯一允许直接引用 DSH 内部接口的包，其余的包只引用它。升级 DSH 时要核对的东西集中在这里 |
-| `enterprise-auth` | 登录对接 |
+| `enterprise-auth` | DSH 实例一侧的登录对接。登录页等认证页不在这里，见[包与应用的去向](../docs/15-packages.md) |
 | `enterprise-policy` | 工具护栏与设置的统一管控 |
 | `enterprise-audit` | 审计 |
 
